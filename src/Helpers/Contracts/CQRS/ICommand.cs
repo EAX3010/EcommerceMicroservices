@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MediatR;
-namespace Contracts.CQRS
+namespace Shared.CQRS
 {
     public interface ICommand : IRequest<Unit>
     {

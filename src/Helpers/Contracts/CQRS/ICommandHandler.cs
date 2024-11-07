@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Contracts.CQRS
+namespace Shared.CQRS
 {
     public interface ICommandHandler<in TCommand> : ICommandHandler<TCommand, Unit>
         where TCommand : ICommand<Unit>

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Contracts.CQRS
+namespace Shared.CQRS
 {
     public interface IQuery<out TRespond> : IRequest<TRespond> 
         where TRespond : notnull
