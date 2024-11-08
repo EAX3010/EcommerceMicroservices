@@ -14,7 +14,7 @@
 
             RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required")
-            .Length(3, 32).WithMessage("Name must be between 3 and 32 characters");
+            .Length(1, 32).WithMessage("Name must be between 3 and 32 characters");
 
             RuleFor(x => x.Category)
                 .NotEmpty().WithMessage("Category is required")

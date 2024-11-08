@@ -5,7 +5,7 @@ using MediatR;
 namespace Catalog.API.Products.DeleteProduct
 {
     public record DeleteProductByIdQuery(Guid Id) : IQuery<DeleteProductByIdResult>;
-    public record DeleteProductByIdResult(bool isSuccess = false);
+    public record DeleteProductByIdResult(bool IsSuccess = false);
 
     internal class DeleteProductByIdQueryHandler(IDocumentSession session, ILogger<DeleteProductByIdQueryHandler> logger) 
         : IQueryHandler<DeleteProductByIdQuery, DeleteProductByIdResult>
@@ -20,7 +20,7 @@ namespace Catalog.API.Products.DeleteProduct
 
             session.Delete<Product>(product);
             await session.SaveChangesAsync(cancellationToken);
-            return new DeleteProductByIdResult(true);
+            return new DeleteProductByIdResult(IsSuccess: true);
         }
     }
 }

@@ -11,11 +11,11 @@ namespace Catalog.API.Products.CreateProduct
         {
             RuleFor(x => x.Name)
             .NotEmpty().WithMessage("Name is required")
-            .Length(3, 32).WithMessage("Name must be between 3 and 32 characters");
+            .Length(1, 32).WithMessage("Name must be between 3 and 32 characters");
 
             RuleFor(x => x.Category)
                 .NotEmpty().WithMessage("Category is required")
-                .Must(x => x != null && x.Any()).WithMessage("At least one category is required")
+                .Must(x => x != null && x.Count != 0).WithMessage("At least one category is required")
                 .ForEach(category =>
                 {
                     category.NotEmpty().WithMessage("Category item cannot be empty")
@@ -46,7 +46,7 @@ namespace Catalog.API.Products.CreateProduct
         {
 
             logger.LogInformation("CreateProductCommandHandler.Handle called {@command}", request);
-            Product product = new Product()
+            var product = new Product()
             {
                 Name = request.Name,
                 Category = request.Category,
