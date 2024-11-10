@@ -1,4 +1,6 @@
-﻿namespace Catalog.API.Products.UpdateProduct
+﻿using Catalog.API.Exceptions;
+
+namespace Catalog.API.Products.UpdateProduct
 {
     public record UpdateProductCommand(Guid Id, string Name, List<string> Category, string Description, string ImageUrl, double Price)
         : ICommand<UpdateProductResult>;
@@ -41,16 +43,15 @@
                 .LessThan(1000000).WithMessage("Price must be less than 1,000,000");
         }
     }
-    internal class UpdateProductCommandHandler(IDocumentSession session, ILogger<UpdateProductCommandHandler> logger)
+    internal class UpdateProductCommandHandler(IDocumentSession session)
         : ICommandHandler<UpdateProductCommand, UpdateProductResult>
     {
         public async Task<UpdateProductResult> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
 
-            logger.LogInformation("UpdateProductCommandHandler.Handle called {@command}", request);
             var product = await session.LoadAsync<Product>(request.Id, cancellationToken);
             if (product == null)
-                throw new ProductNotFoundException();
+                throw new ProductNotFoundException("Products", request.Id);
 
             product.Name = request.Name;
             product.Category = request.Category;

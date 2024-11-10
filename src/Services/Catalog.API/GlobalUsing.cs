@@ -1,8 +1,10 @@
 ﻿global using Shared.CQRS;
+global using Shared.Exceptions.Handler;
+global using Shared.Behavior;
 global using Catalog.API.Models;
 global using Carter;
 global using MediatR;
 global using Mapster;
 global using Marten;
-global using Shared.Exceptions;
+global using Catalog.API.Exceptions;
 global using FluentValidation;

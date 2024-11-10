@@ -1,14 +1,15 @@
 ﻿using FluentValidation;
 using MediatR;
 using Shared.CQRS;
+using Shared.Exceptions;
 
-namespace Shared.Validation
+namespace Shared.Behavior
 {
-    public class CommandValidation<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : ICommand<TResponse>
     {
         IEnumerable<IValidator<TRequest>> validators;
-        public CommandValidation(IEnumerable<IValidator<TRequest>> _validators)
+        public ValidationBehavior(IEnumerable<IValidator<TRequest>> _validators)
         {
             validators = _validators;
         }
@@ -22,7 +23,7 @@ namespace Shared.Validation
 
             if (errors.Any())
             {
-                throw new ValidationException(errors);
+                throw new CustomValidationException(errors);
             }
 
             return await next();

@@ -1,19 +1,21 @@
-﻿namespace Catalog.API.Products.GetProductById
+﻿using Catalog.API.Exceptions;
+using Catalog.API.Models;
+
+namespace Catalog.API.Products.GetProductById
 {
 
     public record GetProductByIdQuery(Guid Id) : IQuery<GetProductByIdResult>;
     public record GetProductByIdResult(Product Product);
-    internal class GetProductByIdQueryHandler(IDocumentSession session, ILogger<GetProductByIdQueryHandler> logger)
+    internal class GetProductByIdQueryHandler(IDocumentSession session)
         : IQueryHandler<GetProductByIdQuery, GetProductByIdResult>
     {
         public async Task<GetProductByIdResult> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
-            logger.LogInformation("GetProductByIdQueryHandler.Handle Called {@Query}", request);
 
             var productId = request.Id;
             var product = await session.LoadAsync<Product>(productId, cancellationToken);
             if (product == null)
-                throw new ProductNotFoundException();
+                throw new ProductNotFoundException("Products", request.Id);
 
             return new GetProductByIdResult(product);
         }
