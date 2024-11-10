@@ -6,7 +6,11 @@ namespace Catalog.API.Products.GetProduct
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/products", async (ISender sender) =>
+            app.MapGet("/products", Handle).Produces<GetProductResponse>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithName("GetAllProducts");
+
+            async Task<IResult> Handle(ISender sender)
             {
 
                 GetProductResult? result = await sender.Send(new CreateProductQuery());
@@ -15,13 +19,7 @@ namespace Catalog.API.Products.GetProduct
 
                 return Results.Ok(response);
 
-            })
-            .Produces<GetProductResponse>(StatusCodes.Status200OK)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .WithTags("Products")
-            .WithName("GetProducts")
-            .WithSummary("Get All Products")
-            .WithDescription("Get all Products in system. Returns the all products.");
+            }
         }
     }
 }

@@ -1,27 +1,23 @@
-﻿
-namespace Catalog.API.Products.GetProductByCategory
+﻿namespace Catalog.API.Products.GetProductByCategory
 {
-    public record GetProductByCategoryResponse(IEnumerable<Product> Product);
-    public class GetProductByCategoryEndpoint : ICarterModule
+    public record GetProductsByCategoryResponse(IEnumerable<Product> Product);
+    public class GetProductsByCategoryEndpoint : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/products/category/{category}", async (string category, ISender sender) =>
+            app.MapGet("/products/category/{category}", Handle).Produces<GetProductsByCategoryResponse>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .WithName("GetProductsByCategory");
+            async Task<IResult> Handle(string category, ISender sender)
             {
 
-                var result = await sender.Send(new GetProductByCategoryQuery(category));
+                var result = await sender.Send(new GetProductsByCategoryQuery(category));
 
-                var response = result.Adapt<GetProductByCategoryResponse>();
+                var response = result.Adapt<GetProductsByCategoryResponse>();
 
                 return Results.Ok(response);
 
-            })
-            .Produces<GetProductByCategoryResponse>(StatusCodes.Status200OK)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .WithTags("Products")
-            .WithName("GetProductsByCategory")
-            .WithSummary("Get Products By Category")
-            .WithDescription("Get Products By Category. Returns the products list.");
+            }
         }
     }
 }

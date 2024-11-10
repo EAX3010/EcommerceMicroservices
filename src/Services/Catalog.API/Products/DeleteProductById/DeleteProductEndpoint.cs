@@ -1,8 +1,4 @@
 ﻿using Catalog.API.Products.GetProductById;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Builder;
-using MediatR;
-
 namespace Catalog.API.Products.DeleteProduct
 {
     public record DeleteProductByIdResponse(bool IsSuccess = false);
