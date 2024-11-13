@@ -7,6 +7,7 @@
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
+            //localhost:6060/Product/
             app.MapPost("/products", Handle).Produces<CreateProductResponse>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .WithName("CreateProduct");
