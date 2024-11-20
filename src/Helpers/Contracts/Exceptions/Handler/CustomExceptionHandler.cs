@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using System.Text.Json;
 
 namespace Shared.Exceptions.Handler
@@ -37,9 +38,7 @@ namespace Shared.Exceptions.Handler
             httpContext.Response.ContentType = "application/problem+json";
 
             await httpContext.Response.WriteAsJsonAsync(
-                problemDetails,
-                new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase },
-                cancellationToken);
+                problemDetails, cancellationToken);
 
             return true;
         }
@@ -71,6 +70,11 @@ namespace Shared.Exceptions.Handler
                     exception.GetType().Name,
                     httpContext.Response.StatusCode = StatusCodes.Status404NotFound),
 
+                NpgsqlException => new(
+                    exception.Message,
+                    exception.GetType().Name,
+                    httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError),
+
                 _ => new(
                     exception.Message,
                     exception.GetType().Name,
@@ -97,7 +101,6 @@ namespace Shared.Exceptions.Handler
             {
                 problemDetails.Extensions[ValidationErrorsKey] = validationException.Errors;
             }
-
             return problemDetails;
         }
     }

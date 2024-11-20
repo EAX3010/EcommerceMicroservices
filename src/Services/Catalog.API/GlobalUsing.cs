@@ -8,3 +8,4 @@ global using Mapster;
 global using Marten;
 global using Catalog.API.Exceptions;
 global using FluentValidation;
+global using Catalog.API.Data;
