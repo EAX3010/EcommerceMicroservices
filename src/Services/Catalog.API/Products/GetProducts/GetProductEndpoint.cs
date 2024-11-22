@@ -10,10 +10,10 @@ namespace Catalog.API.Products.GetProduct
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .WithName("GetAllProducts");
 
-            async Task<IResult> Handle(ISender sender)
+            async Task<IResult> Handle([AsParameters] CreateProductQuery request, ISender sender)
             {
 
-                GetProductResult? result = await sender.Send(new CreateProductQuery());
+                GetProductResult? result = await sender.Send(request);
 
                 GetProductResponse response = result.Adapt<GetProductResponse>();
 

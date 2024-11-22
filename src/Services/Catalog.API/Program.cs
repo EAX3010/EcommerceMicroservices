@@ -16,7 +16,8 @@ builder.Services.AddMarten(opt =>
 {
     opt.Connection(builder.Configuration.GetConnectionString("Database")!);
 }).UseLightweightSessions();
-builder.Services.InitializeMartenWith<CatalogInitialData>();
+if (builder.Environment.IsDevelopment())
+    builder.Services.InitializeMartenWith<CatalogInitialData>();
 
 var app = builder.Build();
 app.MapCarter();

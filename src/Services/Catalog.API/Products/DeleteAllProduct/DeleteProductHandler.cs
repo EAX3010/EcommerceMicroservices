@@ -11,7 +11,7 @@
             // Get all products
             var products = await session.Query<Product>().ToListAsync(cancellationToken);
 
-            if (!products.Any())
+            if (products.Any())
                 return new DeleteAllProductsResult(IsSuccess: true, DeletedCount: 0);
 
             // Delete all products
