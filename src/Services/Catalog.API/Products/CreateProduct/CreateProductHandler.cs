@@ -2,7 +2,7 @@
 
 namespace Catalog.API.Products.CreateProduct
 {
-    public record CreateProductCommand(Guid Id, string Name, List<string> Category, string Description, string ImageUrl, double Price) 
+    public record CreateProductCommand(Guid Id, string Name, List<string> Category, string Description, string ImageUrl, decimal Price) 
         : ICommand<CreateProductResult>;
     public record CreateProductResult(Guid Id);
     public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>

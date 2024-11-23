@@ -16,7 +16,7 @@ namespace Catalog.API.Products.GetProductByCategory
             if (products == null || products?.Count == 0)
                 throw new ProductNotFoundException("Products", request.category);
 
-            return new GetProductsByCategoryResult(products);
+            return new GetProductsByCategoryResult(products!);
         }
     }
 }

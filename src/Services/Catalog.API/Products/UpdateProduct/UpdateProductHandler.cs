@@ -2,7 +2,7 @@
 
 namespace Catalog.API.Products.UpdateProduct
 {
-    public record UpdateProductCommand(Guid Id, string Name, List<string> Category, string Description, string ImageUrl, double Price)
+    public record UpdateProductCommand(Guid Id, string Name, List<string> Category, string Description, string ImageUrl, decimal Price)
         : ICommand<UpdateProductResult>;
     public record UpdateProductResult(bool IsSuccess = false);
     public class UpdateProductCommandValidator : AbstractValidator<UpdateProductCommand>
