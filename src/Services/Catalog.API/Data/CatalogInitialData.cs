@@ -10,7 +10,7 @@ public class CatalogInitialData : IInitialData
         {
             if (await session.Query<Product>().AnyAsync(cancellation))
                 return;
-            session.Store<Product>(PreProducts());
+            session.Store(PreProducts());
             await session.SaveChangesAsync(cancellation);
         }
     }

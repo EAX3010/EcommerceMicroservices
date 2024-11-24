@@ -18,11 +18,8 @@ public class StoreBasketCommandHandler : ICommandHandler<StoreBasketCommand, Sto
 {
     public async Task<StoreBasketResult> Handle(StoreBasketCommand request, CancellationToken cancellationToken)
     {
-        var Cart = request.ShoppingCart;
-        if (Cart != null)
-        {
-            //todo database ops
-        }
+        var shoppingCart = request.ShoppingCart;
+       
 
         return new StoreBasketResult("eax");
     }
