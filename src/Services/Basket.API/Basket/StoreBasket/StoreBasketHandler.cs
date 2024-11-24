@@ -21,8 +21,8 @@
     {
         public async Task<StoreBasketResult> Handle(StoreBasketCommand command, CancellationToken cancellationToken)
         {
-            ShoppingCart Basket = await repository.StoreBasket(command.Cart, cancellationToken);
-            return new StoreBasketResult(Basket.Username);
+            ShoppingCart Cart = await repository.StoreBasket(command.Cart, cancellationToken);
+            return new StoreBasketResult(Cart.Username);
         }
     }
 }
