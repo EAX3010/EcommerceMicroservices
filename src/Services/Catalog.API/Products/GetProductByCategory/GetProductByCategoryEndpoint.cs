@@ -1,22 +1,23 @@
-﻿namespace Catalog.API.Products.GetProductByCategory;
-
-public record GetProductsByCategoryResponse(IEnumerable<Product> Product);
-
-public class GetProductsByCategoryEndpoint : ICarterModule
+﻿namespace Catalog.API.Products.GetProductByCategory
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public record GetProductsByCategoryResponse(IEnumerable<Product> Product);
+
+    public class GetProductsByCategoryEndpoint : ICarterModule
     {
-        app.MapGet("/products/category/{category}", Handle).Produces<GetProductsByCategoryResponse>()
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .WithName("GetProductsByCategory");
-
-        async Task<IResult> Handle(string category, ISender sender)
+        public void AddRoutes(IEndpointRouteBuilder app)
         {
-            var result = await sender.Send(new GetProductsByCategoryQuery(category));
+            _ = app.MapGet("/products/category/{category}", Handle).Produces<GetProductsByCategoryResponse>()
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .WithName("GetProductsByCategory");
 
-            var response = result.Adapt<GetProductsByCategoryResponse>();
+            static async Task<IResult> Handle(string category, ISender sender)
+            {
+                GetProductsByCategoryResult result = await sender.Send(new GetProductsByCategoryQuery(category));
 
-            return Results.Ok(response);
+                GetProductsByCategoryResponse response = result.Adapt<GetProductsByCategoryResponse>();
+
+                return Results.Ok(response);
+            }
         }
     }
 }

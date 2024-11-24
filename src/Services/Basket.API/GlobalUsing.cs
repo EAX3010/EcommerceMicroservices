@@ -6,3 +6,5 @@ global using Mapster;
 global using Marten;
 global using MediatR;
 global using Shared.CQRS;
+global using Shared.Behavior;
+global using Shared.Exceptions.Handler;

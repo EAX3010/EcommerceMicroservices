@@ -1,34 +1,35 @@
-﻿namespace Catalog.API.Products.CreateProduct;
-
-public record CreateProductRequest(
-    Guid Id,
-    string Name,
-    List<string> Category,
-    string Description,
-    string ImageUrl,
-    double Price)
-    : ICommand<CreateProductResponse>;
-
-public record CreateProductResponse(Guid Id);
-
-public class CreateProductEndpoint : ICarterModule
+﻿namespace Catalog.API.Products.CreateProduct
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public record CreateProductRequest(
+        Guid Id,
+        string Name,
+        List<string> Category,
+        string Description,
+        string ImageUrl,
+        double Price)
+        : ICommand<CreateProductResponse>;
+
+    public record CreateProductResponse(Guid Id);
+
+    public class CreateProductEndpoint : ICarterModule
     {
-        //localhost:6060/Product/
-        app.MapPost("/products", Handle).Produces<CreateProductResponse>(StatusCodes.Status201Created)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .WithName("CreateProduct");
-
-        async Task<IResult> Handle(CreateProductRequest request, ISender sender)
+        public void AddRoutes(IEndpointRouteBuilder app)
         {
-            var command = request.Adapt<CreateProductCommand>();
+            //localhost:6060/Product/
+            _ = app.MapPost("/products", Handle).Produces<CreateProductResponse>(StatusCodes.Status201Created)
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .WithName("CreateProduct");
 
-            var result = await sender.Send(command);
+            static async Task<IResult> Handle(CreateProductRequest request, ISender sender)
+            {
+                CreateProductCommand command = request.Adapt<CreateProductCommand>();
 
-            var response = result.Adapt<CreateProductResponse>();
+                CreateProductResult result = await sender.Send(command);
 
-            return Results.Created($"/products/{response.Id}", response);
+                CreateProductResponse response = result.Adapt<CreateProductResponse>();
+
+                return Results.Created($"/products/{response.Id}", response);
+            }
         }
     }
 }

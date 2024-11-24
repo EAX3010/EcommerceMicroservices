@@ -1,22 +1,23 @@
-﻿namespace Basket.API.Basket.GetBasket;
-
-public record GetBasketResponse(ShoppingCart ShoppingCart);
-
-public class GetBasketEndpointHandler : ICarterModule
+﻿namespace Basket.API.Basket.GetBasket
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public record GetBasketResponse(ShoppingCart ShoppingCart);
+
+    public class GetBasketEndpointHandler : ICarterModule
     {
-        app.MapGet("/basket/{userName}", Handle).Produces<GetBasketResponse>()
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .WithName("GetBasket");
-
-        async Task<IResult> Handle(string userName, ISender sender)
+        public void AddRoutes(IEndpointRouteBuilder app)
         {
-            var result = await sender.Send(new GetBasketQuery(userName));
+            _ = app.MapGet("/basket/{userName}", Handle).Produces<GetBasketResponse>()
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .WithName("GetBasket");
 
-            var response = result.Adapt<GetBasketResponse>();
+            static async Task<IResult> Handle(string userName, ISender sender)
+            {
+                GetBasketResult result = await sender.Send(new GetBasketQuery(userName));
 
-            return Results.Ok(response);
+                GetBasketResponse response = result.Adapt<GetBasketResponse>();
+
+                return Results.Ok(response);
+            }
         }
     }
 }

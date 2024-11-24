@@ -1,22 +1,23 @@
-﻿namespace Catalog.API.Products.GetProductById;
-
-public record GetProductByIdResponse(Product Product);
-
-public class GetProductByIdEndpoint : ICarterModule
+﻿namespace Catalog.API.Products.GetProductById
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public record GetProductByIdResponse(Product Product);
+
+    public class GetProductByIdEndpoint : ICarterModule
     {
-        app.MapGet("/products/{id}", Handle).Produces<GetProductByIdResponse>()
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .WithName("GetProductById");
-
-        async Task<IResult> Handle(Guid Id, ISender sender)
+        public void AddRoutes(IEndpointRouteBuilder app)
         {
-            var result = await sender.Send(new GetProductByIdQuery(Id));
+            app.MapGet("/products/{id}", Handle).Produces<GetProductByIdResponse>()
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .WithName("GetProductById");
 
-            var response = result.Adapt<GetProductByIdResponse>();
+            static async Task<IResult> Handle(Guid Id, ISender sender)
+            {
+                GetProductByIdResult result = await sender.Send(new GetProductByIdQuery(Id));
 
-            return Results.Ok(response);
+                GetProductByIdResponse response = result.Adapt<GetProductByIdResponse>();
+
+                return Results.Ok(response);
+            }
         }
     }
 }

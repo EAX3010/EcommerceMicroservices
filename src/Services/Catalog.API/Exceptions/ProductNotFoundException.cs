@@ -1,14 +1,15 @@
 ﻿using Shared.Exceptions;
 
-namespace Catalog.API.Exceptions;
-
-public class ProductNotFoundException : NotFoundException
+namespace Catalog.API.Exceptions
 {
-    public ProductNotFoundException(string message) : base(message)
+    public class ProductNotFoundException : NotFoundException
     {
-    }
+        public ProductNotFoundException(string message) : base(message)
+        {
+        }
 
-    public ProductNotFoundException(string name, object Id) : base($"Entity {name} {Id} was not Found")
-    {
+        public ProductNotFoundException(string name, object Id) : base($"Entity {name} {Id} was not Found")
+        {
+        }
     }
 }

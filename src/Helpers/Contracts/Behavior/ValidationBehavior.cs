@@ -3,29 +3,23 @@ using MediatR;
 using Shared.CQRS;
 using Shared.Exceptions;
 
-namespace Shared.Behavior;
-
-public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : ICommand<TResponse>
+namespace Shared.Behavior
 {
-    private readonly IEnumerable<IValidator<TRequest>> validators;
-
-    public ValidationBehavior(IEnumerable<IValidator<TRequest>> _validators)
+    public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> _validators) : IPipelineBehavior<TRequest, TResponse>
+        where TRequest : ICommand<TResponse>
     {
-        validators = _validators;
-    }
+        private readonly IEnumerable<IValidator<TRequest>> validators = _validators;
 
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
-        CancellationToken cancellationToken)
-    {
-        var context = new ValidationContext<TRequest>(request);
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
+            CancellationToken cancellationToken)
+        {
+            ValidationContext<TRequest> context = new(request);
 
-        var result = await Task.WhenAll(validators.Select(p => p.ValidateAsync(context, cancellationToken)));
-        var errors = result.Where(x => x.Errors.Any()).SelectMany
-            (x => x.Errors).ToList();
+            FluentValidation.Results.ValidationResult[] result = await Task.WhenAll(validators.Select(p => p.ValidateAsync(context, cancellationToken)));
+            List<FluentValidation.Results.ValidationFailure> errors = result.Where(x => x.Errors.Any()).SelectMany
+                (x => x.Errors).ToList();
 
-        if (errors.Any()) throw new CustomValidationException(errors);
-
-        return await next();
+            return errors.Any() ? throw new CustomValidationException(errors) : await next();
+        }
     }
 }

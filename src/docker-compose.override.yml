@@ -1,4 +1,15 @@
 services:
+  basket.db:
+    container_name: basket.db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=BasketDb
+    restart: always
+    ports:
+        - "5433:5433"
+    volumes:
+      - basket_volume:/var/lib/postgresql/data/ 
   catalog.db:
     container_name: catalog.db
     environment:

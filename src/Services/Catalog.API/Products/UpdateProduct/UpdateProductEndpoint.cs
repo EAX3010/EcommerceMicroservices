@@ -1,33 +1,34 @@
-﻿namespace Catalog.API.Products.UpdateProduct;
-
-public record UpdateProductRequest(
-    Guid Id,
-    string Name,
-    List<string> Category,
-    string Description,
-    string ImageUrl,
-    double Price)
-    : ICommand<UpdateProductResponse>;
-
-public record UpdateProductResponse(bool IsSuccess);
-
-public class UpdateProductEndpoint : ICarterModule
+﻿namespace Catalog.API.Products.UpdateProduct
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public record UpdateProductRequest(
+        Guid Id,
+        string Name,
+        List<string> Category,
+        string Description,
+        string ImageUrl,
+        double Price)
+        : ICommand<UpdateProductResponse>;
+
+    public record UpdateProductResponse(bool IsSuccess);
+
+    public class UpdateProductEndpoint : ICarterModule
     {
-        app.MapPut("/products", Handle).Produces<UpdateProductResponse>()
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .WithName("UpdateProduct");
-
-        async Task<IResult> Handle(UpdateProductRequest request, ISender sender)
+        public void AddRoutes(IEndpointRouteBuilder app)
         {
-            var command = request.Adapt<UpdateProductCommand>();
+            app.MapPut("/products", Handle).Produces<UpdateProductResponse>()
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .WithName("UpdateProduct");
 
-            var result = await sender.Send(command);
+            static async Task<IResult> Handle(UpdateProductRequest request, ISender sender)
+            {
+                UpdateProductCommand command = request.Adapt<UpdateProductCommand>();
 
-            var response = result.Adapt<UpdateProductResponse>();
+                UpdateProductResult result = await sender.Send(command);
 
-            return Results.Ok(response);
+                UpdateProductResponse response = result.Adapt<UpdateProductResponse>();
+
+                return Results.Ok(response);
+            }
         }
     }
 }
