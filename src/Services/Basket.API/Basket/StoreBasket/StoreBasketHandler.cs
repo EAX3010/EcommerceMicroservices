@@ -1,27 +1,28 @@
 ﻿namespace Basket.API.Basket.StoreBasket
 {
-    public record StoreBasketCommand(ShoppingCart ShoppingCart) : ICommand<StoreBasketResult>;
-
-    //public record StoreBasketResult(bool IsSuccess = false);
+    public record StoreBasketCommand(ShoppingCart Cart) : ICommand<StoreBasketResult>;
     public record StoreBasketResult(string Username);
 
     public class StoreBasketCommandValidator : AbstractValidator<StoreBasketCommand>
     {
         public StoreBasketCommandValidator()
         {
-            _ = RuleFor(x => x.ShoppingCart).NotNull().WithMessage("ShoppingCart is required");
-            _ = RuleFor(x => x.ShoppingCart.Username).NotEmpty().WithMessage("Username is required");
+            _ = RuleFor(x => x.Cart)
+                .NotNull()
+                .WithMessage("Shopping cart cannot be null")
+                .DependentRules(() =>
+                {
+                    _ = RuleFor(x => x.Cart.Username).NotEmpty().WithMessage("Username is required");
+                });
         }
     }
 
-    public class StoreBasketCommandHandler(IDocumentSession session) : ICommandHandler<StoreBasketCommand, StoreBasketResult>
+    public class StoreBasketCommandHandler(IBasketRepository repository) : ICommandHandler<StoreBasketCommand, StoreBasketResult>
     {
-        public async Task<StoreBasketResult> Handle(StoreBasketCommand request, CancellationToken cancellationToken)
+        public async Task<StoreBasketResult> Handle(StoreBasketCommand command, CancellationToken cancellationToken)
         {
-            ShoppingCart shoppingCart = request.ShoppingCart;
-
-
-            return new StoreBasketResult("eax");
+            ShoppingCart Basket = await repository.StoreBasket(command.Cart, cancellationToken);
+            return new StoreBasketResult(Basket.Username);
         }
     }
 }

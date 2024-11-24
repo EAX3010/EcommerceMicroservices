@@ -14,6 +14,7 @@ builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddMarten(opt => { opt.Connection(builder.Configuration.GetConnectionString("Database")!); })
     .UseLightweightSessions();
 
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
 

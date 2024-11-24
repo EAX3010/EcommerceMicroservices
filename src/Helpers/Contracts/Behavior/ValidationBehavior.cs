@@ -15,9 +15,18 @@ namespace Shared.Behavior
         {
             ValidationContext<TRequest> context = new(request);
 
-            FluentValidation.Results.ValidationResult[] result = await Task.WhenAll(validators.Select(p => p.ValidateAsync(context, cancellationToken)));
-            List<FluentValidation.Results.ValidationFailure> errors = result.Where(x => x.Errors.Any()).SelectMany
-                (x => x.Errors).ToList();
+            FluentValidation.Results.ValidationResult[] result = await Task.WhenAll(validators.Select(p =>
+            {
+                return p.ValidateAsync(context, cancellationToken);
+            }));
+            List<FluentValidation.Results.ValidationFailure> errors = result.Where(x =>
+            { 
+                return x.Errors.Any();
+            }).SelectMany
+                (x =>
+                {
+                    return x.Errors;
+                }).ToList();
 
             return errors.Any() ? throw new CustomValidationException(errors) : await next();
         }
