@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 
-namespace Shared.Exceptions
+namespace Shared.Exceptions;
+
+internal class CustomValidationException : ValidationException
 {
-    internal class CustomValidationException : ValidationException
+    public CustomValidationException(IEnumerable<ValidationFailure> errors) : base(errors)
     {
-        public CustomValidationException(IEnumerable<ValidationFailure> errors) : base(errors)
-        {
-        }
     }
 }

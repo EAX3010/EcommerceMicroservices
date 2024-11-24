@@ -1,8 +1,14 @@
-﻿namespace Basket.API.Exceptions
+﻿using Shared.Exceptions;
+
+namespace Basket.API.Exceptions;
+
+public class BasketNotFoundException : NotFoundException
 {
-    public class BasketNotFoundException : Shared.Exceptions.NotFoundException
+    public BasketNotFoundException(string message) : base(message)
     {
-        public BasketNotFoundException(string message) : base(message) { }
-        public BasketNotFoundException(string name, object Id) : base($"Entity {name} {Id} was not Found") { }
+    }
+
+    public BasketNotFoundException(string name, object Id) : base($"Entity {name} {Id} was not Found")
+    {
     }
 }

@@ -1,23 +1,19 @@
-﻿using Catalog.API.Exceptions;
-using Catalog.API.Models;
+﻿namespace Catalog.API.Products.GetProductById;
 
-namespace Catalog.API.Products.GetProductById
+public record GetProductByIdQuery(Guid Id) : IQuery<GetProductByIdResult>;
+
+public record GetProductByIdResult(Product Product);
+
+internal class GetProductByIdQueryHandler(IDocumentSession session)
+    : IQueryHandler<GetProductByIdQuery, GetProductByIdResult>
 {
-
-    public record GetProductByIdQuery(Guid Id) : IQuery<GetProductByIdResult>;
-    public record GetProductByIdResult(Product Product);
-    internal class GetProductByIdQueryHandler(IDocumentSession session)
-        : IQueryHandler<GetProductByIdQuery, GetProductByIdResult>
+    public async Task<GetProductByIdResult> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
     {
-        public async Task<GetProductByIdResult> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
-        {
+        var productId = request.Id;
+        var product = await session.LoadAsync<Product>(productId, cancellationToken);
+        if (product == null)
+            throw new ProductNotFoundException("Products", request.Id);
 
-            var productId = request.Id;
-            var product = await session.LoadAsync<Product>(productId, cancellationToken);
-            if (product == null)
-                throw new ProductNotFoundException("Products", request.Id);
-
-            return new GetProductByIdResult(product);
-        }
+        return new GetProductByIdResult(product);
     }
 }

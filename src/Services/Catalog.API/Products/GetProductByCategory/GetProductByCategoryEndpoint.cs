@@ -1,23 +1,22 @@
-﻿namespace Catalog.API.Products.GetProductByCategory
+﻿namespace Catalog.API.Products.GetProductByCategory;
+
+public record GetProductsByCategoryResponse(IEnumerable<Product> Product);
+
+public class GetProductsByCategoryEndpoint : ICarterModule
 {
-    public record GetProductsByCategoryResponse(IEnumerable<Product> Product);
-    public class GetProductsByCategoryEndpoint : ICarterModule
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        public void AddRoutes(IEndpointRouteBuilder app)
-        {
-            app.MapGet("/products/category/{category}", Handle).Produces<GetProductsByCategoryResponse>(StatusCodes.Status200OK)
+        app.MapGet("/products/category/{category}", Handle).Produces<GetProductsByCategoryResponse>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .WithName("GetProductsByCategory");
-            async Task<IResult> Handle(string category, ISender sender)
-            {
 
-                var result = await sender.Send(new GetProductsByCategoryQuery(category));
+        async Task<IResult> Handle(string category, ISender sender)
+        {
+            var result = await sender.Send(new GetProductsByCategoryQuery(category));
 
-                var response = result.Adapt<GetProductsByCategoryResponse>();
+            var response = result.Adapt<GetProductsByCategoryResponse>();
 
-                return Results.Ok(response);
-
-            }
+            return Results.Ok(response);
         }
     }
 }
