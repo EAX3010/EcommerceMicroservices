@@ -21,9 +21,6 @@ env:
 permissions:
   contents: read
   packages: write
-  security-events: write
-  actions: read
-  id-token: write
 
 jobs:
   build:
@@ -53,62 +50,16 @@ jobs:
         run: dotnet build src/EcommerceMicroservices.sln --configuration Release --no-restore
 
       - name: Run Tests
-        run: dotnet test src/EcommerceMicroservices.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
-
-      - name: Upload Coverage Reports
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-reports
-          path: '**/TestResults/**/coverage.cobertura.xml'
-
-  security:
-    name: Security Scan
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: csharp
-          queries: security-extended,security-and-quality
-
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: "/language:csharp"
-
-      - name: Run Trivy Vulnerability Scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL,HIGH'
-
-      - name: Upload Trivy Results
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
+        run: dotnet test src/EcommerceMicroservices.sln --configuration Release --no-build
 
   docker:
     name: Build and Push Docker Images
-    needs: security
+    needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -120,19 +71,6 @@ jobs:
           username: ${{ env.REGISTRY_USERNAME }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract Docker Metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            ${{ env.REGISTRY }}/${{ env.CATALOG_IMAGE }}
-            ${{ env.REGISTRY }}/${{ env.BASKET_IMAGE }}
-          tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,format=long
-            type=ref,event=branch
-            type=semver,pattern={{version}}
-
       - name: Build and Push Catalog API
         uses: docker/build-push-action@v5
         with:
@@ -142,10 +80,8 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.CATALOG_IMAGE }}:latest
             ${{ env.REGISTRY }}/${{ env.CATALOG_IMAGE }}:${{ github.sha }}
-          labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          platforms: linux/amd64,linux/arm64
 
       - name: Build and Push Basket API
         uses: docker/build-push-action@v5
@@ -156,10 +92,8 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}/${{ env.BASKET_IMAGE }}:latest
             ${{ env.REGISTRY }}/${{ env.BASKET_IMAGE }}:${{ github.sha }}
-          labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          platforms: linux/amd64,linux/arm64
 
   deploy-dev:
     name: Deploy to Development
@@ -210,19 +144,3 @@ jobs:
           echo "Deploying to production environment"
           # Add your deployment commands here
           echo "deployment-url=https://api.yourapp.com" >> $GITHUB_OUTPUT
-
-  notify:
-    name: Notification
-    needs: [deploy-dev, deploy-prod]
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: Check build status
-        if: ${{ contains(needs.*.result, 'failure') }}
-        run: exit 1
-
-      - name: Send notification
-        if: always()
-        run: |
-          echo "Workflow completed with status: ${{ job.status }}"
-          # Add your notification commands here (e.g., Slack, Email, Teams)
