@@ -1,14 +1,15 @@
 ﻿
 namespace Basket.API.Data
 {
-    public class CachedBasketRepository(BasketRepository basketRepository, HybridCache cache) : IBasketRepository
+    public class CachedBasketRepository(IBasketRepository basketRepository, HybridCache cache) : IBasketRepository
     {
         public async Task<ShoppingCart> GetBasket(string userName, CancellationToken cancellationToken = default)
         {
-            return await cache.GetOrCreateAsync($"{userName}",
+            return await cache.GetOrCreateAsync<ShoppingCart>($"{userName}",
                 async cancel =>
                 {
                     return await basketRepository.GetBasket(userName, cancel);
+
                 }, cancellationToken: cancellationToken);
 
         }

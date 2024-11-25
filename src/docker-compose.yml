@@ -2,8 +2,13 @@
 services:
   basket.db:
     image: postgres
+
   catalog.db:
     image: postgres
+
+  hybridcache:
+    image: redis
+
   catalog.api:
     image: ${DOCKER_REGISTRY-}catalogapi
     build:

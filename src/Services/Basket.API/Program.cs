@@ -1,3 +1,6 @@
+using Microsoft.Extensions.Options;
+using System.Text.Json;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 System.Reflection.Assembly assembly = typeof(Program).Assembly;
 builder.Services.AddCarter();
@@ -12,11 +15,24 @@ builder.Services.AddMarten(opt => { opt.Connection(builder.Configuration.GetConn
     .UseLightweightSessions();
 
 #pragma warning disable EXTEXP0018
-builder.Services.AddHybridCache();
+builder.Services.AddHybridCache(op =>
+{
+    op.DefaultEntryOptions = new HybridCacheEntryOptions
+    {
+        Expiration = TimeSpan.FromMinutes(5),
+        LocalCacheExpiration = TimeSpan.FromMinutes(5)
+    };
+
+});
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration =
+        builder.Configuration.GetConnectionString("RedisConnectionString");
+});
 #pragma warning restore EXTEXP0018
 
-builder.Services.AddScoped<BasketRepository>();  // Register concrete repository
-builder.Services.AddScoped<IBasketRepository, CachedBasketRepository>();  // Register decorator as implementation
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();  // Register concrete repository
+builder.Services.Decorate<IBasketRepository, CachedBasketRepository>();  // Register decorator as implementation
 
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 WebApplication app = builder.Build();
