@@ -1,4 +1,3 @@
-
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 System.Reflection.Assembly assembly = typeof(Program).Assembly;
 builder.Services.AddCarter();
