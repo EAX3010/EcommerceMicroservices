@@ -13,7 +13,7 @@
             // Get all products
             IReadOnlyList<Product> products = await session.Query<Product>().ToListAsync(cancellationToken);
 
-            if (products.Any())
+            if (!products.Any())
                 return new DeleteAllProductsResult(true, 0);
 
             // Delete all products

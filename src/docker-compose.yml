@@ -15,6 +15,12 @@ services:
       context: .
       dockerfile: Services/Catalog.API/Dockerfile
 
+  basket.api:
+    image: ${DOCKER_REGISTRY-}basketapi
+    build:
+      context: .
+      dockerfile: Services/Basket.API/Dockerfile
+
 volumes:
   catalog_volume:
   basket_volume:

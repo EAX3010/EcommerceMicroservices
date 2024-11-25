@@ -27,7 +27,7 @@ namespace Basket.API.Data
         }
         public async Task<bool> DeleteBasket(string userName, CancellationToken cancellationToken = default)
         {
-            await cache.RemoveAsync(userName, cancellationToken);
+            await cache.RemoveAsync($"{userName}", cancellationToken);
             bool isSuccess = await basketRepository.DeleteBasket(userName, cancellationToken);
             return isSuccess;
         }
