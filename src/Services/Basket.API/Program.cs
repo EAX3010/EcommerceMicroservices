@@ -1,6 +1,4 @@
-
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
 System.Reflection.Assembly assembly = typeof(Program).Assembly;
 builder.Services.AddCarter();
 builder.Services.AddMediatR(config =>
@@ -10,14 +8,17 @@ builder.Services.AddMediatR(config =>
     config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
 builder.Services.AddValidatorsFromAssembly(assembly);
-
 builder.Services.AddMarten(opt => { opt.Connection(builder.Configuration.GetConnectionString("Database")!); })
     .UseLightweightSessions();
 
-builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+#pragma warning disable EXTEXP0018
+builder.Services.AddHybridCache();
+#pragma warning restore EXTEXP0018
+
+builder.Services.AddScoped<BasketRepository>();  // Register concrete repository
+builder.Services.AddScoped<IBasketRepository, CachedBasketRepository>();  // Register decorator as implementation
+
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
-
-
 WebApplication app = builder.Build();
 app.MapCarter();
 app.UseExceptionHandler(options => { });

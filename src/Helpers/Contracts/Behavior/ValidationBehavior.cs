@@ -5,30 +5,43 @@ using Shared.Exceptions;
 
 namespace Shared.Behavior
 {
-    public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> _validators) : IPipelineBehavior<TRequest, TResponse>
+
+    public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : ICommand<TResponse>
     {
-        private readonly IEnumerable<IValidator<TRequest>> validators = _validators;
+        private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
+        public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
+        {
+            _validators = validators;
+        }
+
+        public async Task<TResponse> Handle(
+            TRequest request,
+            RequestHandlerDelegate<TResponse> next,
             CancellationToken cancellationToken)
         {
-            ValidationContext<TRequest> context = new(request);
-
-            FluentValidation.Results.ValidationResult[] result = await Task.WhenAll(validators.Select(p =>
+            if (!_validators.Any())
             {
-                return p.ValidateAsync(context, cancellationToken);
-            }));
-            List<FluentValidation.Results.ValidationFailure> errors = result.Where(x =>
-            { 
-                return x.Errors.Any();
-            }).SelectMany
-                (x =>
-                {
-                    return x.Errors;
-                }).ToList();
+                return await next();
+            }
 
-            return errors.Any() ? throw new CustomValidationException(errors) : await next();
+            var context = new ValidationContext<TRequest>(request);
+
+            var validationResults = await Task.WhenAll(
+                _validators.Select(validator =>
+                    validator.ValidateAsync(context, cancellationToken)));
+
+            var failures = validationResults
+                .Where(result => !result.IsValid)
+                .SelectMany(result => result.Errors)
+                .ToList();
+
+            if (failures.Any())
+            {
+                throw new CustomValidationException(failures);
+            }
+            return await next();
         }
     }
 }

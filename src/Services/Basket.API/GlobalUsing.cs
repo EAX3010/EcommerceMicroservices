@@ -9,3 +9,4 @@ global using Shared.CQRS;
 global using Shared.Behavior;
 global using Shared.Exceptions.Handler;
 global using Basket.API.Data;
+global using Microsoft.Extensions.Caching.Hybrid; 
