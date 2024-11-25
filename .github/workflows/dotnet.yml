@@ -1,0 +1,171 @@
+# .github/workflows/main.yml
+name: EcommerceMicroservices CI/CD
+
+on:
+  push:
+    branches: [ "main", "develop" ]
+    paths:
+      - 'src/**'
+      - '.github/workflows/**'
+      - 'docker-compose*.yml'
+  pull_request:
+    branches: [ "main", "develop" ]
+
+env:
+  DOTNET_VERSION: '9.0.x'
+  REGISTRY: ghcr.io
+  REGISTRY_USERNAME: ${{ github.actor }}
+  CATALOG_IMAGE: ${{ github.repository }}/catalog-api
+  BASKET_IMAGE: ${{ github.repository }}/basket-api
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('src/**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore src/EcommerceMicroservices.sln
+
+      - name: Build solution
+        run: dotnet build src/EcommerceMicroservices.sln --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test src/EcommerceMicroservices.sln --configuration Release --no-build
+
+  docker-build-and-push:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ env.REGISTRY_USERNAME }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Catalog API
+        id: meta-catalog
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.CATALOG_IMAGE }}
+          tags: |
+            type=ref,event=branch
+            type=sha,format=long
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Catalog API
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src
+          file: src/Services/Catalog.API/Dockerfile
+          push: true
+          tags: ${{ steps.meta-catalog.outputs.tags }}
+          labels: ${{ steps.meta-catalog.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Extract metadata (tags, labels) for Basket API
+        id: meta-basket
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.BASKET_IMAGE }}
+          tags: |
+            type=ref,event=branch
+            type=sha,format=long
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Basket API
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src
+          file: src/Services/Basket.API/Dockerfile
+          push: true
+          tags: ${{ steps.meta-basket.outputs.tags }}
+          labels: ${{ steps.meta-basket.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  security-scan:
+    needs: docker-build-and-push
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    
+    steps:
+      - name: Run Trivy vulnerability scanner for Catalog API
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.CATALOG_IMAGE }}:sha-${{ github.sha }}
+          format: 'sarif'
+          output: 'trivy-results-catalog.sarif'
+
+      - name: Run Trivy vulnerability scanner for Basket API
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.BASKET_IMAGE }}:sha-${{ github.sha }}
+          format: 'sarif'
+          output: 'trivy-results-basket.sarif'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results-*.sarif'
+
+  deploy-dev:
+    needs: security-scan
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    environment: development
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Update docker-compose.yml
+        run: |
+          sed -i "s|image:.*catalogapi.*|image: ${{ env.REGISTRY }}/${{ env.CATALOG_IMAGE }}:sha-${{ github.sha }}|g" src/docker-compose.yml
+          sed -i "s|image:.*basketapi.*|image: ${{ env.REGISTRY }}/${{ env.BASKET_IMAGE }}:sha-${{ github.sha }}|g" src/docker-compose.yml
+
+      - name: Deploy to Development
+        run: |
+          echo "Deploying to development environment"
+          # Add your deployment commands here
+          # Example: docker-compose up -d
+
+  deploy-prod:
+    needs: security-scan
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+      - name: Deploy to Production
+        run: |
+          echo "Deploying to production environment"
+          # Add your production deployment commands here
