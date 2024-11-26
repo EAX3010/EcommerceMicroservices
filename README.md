@@ -17,7 +17,7 @@ A modern e-commerce platform built with microservices architecture using .NET 9
 
 ### Basket Service
 - Shopping cart management
-- Hybrid caching (Redis + In-Memory)
+- Hybrid caching(preview) (Redis + In-Memory)
 - PostgreSQL for data persistence
 - CQRS implementation
 
@@ -42,7 +42,7 @@ docker-compose up -d
 
 ## API Endpoints
 
-### Catalog API (Port: 6000)
+### Catalog API
 ```
 GET    /products              # Get all products
 GET    /products/{id}         # Get product by ID
@@ -52,7 +52,7 @@ PUT    /products             # Update product
 DELETE /products/{id}        # Delete product
 ```
 
-### Basket API (Port: 6001)
+### Basket API
 ```
 GET    /basket/{userName}    # Get user's basket
 POST   /basket              # Create/Update basket
