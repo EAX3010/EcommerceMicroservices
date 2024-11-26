@@ -33,35 +33,6 @@ A modern e-commerce platform built with microservices architecture using .NET 9
 ```bash
 docker-compose up -d
 ```
-
-## API Endpoints
-
-### Catalog API
-```
-GET    /products              # Get all products
-GET    /products/{id}         # Get product by ID
-GET    /products/category/{category}
-POST   /products             # Create product
-PUT    /products             # Update product
-DELETE /products/{id}        # Delete product
-```
-
-### Basket API
-```
-GET    /basket/{userName}    # Get user's basket
-POST   /basket              # Create/Update basket
-DELETE /basket/{userName}    # Delete basket
-```
-
-```
-
-### Basket API
-```
-GET    /basket/{userName}    # Get user's basket
-POST   /basket              # Create/Update basket
-DELETE /basket/{userName}    # Delete basket
-```
-
 ## Features
 
 - Exception handling
