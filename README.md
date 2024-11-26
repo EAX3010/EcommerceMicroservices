@@ -9,17 +9,11 @@ A modern e-commerce platform built with microservices architecture using .NET 9
 
 ## Services
 
-### Catalog Service
-- Product management (CRUD operations)
-- Category-based filtering
-- PostgreSQL for data persistence
+- CRUD operations
+- filtering
+- PostgreSQL (JSON documents) with Carter
+- .Net 9 - Hybrid caching(preview) (Redis + In-Memory)
 - CQRS pattern with MediatR
-
-### Basket Service
-- Shopping cart management
-- Hybrid caching(preview) (Redis + In-Memory)
-- PostgreSQL for data persistence
-- CQRS implementation
 
 ## Tech Stack
 - .NET Core
@@ -31,34 +25,6 @@ A modern e-commerce platform built with microservices architecture using .NET 9
 - Mapster
 - Carter
 
-## Getting Started
-
-1. Clone the repository
-2. Navigate to the solution directory
-3. Run:
-```bash
-docker-compose up -d
-```
-
-## API Endpoints
-
-### Catalog API
-```
-GET    /products              # Get all products
-GET    /products/{id}         # Get product by ID
-GET    /products/category/{category}
-POST   /products             # Create product
-PUT    /products             # Update product
-DELETE /products/{id}        # Delete product
-```
-
-### Basket API
-```
-GET    /basket/{userName}    # Get user's basket
-POST   /basket              # Create/Update basket
-DELETE /basket/{userName}    # Delete basket
-```
-
 ## Features
 
 - Exception handling
@@ -68,4 +34,11 @@ DELETE /basket/{userName}    # Delete basket
 - Docker containerization
 - CQRS pattern
 - Distributed caching
+
+## Getting Started
+1. Run:
+```bash
+docker-compose up -d
+```
+
 
