@@ -1,11 +1,11 @@
 # E-Commerce Microservices
 
-[![.NET](https://img.shields.io/badge/.NET%207-512BD4?style=flat-square&logo=.net&logoColor=white)](https://dotnet.microsoft.com/)
+[![.NET](https://img.shields.io/badge/.NET%209-512BD4?style=flat-square&logo=.net&logoColor=white)](https://dotnet.microsoft.com/)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)](https://www.docker.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)](https://redis.io/)
 
-A modern e-commerce platform built with microservices architecture using .NET Core and Docker.
+A modern e-commerce platform built with microservices architecture using .NET 9
 
 ## Services
 
