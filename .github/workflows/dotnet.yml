@@ -6,7 +6,7 @@ on:
     paths:
       - 'src/**'
       - '.github/workflows/**'
-      - 'docker-compose*.yml'
+      - 'src/docker-compose*.yml'
   pull_request:
     branches: [ "main", "develop" ]
 
@@ -14,13 +14,9 @@ env:
   DOTNET_VERSION: '9.0.x'
   REGISTRY: ghcr.io
   REGISTRY_USERNAME: ${{ github.actor }}
-  # Convert repository name to lowercase
-  CATALOG_IMAGE: ${{ lower(github.repository) }}/catalog-api
-  BASKET_IMAGE: ${{ lower(github.repository) }}/basket-api
-
-permissions:
-  contents: read
-  packages: write
+  SOLUTION_PATH: src/EcommerceMicroservices.sln
+  DOCKER_COMPOSE_PATH: src/docker-compose.yml
+  DOCKER_COMPOSE_OVERRIDE_PATH: src/docker-compose.override.yml
 
 jobs:
   build:
@@ -35,14 +31,18 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
+      - name: Set lowercase repository name
+        run: |
+          echo "REPO_NAME=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Restore Dependencies
-        run: dotnet restore src/EcommerceMicroservices.sln
+        run: dotnet restore ${{ env.SOLUTION_PATH }}
 
       - name: Build Solution
-        run: dotnet build src/EcommerceMicroservices.sln --configuration Release --no-restore
+        run: dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore
 
       - name: Run Tests
-        run: dotnet test src/EcommerceMicroservices.sln --configuration Release --no-build
+        run: dotnet test ${{ env.SOLUTION_PATH }} --configuration Release --no-build
 
   docker:
     name: Build and Push Docker Images
@@ -110,14 +110,14 @@ jobs:
 
       - name: Update Docker Compose
         run: |
-          sed -i "s|image:.*catalogapi.*|image: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/catalog-api:${{ github.sha }}|g" src/docker-compose.yml
-          sed -i "s|image:.*basketapi.*|image: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/basket-api:${{ github.sha }}|g" src/docker-compose.yml
+          sed -i "s|image:.*catalogapi.*|image: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/catalog-api:${{ github.sha }}|g" ${{ env.DOCKER_COMPOSE_PATH }}
+          sed -i "s|image:.*basketapi.*|image: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/basket-api:${{ github.sha }}|g" ${{ env.DOCKER_COMPOSE_PATH }}
 
       - name: Deploy to Development
         id: deploy
         run: |
           echo "Deploying to development environment"
-          docker-compose -f src/docker-compose.yml -f src/docker-compose.override.yml up -d
+          docker-compose -f ${{ env.DOCKER_COMPOSE_PATH }} -f ${{ env.DOCKER_COMPOSE_OVERRIDE_PATH }} up -d
           echo "CATALOG_URL=http://localhost:6000" >> $GITHUB_OUTPUT
           echo "BASKET_URL=http://localhost:6001" >> $GITHUB_OUTPUT
 
@@ -140,13 +140,13 @@ jobs:
 
       - name: Update Docker Compose
         run: |
-          sed -i "s|image:.*catalogapi.*|image: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/catalog-api:${{ github.sha }}|g" src/docker-compose.yml
-          sed -i "s|image:.*basketapi.*|image: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/basket-api:${{ github.sha }}|g" src/docker-compose.yml
+          sed -i "s|image:.*catalogapi.*|image: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/catalog-api:${{ github.sha }}|g" ${{ env.DOCKER_COMPOSE_PATH }}
+          sed -i "s|image:.*basketapi.*|image: ${{ env.REGISTRY }}/${{ env.REPO_NAME }}/basket-api:${{ github.sha }}|g" ${{ env.DOCKER_COMPOSE_PATH }}
 
       - name: Deploy to Production
         id: deploy
         run: |
           echo "Deploying to production environment"
-          docker-compose -f src/docker-compose.yml -f src/docker-compose.override.yml up -d
+          docker-compose -f ${{ env.DOCKER_COMPOSE_PATH }} -f ${{ env.DOCKER_COMPOSE_OVERRIDE_PATH }} up -d
           echo "CATALOG_URL=http://localhost:6000" >> $GITHUB_OUTPUT
           echo "BASKET_URL=http://localhost:6001" >> $GITHUB_OUTPUT
