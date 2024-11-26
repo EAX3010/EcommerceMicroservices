@@ -7,13 +7,12 @@
 
 A modern e-commerce platform built with microservices architecture using .NET 9
 
-## Services
-
 - CRUD operations
 - filtering
 - PostgreSQL (JSON documents) with Carter
 - .Net 9 - Hybrid caching(preview) (Redis + In-Memory)
 - CQRS pattern with MediatR
+- Vertical Slice Architecture
 
 ## Tech Stack
 - .NET Core
@@ -24,7 +23,7 @@ A modern e-commerce platform built with microservices architecture using .NET 9
 - FluentValidation
 - Mapster
 - Carter
-    
+
 ## Features
 
 - Exception handling
