@@ -31,15 +31,6 @@ A modern e-commerce platform built with microservices architecture using .NET 9
 - Mapster
 - Carter
 
-## Getting Started
-
-1. Clone the repository
-2. Navigate to the solution directory
-3. Run:
-```bash
-docker-compose up -d
-```
-
 ## API Endpoints
 
 ### Catalog API
