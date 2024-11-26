@@ -21,6 +21,7 @@ A modern e-commerce platform built with microservices architecture using .NET 9
 
 ## Tech Stack
 - .NET Core
+- Minimal API - ASP.NET
 - Docker
 - PostgreSQL
 - Redis
