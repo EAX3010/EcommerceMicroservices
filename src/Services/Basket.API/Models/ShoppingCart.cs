@@ -16,7 +16,5 @@ namespace Basket.API.Models
         public ShoppingCart()
         {
         }
-
-        
     }
 }

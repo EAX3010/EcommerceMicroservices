@@ -4,8 +4,8 @@ namespace Basket.API.Exceptions
 {
     public class BasketNotFoundException : NotFoundException
     {
-        public string EntityName { get; }
-        public object EntityId { get; }
+        public string? EntityName { get; }
+        public object? EntityId { get; }
 
         public BasketNotFoundException(string Username)
          : base($"Basket for user {Username} was not found")

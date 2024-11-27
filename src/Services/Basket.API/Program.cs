@@ -3,9 +3,9 @@ System.Reflection.Assembly assembly = typeof(Program).Assembly;
 builder.Services.AddCarter();
 builder.Services.AddMediatR(config =>
 {
-    config.RegisterServicesFromAssemblies(assembly);
-    config.AddOpenBehavior(typeof(ValidationBehavior<,>));
-    config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+    _ = config.RegisterServicesFromAssemblies(assembly);
+    _ = config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+    _ = config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
 builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddMarten(opt => { opt.Connection(builder.Configuration.GetConnectionString("Database")!); })
@@ -17,7 +17,7 @@ builder.Services.AddHybridCache(op =>
     op.DefaultEntryOptions = new HybridCacheEntryOptions
     {
         Expiration = TimeSpan.FromMinutes(5),
-        LocalCacheExpiration = TimeSpan.FromMinutes(5)
+        LocalCacheExpiration = TimeSpan.FromMinutes(1)
     };
 
 });
