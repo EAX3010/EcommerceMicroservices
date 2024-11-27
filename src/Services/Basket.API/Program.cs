@@ -36,7 +36,7 @@ builder.Services.AddHealthChecks()
     .AddRedis(builder.Configuration.GetConnectionString("RedisConnectionString")!);
 WebApplication app = builder.Build();
 app.MapCarter();
-app.UseExceptionHandler(options => { });
+app.UseExceptionHandler(_ => { });
 app.UseHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
