@@ -23,8 +23,7 @@ builder.Services.AddHybridCache(op =>
 });
 builder.Services.AddStackExchangeRedisCache(options =>
 {
-    options.Configuration =
-        builder.Configuration.GetConnectionString("RedisConnectionString");
+    options.Configuration = builder.Configuration.GetConnectionString("RedisConnectionString");
 });
 #pragma warning restore EXTEXP0018
 
