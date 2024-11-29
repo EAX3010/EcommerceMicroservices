@@ -31,5 +31,5 @@ message DeleteDiscountRequest {
   string productName = 1;
 }
 message DeleteResponse {
-  string isSuccess = 1;
+  bool isSuccess = 1;
 }

@@ -1,24 +1,89 @@
-using Grpc.Core;
 namespace Discount.gRPC.Services
 {
     public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
     {
-        public override Task<CouponModel> GetDiscount(GetDiscountRequest request, ServerCallContext context)
+        private readonly MyDBContext _dbContext;
+        private readonly ILogger<DiscountService> _logger;
+
+        public DiscountService(MyDBContext dbContext, ILogger<DiscountService> logger)
         {
-            return base.GetDiscount(request, context);
+            _dbContext = dbContext;
+            _logger = logger;
         }
-        public override Task<CouponModel> CreateDiscount(CreateDiscountRequest request, ServerCallContext context)
+
+        public override async Task<CouponModel> GetDiscount(GetDiscountRequest request, ServerCallContext context)
         {
-            return base.CreateDiscount(request, context);
+            _logger.LogInformation("Fetching discount for product: {ProductName}", request.ProductName);
+
+            var coupon = await _dbContext.Coupons.FirstOrDefaultAsync(p => p.ProductName == request.ProductName);
+
+            if (coupon == null)
+            {
+                _logger.LogWarning("No discount found for product: {ProductName}", request.ProductName);
+                return new CouponModel
+                {
+                    Id = 0,
+                    ProductName = "No Discount",
+                    Description = "No Discount",
+                    Amount = 0,
+                };
+            }
+
+            _logger.LogInformation("Discount found for product: {ProductName}", request.ProductName);
+            return coupon.Adapt<CouponModel>();
         }
-        public override Task<CouponModel> UpdateDiscount(UpdateDiscountRequest request, ServerCallContext context)
+
+        public override async Task<CouponModel> CreateDiscount(CreateDiscountRequest request, ServerCallContext context)
         {
-            return base.UpdateDiscount(request, context);
+            _logger.LogInformation("Creating discount for product: {ProductName}", request.Coupon.ProductName);
+
+            var coupon = request.Coupon.Adapt<Coupon>();
+            _dbContext.Coupons.Add(coupon);
+            await _dbContext.SaveChangesAsync();
+
+            _logger.LogInformation("Created discount for product: {ProductName} with Id: {Id}", coupon.ProductName, coupon.Id);
+            return coupon.Adapt<CouponModel>();
         }
-        public override Task<DeleteResponse> DeleteDiscount(DeleteDiscountRequest request, ServerCallContext context)
+
+        public override async Task<CouponModel> UpdateDiscount(UpdateDiscountRequest request, ServerCallContext context)
         {
-            return base.DeleteDiscount(request, context);
+            var count = await _dbContext.Coupons
+                .Where(c => c.Id == request.Coupon.Id)
+                .ExecuteUpdateAsync(c => c
+                    .SetProperty(c => c.ProductName, request.Coupon.ProductName)
+                    .SetProperty(c => c.Description, request.Coupon.Description)
+                    .SetProperty(c => c.Amount, request.Coupon.Amount));
+
+            if (count == 0)
+            {
+                _logger.LogWarning("No coupon found with Id: {Id}", request.Coupon.Id);
+                return new CouponModel
+                {
+                    Id = 0,
+                    ProductName = "No Discount",
+                    Description = "No Discount",
+                    Amount = 0
+                };
+            }
+
+            _logger.LogInformation("Updated discount for product: {ProductName}", request.Coupon.ProductName);
+            return request.Coupon;
         }
-       
+
+        public override async Task<DeleteResponse> DeleteDiscount(DeleteDiscountRequest request, ServerCallContext context)
+        {
+            var count = await _dbContext.Coupons
+                .Where(c => c.ProductName == request.ProductName)
+                .ExecuteDeleteAsync();
+
+            if (count == 0)
+            {
+                _logger.LogWarning("No coupon found for product: {ProductName}", request.ProductName);
+                return new DeleteResponse { IsSuccess = false };
+            }
+
+            _logger.LogInformation("Deleted discount for product: {ProductName}", request.ProductName);
+            return new DeleteResponse { IsSuccess = true };
+        }
     }
 }

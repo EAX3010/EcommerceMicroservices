@@ -8,6 +8,10 @@ namespace Discount.gRPC.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Coupon>(entity =>
+            {
+                entity.HasKey(p => p.Id);
+            });
             modelBuilder.Entity<Coupon>().HasData(
             [
                 new Coupon { Id = 1, ProductName = "IPhone X", Description = "IPhone Discount", Amount = 150 },
