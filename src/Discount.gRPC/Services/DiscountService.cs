@@ -36,6 +36,20 @@ namespace Discount.gRPC.Services
         public override async Task<CouponModel> CreateDiscount(CreateDiscountRequest request, ServerCallContext context)
         {
             _logger.LogInformation("Creating discount for product: {ProductName}", request.Coupon.ProductName);
+            bool isExist = await _dbContext.Coupons
+                .FirstOrDefaultAsync(c => c.ProductName == request.Coupon.ProductName) != null? true : false;
+
+            if(isExist)
+            {
+                _logger.LogWarning("Product: {ProductName} already exist", request.Coupon.ProductName);
+                return new CouponModel
+                {
+                    Id = 0,
+                    ProductName = request.Coupon.ProductName,
+                    Description = "Already exist",
+                    Amount = 0,
+                };
+            }
 
             var coupon = request.Coupon.Adapt<Coupon>();
             _dbContext.Coupons.Add(coupon);
@@ -48,15 +62,14 @@ namespace Discount.gRPC.Services
         public override async Task<CouponModel> UpdateDiscount(UpdateDiscountRequest request, ServerCallContext context)
         {
             var count = await _dbContext.Coupons
-                .Where(c => c.Id == request.Coupon.Id)
-                .ExecuteUpdateAsync(c => c
-                    .SetProperty(c => c.ProductName, request.Coupon.ProductName)
-                    .SetProperty(c => c.Description, request.Coupon.Description)
-                    .SetProperty(c => c.Amount, request.Coupon.Amount));
+             .Where(c => c.ProductName == request.Coupon.ProductName)
+                  .ExecuteUpdateAsync(c => c
+                  .SetProperty(c => c.Description, request.Coupon.Description)
+                  .SetProperty(c => c.Amount, request.Coupon.Amount));
 
             if (count == 0)
             {
-                _logger.LogWarning("No coupon found with Id: {Id}", request.Coupon.Id);
+                _logger.LogWarning("No coupon found for product: {ProductName}", request.Coupon.ProductName);
                 return new CouponModel
                 {
                     Id = 0,
@@ -66,8 +79,10 @@ namespace Discount.gRPC.Services
                 };
             }
 
-            _logger.LogInformation("Updated discount for product: {ProductName}", request.Coupon.ProductName);
-            return request.Coupon;
+            var updatedCoupon = await _dbContext.Coupons
+                .FirstOrDefaultAsync(c => c.ProductName == request.Coupon.ProductName);
+            _logger.LogInformation("Updated coupon: {@Coupon}", updatedCoupon);
+            return updatedCoupon.Adapt<CouponModel>();
         }
 
         public override async Task<DeleteResponse> DeleteDiscount(DeleteDiscountRequest request, ServerCallContext context)
