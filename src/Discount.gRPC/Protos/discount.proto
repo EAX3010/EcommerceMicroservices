@@ -15,11 +15,11 @@ message GetDiscountRequest {
   string productName = 1;
 }
 
-message CouponModel {
-  int32 id = 1;
-  string productName = 2;
-  string description = 3;
-  int32 amount = 4;
+message CouponModel 
+{
+  string productName = 1;
+  string description = 2;
+  int32 amount = 3;
 }
 message CreateDiscountRequest {
   CouponModel Coupon = 1;

@@ -1,103 +1,99 @@
+using Discount.gRPC.Models;
+using Google.Protobuf.Collections;
+
 namespace Discount.gRPC.Services
 {
-    public class DiscountService : DiscountProtoService.DiscountProtoServiceBase
+    public class DiscountService(MyDBContext dbContext, ILogger<DiscountService> logger) : DiscountProtoService.DiscountProtoServiceBase
     {
-        private readonly MyDBContext _dbContext;
-        private readonly ILogger<DiscountService> _logger;
-
-        public DiscountService(MyDBContext dbContext, ILogger<DiscountService> logger)
-        {
-            _dbContext = dbContext;
-            _logger = logger;
-        }
-
         public override async Task<CouponModel> GetDiscount(GetDiscountRequest request, ServerCallContext context)
         {
-            _logger.LogInformation("Fetching discount for product: {ProductName}", request.ProductName);
 
-            var coupon = await _dbContext.Coupons.FirstOrDefaultAsync(p => p.ProductName == request.ProductName);
+            if (String.IsNullOrEmpty(request.ProductName))
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "ProductName is required"));
 
+            logger.LogInformation("Fetching discount for product: {ProductName}", request.ProductName);
+            var productName = request.ProductName; 
+            var coupon = await dbContext.Coupons
+            .FirstOrDefaultAsync(c => c.ProductName == productName);
             if (coupon == null)
             {
-                _logger.LogWarning("No discount found for product: {ProductName}", request.ProductName);
-                return new CouponModel
-                {
-                    Id = 0,
-                    ProductName = "No Discount",
-                    Description = "No Discount",
-                    Amount = 0,
-                };
+                logger.LogWarning("No coupon found for product: {ProductName}", productName);
+                throw new RpcException(new Status(StatusCode.NotFound, "Coupon not found"));
             }
-
-            _logger.LogInformation("Discount found for product: {ProductName}", request.ProductName);
+            logger.LogInformation("Discount found for product: {ProductName}", coupon.ProductName);
             return coupon.Adapt<CouponModel>();
         }
 
         public override async Task<CouponModel> CreateDiscount(CreateDiscountRequest request, ServerCallContext context)
         {
-            _logger.LogInformation("Creating discount for product: {ProductName}", request.Coupon.ProductName);
-            bool isExist = await _dbContext.Coupons
-                .AnyAsync(c => c.ProductName == request.Coupon.ProductName);
+            if (request.Coupon == null)
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "Coupon is required"));
+            if (request.Coupon.Amount <= 0 || String.IsNullOrEmpty(request.Coupon.Description) || String.IsNullOrEmpty(request.Coupon.ProductName))
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid Arguments"));
+            logger.LogInformation("Creating discount for product: {ProductName}", request.Coupon.ProductName);
 
-            if(isExist)
+            var Coupon = request.Coupon.Adapt<Coupon>();
+            bool isExists = await dbContext.Coupons
+                .AnyAsync(c => c.ProductName == Coupon.ProductName);
+
+            if (isExists)
             {
-                _logger.LogWarning("Product: {ProductName} already exist", request.Coupon.ProductName);
-                return new CouponModel
-                {
-                    Id = 0,
-                    ProductName = request.Coupon.ProductName,
-                    Description = "Already exist",
-                    Amount = 0,
-                };
+                logger.LogWarning("Product: {ProductName} already exist", Coupon.ProductName);
+                throw new RpcException(new Status(StatusCode.AlreadyExists, "Coupon is Already Exists"));
             }
 
-            var coupon = request.Coupon.Adapt<Coupon>();
-            _dbContext.Coupons.Add(coupon);
-            await _dbContext.SaveChangesAsync();
+            dbContext.Coupons.Add(Coupon);
+            await dbContext.SaveChangesAsync();
 
-            _logger.LogInformation("Created discount for product: {ProductName} with Id: {Id}", coupon.ProductName, coupon.Id);
-            return coupon.Adapt<CouponModel>();
+            logger.LogInformation("Created discount for product: {ProductName} with Id: {Id}", Coupon.ProductName, Coupon.Id);
+            return Coupon.Adapt<CouponModel>();
         }
 
         public override async Task<CouponModel> UpdateDiscount(UpdateDiscountRequest request, ServerCallContext context)
         {
-            var count = await _dbContext.Coupons
-             .Where(c => c.ProductName == request.Coupon.ProductName)
+            if (request.Coupon == null)
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "Coupon is required"));
+            if (request.Coupon.Amount <= 0 || String.IsNullOrEmpty(request.Coupon.Description) || String.IsNullOrEmpty(request.Coupon.ProductName))
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid Arguments"));
+            logger.LogInformation("Updating discount for product: {ProductName}", request.Coupon.ProductName);
+
+            var coupon = request.Coupon.Adapt<Coupon>();
+            var count = await dbContext.Coupons
+             .Where(c => c.ProductName == coupon.ProductName)
                   .ExecuteUpdateAsync(c => c
-                  .SetProperty(c => c.Description, request.Coupon.Description)
-                  .SetProperty(c => c.Amount, request.Coupon.Amount));
+                  .SetProperty(c => c.Description, coupon.Description)
+                  .SetProperty(c => c.Amount, coupon.Amount));
 
             if (count == 0)
             {
-                _logger.LogWarning("No coupon found for product: {ProductName}", request.Coupon.ProductName);
-                return new CouponModel
-                {
-                    Id = 0,
-                    ProductName = "No Discount",
-                    Description = "No Discount",
-                    Amount = 0
-                };
+                logger.LogWarning("No coupon found for product: {ProductName}", coupon.ProductName);
+                throw new RpcException(new Status(StatusCode.NotFound, "Coupon not found"));
             }
 
-            var updatedCoupon = await _dbContext.Coupons
-                .FirstOrDefaultAsync(c => c.ProductName == request.Coupon.ProductName);
-            _logger.LogInformation("Updated coupon: {@Coupon}", updatedCoupon);
+            var updatedCoupon = await dbContext.Coupons
+                .FirstOrDefaultAsync(c => c.ProductName == coupon.ProductName);
+            logger.LogInformation("Updated discount for product: {ProductName}", updatedCoupon.ProductName);
             return updatedCoupon.Adapt<CouponModel>();
         }
 
         public override async Task<DeleteResponse> DeleteDiscount(DeleteDiscountRequest request, ServerCallContext context)
         {
-            var count = await _dbContext.Coupons
-                .Where(c => c.ProductName == request.ProductName)
+            if (String.IsNullOrEmpty(request.ProductName))
+                throw new RpcException(new Status(StatusCode.InvalidArgument, "ProductName is required"));
+            logger.LogInformation("Deleting discount for product: {ProductName}", request.ProductName);
+
+            var productName = request.ProductName;
+            var count = await dbContext.Coupons
+                .Where(c => c.ProductName == productName)
                 .ExecuteDeleteAsync();
 
             if (count == 0)
             {
-                _logger.LogWarning("No coupon found for product: {ProductName}", request.ProductName);
+                logger.LogWarning("No coupon found for product: {ProductName}", productName);
                 return new DeleteResponse { IsSuccess = false };
             }
 
-            _logger.LogInformation("Deleted discount for product: {ProductName}", request.ProductName);
+            logger.LogInformation("Deleted discount for product: {ProductName}", productName);
             return new DeleteResponse { IsSuccess = true };
         }
     }
