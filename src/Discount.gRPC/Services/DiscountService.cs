@@ -37,7 +37,7 @@ namespace Discount.gRPC.Services
         {
             _logger.LogInformation("Creating discount for product: {ProductName}", request.Coupon.ProductName);
             bool isExist = await _dbContext.Coupons
-                .FirstOrDefaultAsync(c => c.ProductName == request.Coupon.ProductName) != null? true : false;
+                .AnyAsync(c => c.ProductName == request.Coupon.ProductName);
 
             if(isExist)
             {
