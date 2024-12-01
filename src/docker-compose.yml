@@ -21,6 +21,13 @@ services:
       context: .
       dockerfile: Services/Basket.API/Dockerfile
 
+  discount.grpc:
+    image: ${DOCKER_REGISTRY-}discountgrpc
+    build:
+      context: .
+      dockerfile: Services/Discount.gRPC/Dockerfile
+
 volumes:
   catalog_volume:
   basket_volume:
+

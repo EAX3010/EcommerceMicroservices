@@ -80,6 +80,7 @@ namespace Discount.gRPC.Services
         {
             if (String.IsNullOrEmpty(request.ProductName))
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "ProductName is required"));
+
             logger.LogInformation("Deleting discount for product: {ProductName}", request.ProductName);
 
             var productName = request.ProductName;
@@ -90,7 +91,7 @@ namespace Discount.gRPC.Services
             if (count == 0)
             {
                 logger.LogWarning("No coupon found for product: {ProductName}", productName);
-                return new DeleteResponse { IsSuccess = false };
+                throw new RpcException(new Status(StatusCode.NotFound, "Coupon not found"));
             }
 
             logger.LogInformation("Deleted discount for product: {ProductName}", productName);
