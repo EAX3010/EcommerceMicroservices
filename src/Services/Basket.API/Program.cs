@@ -1,3 +1,5 @@
+using Discount.gRPC;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 System.Reflection.Assembly assembly = typeof(Program).Assembly;
 builder.Services.AddCarter();
@@ -34,6 +36,12 @@ builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("Database")!)
     .AddRedis(builder.Configuration.GetConnectionString("RedisConnectionString")!);
+
+builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(o =>
+{
+    o.Address = new Uri(builder.Configuration["GrpcConfigs:DiscountUrl"]);
+});
+
 WebApplication app = builder.Build();
 app.MapCarter();
 app.UseExceptionHandler(_ => { });
