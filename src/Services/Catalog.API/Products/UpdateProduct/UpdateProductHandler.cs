@@ -57,7 +57,9 @@
         {
             Product? product = await session.LoadAsync<Product>(request.Id, cancellationToken);
             if (product == null)
+            {
                 throw new ProductNotFoundException("Products", request.Id);
+            }
 
             product.Name = request.Name;
             product.Category = request.Category;
