@@ -8,6 +8,7 @@
         <UserSecretsId>cd3fc4bd-f35a-4a7b-8918-8ae1d7f1d7db</UserSecretsId>
         <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
         <DockerfileContext>..\..</DockerfileContext>
+		<AnalysisLevel>preview-recommended</AnalysisLevel>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Grpc.AspNetCore" Version="2.64.0" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.67.0" />
         <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.67.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">

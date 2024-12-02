@@ -8,7 +8,7 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
     <DockerfileContext>..\..</DockerfileContext>
-	<AnalysisLevel>preview-all</AnalysisLevel>
+	 <AnalysisLevel>preview-recommended</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>

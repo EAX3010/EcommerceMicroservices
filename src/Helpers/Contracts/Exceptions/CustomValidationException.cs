@@ -3,10 +3,7 @@ using FluentValidation.Results;
 
 namespace Shared.Exceptions
 {
-    internal class CustomValidationException : ValidationException
+    internal class CustomValidationException(IEnumerable<ValidationFailure> errors) : ValidationException(errors)
     {
-        public CustomValidationException(IEnumerable<ValidationFailure> errors) : base(errors)
-        {
-        }
     }
 }

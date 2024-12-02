@@ -24,11 +24,19 @@ namespace Shared.Behavior
 
             FluentValidation.Results.ValidationResult[] validationResults = await Task.WhenAll(
                 validators.Select(validator =>
-                    validator.ValidateAsync(context, cancellationToken)));
+                {
+                    return validator.ValidateAsync(context, cancellationToken);
+                }));
 
             List<FluentValidation.Results.ValidationFailure> failures = validationResults
-                .Where(result => !result.IsValid)
-                .SelectMany(result => result.Errors)
+                .Where(result =>
+                {
+                    return !result.IsValid;
+                })
+                .SelectMany(result =>
+                {
+                    return result.Errors;
+                })
                 .ToList();
 
             return failures.Count > 0 ? throw new CustomValidationException(failures) : await next();

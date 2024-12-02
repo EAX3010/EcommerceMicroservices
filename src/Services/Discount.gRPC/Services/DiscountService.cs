@@ -1,6 +1,3 @@
-using Discount.gRPC.Models;
-using Google.Protobuf.Collections;
-
 namespace Discount.gRPC.Services
 {
     public class DiscountService(MyDBContext dbContext, ILogger<DiscountService> logger) : DiscountProtoService.DiscountProtoServiceBase
@@ -9,11 +6,12 @@ namespace Discount.gRPC.Services
         {
 
             if (String.IsNullOrEmpty(request.ProductName))
+            {
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "ProductName is required"));
-
+            }
             logger.LogInformation("Fetching discount for product: {ProductName}", request.ProductName);
-            var productName = request.ProductName; 
-            var coupon = await dbContext.Coupons
+            string productName = request.ProductName;
+            Coupon? coupon = await dbContext.Coupons
             .FirstOrDefaultAsync(c => c.ProductName == productName);
             if (coupon == null)
             {
@@ -27,12 +25,18 @@ namespace Discount.gRPC.Services
         public override async Task<CouponModel> CreateDiscount(CreateDiscountRequest request, ServerCallContext context)
         {
             if (request.Coupon == null)
+            {
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Coupon is required"));
+            }
+
             if (request.Coupon.Amount <= 0 || String.IsNullOrEmpty(request.Coupon.Description) || String.IsNullOrEmpty(request.Coupon.ProductName))
+            {
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid Arguments"));
+            }
+
             logger.LogInformation("Creating discount for product: {ProductName}", request.Coupon.ProductName);
 
-            var Coupon = request.Coupon.Adapt<Coupon>();
+            Coupon Coupon = request.Coupon.Adapt<Coupon>();
             bool isExists = await dbContext.Coupons
                 .AnyAsync(c => c.ProductName == Coupon.ProductName);
 
@@ -52,17 +56,23 @@ namespace Discount.gRPC.Services
         public override async Task<CouponModel> UpdateDiscount(UpdateDiscountRequest request, ServerCallContext context)
         {
             if (request.Coupon == null)
+            {
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Coupon is required"));
+            }
+
             if (request.Coupon.Amount <= 0 || String.IsNullOrEmpty(request.Coupon.Description) || String.IsNullOrEmpty(request.Coupon.ProductName))
+            {
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid Arguments"));
+            }
+
             logger.LogInformation("Updating discount for product: {ProductName}", request.Coupon.ProductName);
 
-            var coupon = request.Coupon.Adapt<Coupon>();
-            var count = await dbContext.Coupons
+            Coupon coupon = request.Coupon.Adapt<Coupon>();
+            int count = await dbContext.Coupons
              .Where(c => c.ProductName == coupon.ProductName)
                   .ExecuteUpdateAsync(c => c
-                  .SetProperty(c => c.Description, coupon.Description)
-                  .SetProperty(c => c.Amount, coupon.Amount));
+                  .SetProperty(i => i.Description, coupon.Description)
+                  .SetProperty(i => i.Amount, coupon.Amount));
 
             if (count == 0)
             {
@@ -70,21 +80,24 @@ namespace Discount.gRPC.Services
                 throw new RpcException(new Status(StatusCode.NotFound, "Coupon not found"));
             }
 
-            var updatedCoupon = await dbContext.Coupons
+            Coupon? updatedCoupon = await dbContext.Coupons
                 .FirstOrDefaultAsync(c => c.ProductName == coupon.ProductName);
-            logger.LogInformation("Updated discount for product: {ProductName}", updatedCoupon.ProductName);
+
+            logger.LogInformation("Updated discount for product: {ProductName}", updatedCoupon?.ProductName);
             return updatedCoupon.Adapt<CouponModel>();
         }
 
         public override async Task<DeleteResponse> DeleteDiscount(DeleteDiscountRequest request, ServerCallContext context)
         {
             if (String.IsNullOrEmpty(request.ProductName))
+            {
                 throw new RpcException(new Status(StatusCode.InvalidArgument, "ProductName is required"));
+            }
 
             logger.LogInformation("Deleting discount for product: {ProductName}", request.ProductName);
 
-            var productName = request.ProductName;
-            var count = await dbContext.Coupons
+            string productName = request.ProductName;
+            int count = await dbContext.Coupons
                 .Where(c => c.ProductName == productName)
                 .ExecuteDeleteAsync();
 

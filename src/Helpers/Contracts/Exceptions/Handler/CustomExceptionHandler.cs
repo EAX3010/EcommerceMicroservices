@@ -8,16 +8,10 @@ namespace Shared.Exceptions.Handler
 {
     internal readonly record struct ExceptionDetails(string Message, string Name, int StatusCode);
 
-    public sealed class CustomExceptionHandler : IExceptionHandler
+    public sealed class CustomExceptionHandler(ILogger<CustomExceptionHandler> logger) : IExceptionHandler
     {
         private const string TraceIdKey = "traceId";
         private const string ValidationErrorsKey = "validationErrors";
-        private readonly ILogger<CustomExceptionHandler> _logger;
-
-        public CustomExceptionHandler(ILogger<CustomExceptionHandler> logger)
-        {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
 
         public async ValueTask<bool> TryHandleAsync(
             HttpContext httpContext,
@@ -43,7 +37,7 @@ namespace Shared.Exceptions.Handler
 
         private void LogException(Exception exception)
         {
-            _logger.LogError(
+            logger.LogError(
                 "Error Message: {ExceptionMessage}, Time: {Time}, StackTrace: {StackTrace}",
                 exception.Message,
                 DateTime.UtcNow,
@@ -98,7 +92,9 @@ namespace Shared.Exceptions.Handler
             problemDetails.Extensions[TraceIdKey] = httpContext.TraceIdentifier;
 
             if (exception is CustomValidationException validationException)
+            {
                 problemDetails.Extensions[ValidationErrorsKey] = validationException.Errors;
+            }
             return problemDetails;
         }
     }
