@@ -21,7 +21,6 @@ namespace Discount.gRPC.Services
             logger.LogInformation("Discount found for product: {ProductName}", coupon.ProductName);
             return coupon.Adapt<CouponModel>();
         }
-
         public override async Task<CouponModel> CreateDiscount(CreateDiscountRequest request, ServerCallContext context)
         {
             if (request.Coupon == null)

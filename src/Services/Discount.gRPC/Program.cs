@@ -8,7 +8,7 @@ builder.Services.AddDbContext<MyDBContext>(p =>
 });
 
 WebApplication app = builder.Build();
-app.UseMigration(); 
+app.UseMigration();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
