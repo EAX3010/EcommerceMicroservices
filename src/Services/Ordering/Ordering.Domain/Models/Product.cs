@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Ordering.Domain.Models
 {
-    internal class Customer : Entity<Guid>
+    public class Product : Entity<Guid>
     {
         public string Name { get; private set; } = default!;
-        public string Email { get; private set; } = default!;
+        public decimal Price { get; private set; } = default!;
     }
 }
