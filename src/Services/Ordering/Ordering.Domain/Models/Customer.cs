@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Ordering.Domain.Models
 {
-    internal class Customer : Entity<Guid>
+    internal class Customer : Entity<CustomerId>
     {
         public string Name { get; private set; } = default!;
         public string Email { get; private set; } = default!;
