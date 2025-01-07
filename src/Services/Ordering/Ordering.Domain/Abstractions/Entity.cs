@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-
 namespace Ordering.Domain.Abstractions
 {
     public abstract class Entity<T> : IEntity<T>
