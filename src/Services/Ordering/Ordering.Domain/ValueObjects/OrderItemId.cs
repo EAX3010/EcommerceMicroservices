@@ -1,18 +1,14 @@
 ﻿using Ordering.Domain.Exceptions;
-using Ordering.Domain.Models;
 
 namespace Ordering.Domain.ValueObjects
 {
-    public record OrderItemId
+    public readonly record struct OrderItemId
     {
-        public Guid Value { get; private set; }
-
+        private Guid Value { get; init; }
         private OrderItemId(Guid value) => Value = value;
 
         public static OrderItemId Of(Guid value)
         {
-            ArgumentNullException.ThrowIfNull(value);
-
             if (value == Guid.Empty)
             {
                 throw new DomainException("OrderItemId cannot be empty.");
@@ -20,5 +16,8 @@ namespace Ordering.Domain.ValueObjects
 
             return new OrderItemId(value);
         }
+        public override string ToString() => Value.ToString();
     }
+
+ 
 }

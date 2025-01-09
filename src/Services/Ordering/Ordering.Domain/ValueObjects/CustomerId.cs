@@ -2,15 +2,13 @@
 
 namespace Ordering.Domain.ValueObjects
 {
-    public record CustomerId
+    public readonly record struct CustomerId
     {
-        public Guid Value { get; private set; }
-
+        private Guid Value { get; init; }
         private CustomerId(Guid value) => Value = value;
 
         public static CustomerId Of(Guid value)
-        {    
-            ArgumentNullException.ThrowIfNull(value);
+        {
             if (value == Guid.Empty)
             {
                 throw new DomainException("CustomerId cannot be empty.");
@@ -18,5 +16,6 @@ namespace Ordering.Domain.ValueObjects
 
             return new CustomerId(value);
         }
+        public override string ToString() => Value.ToString();
     }
 }

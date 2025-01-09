@@ -1,5 +1,7 @@
 ﻿using Ordering.Domain.Enums;
 using Ordering.Domain.ValueObjects;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Ordering.Domain.Models
 {
@@ -13,10 +15,48 @@ namespace Ordering.Domain.Models
         public Address BillingAddress { get; private set; } = default!;
         public Payment Payment { get; private set; } = default!;
         public OrderStatus Status { get; private set; } = OrderStatus.Pending;
-        public decimal TotalPrice
+        public decimal TotalPrice => OrderItems.Sum(x => x.Price * x.Quantity);
+
+        public static Order Create(OrderId id, CustomerId customerId, OrderName orderName, Address shippingAddress, Address billingAddress, Payment payment)
         {
-            get => OrderItems.Sum(x => x.Price * x.Quantity);
-            private set { }
+            var order = new Order
+            {
+                Id = id,
+                CustomerId = customerId,
+                OrderName = orderName,
+                ShippingAddress = shippingAddress,
+                BillingAddress = billingAddress,
+                Payment = payment,
+                Status = OrderStatus.Pending,
+
+            };
+            return order;
+        }
+
+        public void Update(OrderName orderName, Address shippingAddress, Address billingAddress, Payment payment, OrderStatus status)
+        {
+            OrderName = orderName;
+            ShippingAddress = shippingAddress;
+            BillingAddress = billingAddress;
+            Payment = payment;
+            Status = status;
+            AddDomainEvent(new OrderUpdatedEvent());
+        }
+        public void Add(ProductId productId, int quantity, decimal price)
+        {
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(quantity);
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price);
+
+            var orderItem = new OrderItem(Id, productId, quantity, price);
+            _orderItems.Add(orderItem);
+        }
+        public void Remove(ProductId productId)
+        {
+            var orderItem = _orderItems.FirstOrDefault(x => x.ProductId == productId);
+            if (orderItem is not null)
+            {
+                _orderItems.Remove(orderItem);
+            }
         }
     }
 }

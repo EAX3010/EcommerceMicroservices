@@ -13,7 +13,11 @@ namespace Ordering.Domain.Models
             ArgumentNullException.ThrowIfNullOrWhiteSpace(email);
 
             Customer customer = new Customer()
-            { Id = id, Name = name, Email = email };
+            { 
+                Id = id, 
+                Name = name,
+                Email = email 
+            };
             return customer;
         }
     }
