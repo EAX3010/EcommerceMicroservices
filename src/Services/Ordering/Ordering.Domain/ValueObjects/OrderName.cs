@@ -5,7 +5,7 @@ namespace Ordering.Domain.ValueObjects
     public readonly record struct OrderName
     {
         private const int DefaultLength = 8;
-        private string Value { get; init; }
+        public string Value { get; init; }
         private OrderName(string value) => Value = value;
 
         public static OrderName Of(string value)

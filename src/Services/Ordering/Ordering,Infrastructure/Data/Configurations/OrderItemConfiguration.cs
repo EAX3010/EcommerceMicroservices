@@ -1,21 +1,26 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Ordering.Domain.Models;
+using Ordering.Domain.ValueObjects;
 
-namespace Ordering.Infrastructure.Data.Configurations
+namespace Ordering.Infrastructure.Data.Configurations;
+
+public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
 {
-    public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
+    public void Configure(EntityTypeBuilder<OrderItem> builder)
     {
-        public void Configure(EntityTypeBuilder<OrderItem> builder)
-        {
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).HasConversion(customerId => customerId.Value, // Writing to the database
-            dbId => CustomerId.Of(dbId)); // Reading from the database
+        builder.HasKey(oi => oi.Id);
 
-            builder.Property(x => x.Name).IsRequired().HasMaxLength(100).IsRequired();
+        builder.Property(oi => oi.Id).HasConversion(
+            orderItemId => orderItemId.Value,
+            dbId => OrderItemId.Of(dbId));
 
-            builder.Property(c => c.Email).HasMaxLength(255);
-            builder.HasIndex(c => c.Email).IsUnique();
+        builder.HasOne<Product>()
+            .WithMany()
+            .HasForeignKey(oi => oi.ProductId);
 
-        }
+        builder.Property(oi => oi.Quantity).IsRequired();
+
+        builder.Property(oi => oi.Price).IsRequired();
     }
 }

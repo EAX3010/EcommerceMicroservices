@@ -12,8 +12,8 @@ namespace Ordering.Domain.Models
             Quantity = quantity;
             Price = price;
         }
-        public OrderId OrderId { get; private set; } = default!;
-        public ProductId ProductId { get; private set; } = default!;
+        public OrderId OrderId { get; private set; } = default!;//navication property
+        public ProductId ProductId { get; private set; } = default!;//navication property
         public int Quantity { get; private set; } = default!;
         public decimal Price { get; private set; } = default!;
     }

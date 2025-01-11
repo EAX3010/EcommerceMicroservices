@@ -4,7 +4,7 @@ namespace Ordering.Domain.ValueObjects
 {
     public readonly record struct OrderId
     {
-        private Guid Value { get; init; }
+        public Guid Value { get; init; }
         private OrderId(Guid value) => Value = value;
 
         public static OrderId Of(Guid value)
