@@ -30,8 +30,8 @@ services:
   ordering.api:
     image: ${DOCKER_REGISTRY-}orderingapi
     build:
-      context: Services
-      dockerfile: Ordering/Ordering.API/Dockerfile
+      context: .
+      dockerfile: Services/Ordering/Ordering.API/Dockerfile
 
 volumes:
   catalog_volume:
