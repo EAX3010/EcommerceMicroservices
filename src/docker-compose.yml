@@ -2,10 +2,10 @@
 services:
   basket.db:
     image: postgres
-
   catalog.db:
     image: postgres
-
+  ordering.db:
+    image: mcr.microsoft.com/mssql/server:latest
   hybridcache:
     image: redis
 
@@ -27,8 +27,17 @@ services:
       context: .
       dockerfile: Services/Discount.gRPC/Dockerfile
 
+  ordering.api:
+    image: ${DOCKER_REGISTRY-}orderingapi
+    build:
+      context: Services
+      dockerfile: Ordering/Ordering.API/Dockerfile
+
 volumes:
   catalog_volume:
   basket_volume:
+  ordering_volume:
+
+
 
 

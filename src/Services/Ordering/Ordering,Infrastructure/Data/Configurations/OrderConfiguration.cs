@@ -13,8 +13,8 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
 		builder.HasKey(o => o.Id);
 
 		builder.Property(o => o.Id).HasConversion(
-			orderId => orderId.Value,
-			dbId => OrderId.Of(dbId));
+            Id => Id.Value,
+            Id => OrderId.Of(Id));
 
 		builder.HasOne<Customer>()
 			.WithMany()

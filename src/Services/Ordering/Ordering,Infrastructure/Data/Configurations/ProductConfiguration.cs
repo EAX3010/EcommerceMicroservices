@@ -12,8 +12,8 @@ namespace Ordering.Infrastructure.Data.Configurations
             builder.HasKey(p => p.Id);
 
             builder.Property(p => p.Id).HasConversion(
-                productId => productId.Value,
-                dbId => ProductId.Of(dbId));
+                Id => Id.Value,
+                Id => ProductId.Of(Id));
 
             builder.Property(p => p.Name)
                 .HasMaxLength(100)

@@ -12,8 +12,8 @@ public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
         builder.HasKey(oi => oi.Id);
 
         builder.Property(oi => oi.Id).HasConversion(
-            orderItemId => orderItemId.Value,
-            dbId => OrderItemId.Of(dbId));
+            Id => Id.Value,
+            Id => OrderItemId.Of(Id));
 
         builder.HasOne<Product>()
             .WithMany()

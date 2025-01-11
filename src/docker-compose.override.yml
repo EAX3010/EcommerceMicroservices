@@ -26,6 +26,17 @@ services:
         - "5432:5432"
     volumes:
       - catalog_volume:/var/lib/postgresql/data/ 
+  ordering.db:
+    container_name: ordering.db
+    restart: always
+    ports:
+      - "3307:3306"  
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=65536653dD
+      - MYSQL_DATABASE=OrderingDb
+    volumes:
+      - ordering_volume:/var/lib/mysql/data/
 
   catalog.api:
     container_name: catalog.api
@@ -73,6 +84,24 @@ services:
     ports:
       - "6002:8080"
       - "6062:8081"
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
+      - ${APPDATA}/ASP.NET/Https:/home/app/.aspnet/https:ro
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  ordering.api:
+    container_name: ordering.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ConnectionStrings__Database=Server=localhost;Database=OrderDb;User Id=root;Password=65536653dD;Encrypt=False;TrustServerCertificate=True
+    ports:
+      - "6003:8080"
+      - "6003-8081"
+    depends_on:
+      - ordering.db
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/home/app/.microsoft/usersecrets:ro
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
