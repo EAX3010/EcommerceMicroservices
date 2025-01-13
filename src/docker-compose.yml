@@ -5,7 +5,7 @@ services:
   catalog.db:
     image: postgres
   ordering.db:
-    image: mcr.microsoft.com/mssql/server:latest
+    image: mcr.microsoft.com/mssql/server
   hybridcache:
     image: redis
 
