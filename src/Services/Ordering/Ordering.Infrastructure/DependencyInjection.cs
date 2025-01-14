@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
-
+﻿
 namespace Ordering.Infrastructure
 {
     public static class DependencyInjection

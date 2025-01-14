@@ -98,7 +98,7 @@ services:
       - ConnectionStrings__Database=Server=ordering.db,1433;Database=OrderDb;User Id=sa;Password=65536653dD;Encrypt=False;TrustServerCertificate=True
     ports:
       - "6003:8080"
-      - "6003-8081"
+      - "6063:8081"
     depends_on:
       - ordering.db
     volumes:
