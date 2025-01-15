@@ -31,6 +31,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ordering", "Ordering", "{C57BDE26-8D23-40C8-B14C-252B6B498BF6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.API", "Services\Ordering\Ordering.API\Ordering.API.csproj", "{F18CBF71-D1A1-6332-2E48-B7E2DBC30EA5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{066FDE78-4996-BE3D-BC3E-8EB4D9C32329} = {066FDE78-4996-BE3D-BC3E-8EB4D9C32329}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ordering.Application", "Services\Ordering\Ordering.Application\Ordering.Application.csproj", "{6E8AD615-B886-71E4-A850-80B639B79D24}"
 EndProject

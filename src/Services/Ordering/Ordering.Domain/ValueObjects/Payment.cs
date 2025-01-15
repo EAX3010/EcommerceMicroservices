@@ -23,34 +23,22 @@ namespace Ordering.Domain.ValueObjects
         public static Payment Of(string cardNumber, string cardHolderName, string cardExpiration, string cardSecurityNumber, int paymentMethod)
         {
             if (string.IsNullOrWhiteSpace(cardNumber))
-            {
-                throw new DomainException("Card number cannot be empty.");
-            }
+                throw new ArgumentException("Card number cannot be empty.");
 
             if (string.IsNullOrWhiteSpace(cardHolderName))
-            {
-                throw new DomainException("Card holder name cannot be empty.");
-            }
+                throw new ArgumentException("Card holder name cannot be empty.");
 
             if (string.IsNullOrWhiteSpace(cardExpiration))
-            {
-                throw new DomainException("Card expiration cannot be empty.");
-            }
+                throw new ArgumentException("Card expiration date cannot be empty.");
 
-            if (string.IsNullOrWhiteSpace(cardSecurityNumber))
-            {
-                throw new DomainException("Card security number cannot be empty.");
-            }
+            if (!Regex.IsMatch(cardExpiration, @"^(0[1-9]|1[0-2])\/\d{2}$"))
+                throw new ArgumentException("Invalid card expiration format. Use MM/YY.");
+
+            if (string.IsNullOrWhiteSpace(cardSecurityNumber) || cardSecurityNumber.Length != 3)
+                throw new ArgumentException("Card security number (CVV) must be 3 digits.");
 
             if (cardNumber.Length < 13 || cardNumber.Length > 19)
-            {
-                throw new DomainException("Invalid card number length.");
-            }
-
-            if (!Regex.IsMatch(cardExpiration, @"^(0|1)\/\d{2}$"))
-            {
-                throw new DomainException("Invalid card expiration format. Use MM/YY.");
-            }
+                throw new ArgumentException("Card number length is invalid.");
 
             return new Payment(cardNumber, cardHolderName, cardExpiration, cardSecurityNumber, paymentMethod);
         }

@@ -14,8 +14,8 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Ordering/Ordering.API/Ordering.API.csproj", "Ordering/Ordering.API/"]
 COPY ["Ordering/Ordering.Infrastructure/Ordering.Infrastructure.csproj", "Ordering/Ordering.Infrastructure/"]
-COPY ["Ordering/Ordering.Application/Ordering.Application.csproj", "Ordering/Ordering.Application/"]
 COPY ["Ordering/Ordering.Domain/Ordering.Domain.csproj", "Ordering/Ordering.Domain/"]
+COPY ["Ordering/Ordering.Application/Ordering.Application.csproj", "Ordering/Ordering.Application/"]
 RUN dotnet restore "./Ordering/Ordering.API/Ordering.API.csproj"
 COPY . .
 WORKDIR "/src/Ordering/Ordering.API"
