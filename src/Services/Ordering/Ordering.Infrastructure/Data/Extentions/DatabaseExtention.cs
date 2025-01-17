@@ -16,7 +16,7 @@ namespace Ordering.Infrastructure.Data.Extentions
                 if (context.Database.IsSqlServer())
                 {
                     context.Database.MigrateAsync().GetAwaiter().GetResult();
-                    SeedAsync(context);
+                    await SeedAsync(context);
                 }
             }
             catch (Exception ex)
@@ -26,36 +26,7 @@ namespace Ordering.Infrastructure.Data.Extentions
         }
         private static async Task SeedAsync(ApplicationDbContext context)
         {
-            // Check and seed Customers
-            if (!context.Customers.Any())
-            {
-                var customers = new List<Customer>
-        {
-                new Customer
-               {
-                Id = CustomerId.Of(Guid.NewGuid()),
-                Name = "John Doe",
-                Email = "john.doe@example.com",
-                CreatedAt = DateTime.UtcNow,
-                CreatedBy = "Seeder",
-                LastModified = DateTime.UtcNow,
-                LastModifiedBy = "Seeder"
-            },
-            new Customer
-            {
-                Id = CustomerId.Of(Guid.NewGuid()),
-                Name = "Jane Smith",
-                Email = "jane.smith@example.com",
-                CreatedAt = DateTime.UtcNow,
-                CreatedBy = "Seeder",
-                LastModified = DateTime.UtcNow,
-                LastModifiedBy = "Seeder"
-
-            }
-        };
-
-                await context.Customers.AddRangeAsync(customers);
-            }
+            await GenerateCustomers(context, 10);
 
             // Check and seed Products
             if (!context.Products.Any())
@@ -99,6 +70,10 @@ namespace Ordering.Infrastructure.Data.Extentions
                         Address.Of("John", "Doe", "x3010@outlook.com", "123 Main St", "CA", "USA", "90001"), 
                         Address.Of("John", "Doe", "x3010@outlook.com", "123 Main St", "CA", "USA", "90001"),
                         Payment.Of("4111111111111111", "John Doe", "12/25", "123", 1));
+                    order.CreatedAt = DateTime.UtcNow;
+                    order.CreatedBy = "Seeder";
+                    order.LastModified = DateTime.UtcNow;
+                    order.LastModifiedBy = "Seeder";
                     order.Add(product.Id, 1, product.Price);
                     
 
@@ -109,6 +84,19 @@ namespace Ordering.Infrastructure.Data.Extentions
 
             await context.SaveChangesAsync();
         }
-
+        private static async Task GenerateCustomers(ApplicationDbContext context, int Count)
+        {
+            // Check and seed Customers
+            if (!context.Customers.Any())
+            {
+                Customer[] array = new Customer[Count];
+                for (int i = 0; i < Count; i++)
+                {
+                    array[i] = Customer.Create(CustomerId.Of(Guid.NewGuid()), $"Customer-{i}", $"Customer-{i}@gmail.com");
+                }
+                await context.Customers.AddRangeAsync(array);
+            }
+            await context.SaveChangesAsync();
+        }
     }
 }

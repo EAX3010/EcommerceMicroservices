@@ -11,10 +11,7 @@ namespace Ordering.Domain.Models
             ProductId = productId;
             Quantity = quantity;
             Price = price;
-            CreatedAt = DateTime.UtcNow;
-            CreatedBy = "Seeder";
-            LastModified = DateTime.UtcNow;
-            LastModifiedBy = "Seeder";
+           
         }
         public OrderId OrderId { get; set; } = default!;//navication property
         public ProductId ProductId { get; set; } = default!;//navication property

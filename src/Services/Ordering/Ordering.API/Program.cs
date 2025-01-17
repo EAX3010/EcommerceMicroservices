@@ -6,7 +6,7 @@ namespace Ordering.API
     {
         public static void Main(string[] args)
         {
-       
+
             var builder = WebApplication.CreateBuilder(args);
             builder.Services
                 .AddInfrastructureServices(builder.Configuration)
@@ -15,7 +15,7 @@ namespace Ordering.API
 
             var app = builder.Build();
             app.UseApiServices();
-            if(app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
             {
                 app.Services.CreateScope().InitializeDatabase();
             }

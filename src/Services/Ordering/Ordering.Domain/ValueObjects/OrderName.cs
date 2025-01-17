@@ -15,7 +15,7 @@ namespace Ordering.Domain.ValueObjects
                 throw new DomainException("Order name cannot be null, empty, or whitespace.");
             }
 
-            if (value.Length != DefaultLength)
+            if (value.Length < DefaultLength)
             {
                 throw new DomainException($"Order name must be {DefaultLength} characters long.");
             }
