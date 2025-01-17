@@ -2,7 +2,7 @@
 
 namespace Ordering.Domain.ValueObjects
 {
-    public readonly record struct CustomerId 
+    public readonly record struct CustomerId
     {
         public Guid Value { get; init; }
         private CustomerId(Guid value) => Value = value;
