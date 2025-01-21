@@ -22,10 +22,6 @@
     <ProjectReference Include="..\Ordering.Domain\Ordering.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\Interceptors\" />
-  </ItemGroup>
-
   
 
 </Project>
