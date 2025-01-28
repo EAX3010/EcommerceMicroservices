@@ -23,12 +23,12 @@ namespace Ordering.Infrastructure.Data.Interceptors
             {
                 if (entry.State == EntityState.Added)
                 {
-                    entry.Entity.CreatedAt = DateTime.Now;
+                    entry.Entity.CreatedAt = DateTime.UtcNow;
                     entry.Entity.CreatedBy = "System";
                 }
                 if (entry.State == EntityState.Modified || entry.State == EntityState.Added)
                 {
-                    entry.Entity.LastModified = DateTime.Now;
+                    entry.Entity.LastModified = DateTime.UtcNow;
                     entry.Entity.LastModifiedBy = "System";
                 }
             }

@@ -12,7 +12,7 @@ namespace Ordering.Infrastructure
             services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
             services.AddDbContext<ApplicationDbContext>((sp, options) =>
             {
-                options.AddInterceptors(sp.GetService<ISaveChangesInterceptor>());
+                options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
                 options.UseSqlServer(connectionString);
             });
 
