@@ -1,12 +1,7 @@
-﻿using Ordering.Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Ordering.Domain.Interfaces;
 
 namespace Ordering.Domain.Events
 {
     public record OrderUpdatedEvent(Order order) : IDomainEvent;
-    
+
 }

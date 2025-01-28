@@ -1,5 +1,7 @@
 ﻿
 
+using Ordering.Domain.Interfaces;
+
 namespace Ordering.Infrastructure.Data.Interceptors
 {
     public class AuditableEntityInterceptor : SaveChangesInterceptor
@@ -17,7 +19,7 @@ namespace Ordering.Infrastructure.Data.Interceptors
 
         private void UpdateEntities(DbContext? context)
         {
-            foreach (var entry in context?.ChangeTracker.Entries<Domain.Abstractions.IEntity>())
+            foreach (var entry in context?.ChangeTracker.Entries<IEntity>())
             {
                 if (entry.State == EntityState.Added)
                 {

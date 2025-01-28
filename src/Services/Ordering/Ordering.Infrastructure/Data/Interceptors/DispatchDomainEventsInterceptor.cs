@@ -1,5 +1,6 @@
 ﻿
 using MediatR;
+using Ordering.Domain.Interfaces;
 namespace Ordering.Infrastructure.Data.Interceptors
 {
     public class DispatchDomainEventsInterceptor(IMediator Mediator) : SaveChangesInterceptor
@@ -18,7 +19,7 @@ namespace Ordering.Infrastructure.Data.Interceptors
         private async Task DispatchDomainEvents(DbContext? context)
         {
             var aggregates =
-                context?.ChangeTracker.Entries<Domain.Abstractions.IAggregate>()
+                context?.ChangeTracker.Entries<IAggregate>()
                 .Where(a => a.Entity.DomainEvents.Any()).Select(a => a.Entity).ToList();
 
             if (aggregates == null || aggregates.Count == 0) return;

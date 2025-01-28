@@ -61,7 +61,6 @@ namespace Ordering.Domain.ValueObjects
             {
                 throw new DomainException("Zip code is too short.");
             }
-
             return new Address(firstName, lastName, emailAddress, addressLine, state, country, zipCode);
         }
     }

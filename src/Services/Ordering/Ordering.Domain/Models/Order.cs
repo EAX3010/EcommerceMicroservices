@@ -1,9 +1,4 @@
-﻿using Ordering.Domain.Enums;
-using Ordering.Domain.ValueObjects;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Ordering.Domain.Models
+﻿namespace Ordering.Domain.Models
 {
     public class Order : Aggregate<OrderId>
     {
@@ -38,7 +33,7 @@ namespace Ordering.Domain.Models
                 BillingAddress = billingAddress,
                 Payment = payment,
                 Status = OrderStatus.Pending,
-                
+
             };
             order.AddDomainEvent(new OrderCreatedEvent(order));
             return order;
@@ -55,10 +50,7 @@ namespace Ordering.Domain.Models
         }
         public void Add(ProductId productId, int quantity, decimal price)
         {
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(quantity);
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(price);
-
-            var orderItem = new OrderItem(Id, productId, quantity, price);
+            var orderItem = OrderItem.Create(Id, productId, quantity, price);
             _orderItems.Add(orderItem);
         }
         public void Remove(ProductId productId)
