@@ -6,8 +6,6 @@
         public decimal Price { get; set; } = default!;
         public static Product Create(string name, decimal price)
         {
-            var now = DateTime.UtcNow;
-
             return new Product
             {
                 Id = ProductId.Of(Guid.NewGuid()),

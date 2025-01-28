@@ -1,9 +1,10 @@
 ﻿
-using Ordering.Domain.Abstractions;
+
+using Ordering.Domain.Interfaces;
 
 namespace Ordering.Infrastructure.Data.Interceptors
 {
-    public class AuditableEntityInterceptors : SaveChangesInterceptor
+    public class AuditableEntityInterceptor : SaveChangesInterceptor
     {
         public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
         {
@@ -15,20 +16,20 @@ namespace Ordering.Infrastructure.Data.Interceptors
             UpdateEntities(eventData.Context);
             return base.SavingChangesAsync(eventData, result, cancellationToken);
         }
-        private void UpdateEntities(DbContext context)
+
+        private void UpdateEntities(DbContext? context)
         {
-            var entries = context.ChangeTracker.Entries<IEntity>();
-            foreach (var entry in entries)
+            foreach (var entry in context?.ChangeTracker.Entries<IEntity>())
             {
                 if (entry.State == EntityState.Added)
                 {
-                    entry.Entity.CreatedBy = "System";
                     entry.Entity.CreatedAt = DateTime.UtcNow;
+                    entry.Entity.CreatedBy = "System";
                 }
                 if (entry.State == EntityState.Modified || entry.State == EntityState.Added)
                 {
-                    entry.Entity.LastModifiedBy = "System";
                     entry.Entity.LastModified = DateTime.UtcNow;
+                    entry.Entity.LastModifiedBy = "System";
                 }
             }
         }

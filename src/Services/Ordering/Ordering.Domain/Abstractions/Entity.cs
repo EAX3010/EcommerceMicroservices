@@ -1,3 +1,5 @@
+using Ordering.Domain.Interfaces;
+
 namespace Ordering.Domain.Abstractions
 {
     public abstract class Entity<T> : IEntity<T>

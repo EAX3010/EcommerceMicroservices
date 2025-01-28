@@ -1,4 +1,6 @@
-﻿namespace Ordering.Domain.Abstractions
+﻿using Ordering.Domain.Interfaces;
+
+namespace Ordering.Domain.Abstractions
 {
     public class Aggregate<Tid> : Entity<Tid>, IAggregate<Tid>
     {
