@@ -1,4 +1,6 @@
 ﻿
+using Ordering.Infrastructure.Data.Interceptors;
+
 namespace Ordering.Infrastructure
 {
     public static class DependencyInjection
@@ -9,10 +11,10 @@ namespace Ordering.Infrastructure
 
             services.AddDbContext<ApplicationDbContext>((sp, options) =>
             {
-                options.AddInterceptors(sp.GetService<ISaveChangesInterceptor>());
+                options.AddInterceptors(new AuditableEntityInterceptors());
                 options.UseSqlServer(connectionString);
             });
-              
+
             //services.AddScoped<ApplicationDbContext>();
 
             return services;
