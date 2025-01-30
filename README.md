@@ -7,9 +7,7 @@
 [![Status](https://img.shields.io/badge/Status-Under%20Development-yellow?style=flat-square)](/)
 
 > ⚠️ **Project Status: Under Active Development**  
-> This project is currently in active development and is not yet ready for production use. Features and documentation are being added and updated regularly. Feel free to star and watch the repository for updates!
 
-A modern e-commerce platform built with microservices architecture using .NET 9
 
 ## Current Features
 - CRUD operations
