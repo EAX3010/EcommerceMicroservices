@@ -3,33 +3,82 @@ using MediatR;
 using Ordering.Domain.Interfaces;
 namespace Ordering.Infrastructure.Data.Interceptors
 {
-    public class DispatchDomainEventsInterceptor(IMediator Mediator) : SaveChangesInterceptor
+    public sealed class DispatchDomainEventsInterceptor : SaveChangesInterceptor
     {
-        public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
+        private readonly IMediator _mediator;
+
+        public DispatchDomainEventsInterceptor(IMediator mediator)
         {
-            DispatchDomainEvents(eventData.Context).GetAwaiter().GetResult();
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+        }
+
+        public override InterceptionResult<int> SavingChanges(
+            DbContextEventData eventData,
+            InterceptionResult<int> result)
+        {
+            DispatchDomainEventsSync(eventData.Context);
             return base.SavingChanges(eventData, result);
         }
-        public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default(CancellationToken))
+
+        public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
+            DbContextEventData eventData,
+            InterceptionResult<int> result,
+            CancellationToken cancellationToken = default)
         {
-            await DispatchDomainEvents(eventData.Context);
-            return await base.SavingChangesAsync(eventData, result, cancellationToken);
+            await DispatchDomainEventsAsync(eventData.Context, cancellationToken)
+                .ConfigureAwait(false);
+            return await base.SavingChangesAsync(eventData, result, cancellationToken)
+                .ConfigureAwait(false);
         }
 
-        private async Task DispatchDomainEvents(DbContext? context)
+        private void DispatchDomainEventsSync(DbContext? context)
         {
-            var aggregates =
-                context?.ChangeTracker.Entries<IAggregate>()
-                .Where(a => a.Entity.DomainEvents.Any()).Select(a => a.Entity).ToList();
+            if (context == null) return;
 
-            if (aggregates == null || aggregates.Count == 0) return;
-            foreach (var item in aggregates)
+            var aggregates = context.ChangeTracker
+                .Entries<IAggregate>()
+                .Where(e => e.Entity.DomainEvents.Count > 0)
+                .Select(e => e.Entity)
+                .ToList();
+
+            if (aggregates.Count == 0) return;
+
+            foreach (var aggregate in aggregates)
             {
-                foreach (var domainEvent in item.DomainEvents)
+                var events = aggregate.DomainEvents.ToList();
+                aggregate.ClearDomainEvents();
+
+                foreach (var domainEvent in events)
                 {
-                    await Mediator.Publish(domainEvent);
+                    _mediator.Publish(domainEvent).GetAwaiter().GetResult();
                 }
-                item.ClearDomainEvents();
+            }
+        }
+
+        private async Task DispatchDomainEventsAsync(
+            DbContext? context,
+            CancellationToken cancellationToken)
+        {
+            if (context == null) return;
+
+            var aggregates = context.ChangeTracker
+                .Entries<IAggregate>()
+                .Where(e => e.Entity.DomainEvents.Count > 0)
+                .Select(e => e.Entity)
+                .ToList();
+
+            if (aggregates.Count == 0) return;
+
+            foreach (var aggregate in aggregates)
+            {
+                var events = aggregate.DomainEvents.ToList();
+                aggregate.ClearDomainEvents();
+
+                foreach (var domainEvent in events)
+                {
+                    await _mediator.Publish(domainEvent, cancellationToken)
+                        .ConfigureAwait(false);
+                }
             }
         }
     }

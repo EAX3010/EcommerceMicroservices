@@ -6,32 +6,57 @@ namespace Ordering.Infrastructure.Data.Interceptors
 {
     public class AuditableEntityInterceptor : SaveChangesInterceptor
     {
+        private static readonly string SystemUser = "System";
+
         public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
         {
             UpdateEntities(eventData.Context);
             return base.SavingChanges(eventData, result);
         }
-        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default(CancellationToken))
+
+        public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
+            DbContextEventData eventData,
+            InterceptionResult<int> result,
+            CancellationToken cancellationToken = default)
         {
             UpdateEntities(eventData.Context);
-            return base.SavingChangesAsync(eventData, result, cancellationToken);
+            return await base.SavingChangesAsync(eventData, result, cancellationToken)
+                .ConfigureAwait(false);
         }
 
-        private void UpdateEntities(DbContext? context)
+        private static void UpdateEntities(DbContext? context)
         {
-            foreach (var entry in context?.ChangeTracker.Entries<IEntity>())
+            if (context == null) return;
+
+            var timestamp = DateTime.UtcNow;
+            var entries = context.ChangeTracker.Entries<IEntity>();
+
+            foreach (var entry in entries)
             {
-                if (entry.State == EntityState.Added)
+                switch (entry.State)
                 {
-                    entry.Entity.CreatedAt = DateTime.UtcNow;
-                    entry.Entity.CreatedBy = "System";
-                }
-                if (entry.State == EntityState.Modified || entry.State == EntityState.Added)
-                {
-                    entry.Entity.LastModified = DateTime.UtcNow;
-                    entry.Entity.LastModifiedBy = "System";
+                    case EntityState.Added:
+                        SetCreatedProperties(entry.Entity, timestamp);
+                        SetModifiedProperties(entry.Entity, timestamp);
+                        break;
+
+                    case EntityState.Modified:
+                        SetModifiedProperties(entry.Entity, timestamp);
+                        break;
                 }
             }
+        }
+
+        private static void SetCreatedProperties(IEntity entity, DateTime timestamp)
+        {
+            entity.CreatedAt = timestamp;
+            entity.CreatedBy = SystemUser;
+        }
+
+        private static void SetModifiedProperties(IEntity entity, DateTime timestamp)
+        {
+            entity.LastModified = timestamp;
+            entity.LastModifiedBy = SystemUser;
         }
     }
 }
