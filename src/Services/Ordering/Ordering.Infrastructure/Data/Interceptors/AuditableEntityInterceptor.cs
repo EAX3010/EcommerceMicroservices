@@ -20,8 +20,7 @@ namespace Ordering.Infrastructure.Data.Interceptors
             CancellationToken cancellationToken = default)
         {
             UpdateEntities(eventData.Context);
-            return await base.SavingChangesAsync(eventData, result, cancellationToken)
-                .ConfigureAwait(false);
+            return await base.SavingChangesAsync(eventData, result, cancellationToken).ConfigureAwait(false);
         }
 
         private static void UpdateEntities(DbContext? context)
