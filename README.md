@@ -9,24 +9,31 @@
 > ⚠️ **Project Status: Under Active Development**  
 
 
+
 ## Current Features
-- CRUD operations
-- filtering
-- PostgreSQL (JSON documents) with Carter
-- .Net 9 - Hybrid caching(preview) (Redis + In-Memory)
-- CQRS pattern with MediatR
+- CRUD operations with advanced filtering and pagination
+- PostgreSQL integration with JSON document support using Carter
+- Hybrid caching system (.NET 9 preview) combining Redis and In-Memory caching
+- CQRS implementation with MediatR
+- Event-driven architecture using RabbitMQ
 - Vertical Slice Architecture
+- Clean Architecture with Domain-Driven Design (DDD)
+- OpenTelemetry integration for distributed tracing
+- API versioning and documentation
+- Rate limiting and circuit breaker patterns
 
 ## Tech Stack
 - .NET Core
 - Minimal API - ASP.NET
 - Docker
 - PostgreSQL
+- SQL Server
 - Redis
 - MediatR
 - FluentValidation
 - Mapster
 - Carter
+- EF Core
 
 ## Architecture Features
 - Exception handling
