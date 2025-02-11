@@ -13,6 +13,7 @@
 ## Current Features
 - CRUD operations with advanced filtering and pagination
 - PostgreSQL integration with JSON document support using Carter
+- SQL Server with EF Core (Code First)
 - Hybrid caching system (.NET 9 preview) combining Redis and In-Memory caching
 - CQRS implementation with MediatR
 - Event-driven architecture using RabbitMQ
