@@ -1,4 +1,5 @@
 ﻿
+using Ordering.Application.Data;
 using Ordering.Infrastructure.Data.Interceptors;
 
 namespace Ordering.Infrastructure
@@ -16,8 +17,7 @@ namespace Ordering.Infrastructure
                 options.UseSqlServer(connectionString);
             });
 
-            //services.AddScoped<ApplicationDbContext>();
-
+            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
             return services;
         }
     }

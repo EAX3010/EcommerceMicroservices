@@ -19,5 +19,5 @@ namespace Ordering.Domain.ValueObjects
         public override string ToString() => Value.ToString();
     }
 
- 
+
 }
