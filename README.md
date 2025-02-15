@@ -19,7 +19,6 @@
 - Event-driven architecture using RabbitMQ
 - Vertical Slice Architecture
 - Clean Architecture with Domain-Driven Design (DDD)
-- OpenTelemetry integration for distributed tracing
 - API versioning and documentation
 - Rate limiting and circuit breaker patterns
 
