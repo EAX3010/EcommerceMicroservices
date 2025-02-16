@@ -7,7 +7,6 @@ namespace Ordering.Infrastructure.Data.Interceptors
     public class AuditableEntityInterceptor : SaveChangesInterceptor
     {
         private static readonly string SystemUser = "System";
-
         public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
         {
             UpdateEntities(eventData.Context);
