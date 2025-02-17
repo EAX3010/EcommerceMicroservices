@@ -17,7 +17,10 @@ namespace Ordering.API
             app.UseApiServices();
             if (app.Environment.IsDevelopment())
             {
-                app.Services.CreateScope().InitializeDatabase();
+                using (var scope = app.Services.CreateScope())
+                {
+                    scope.InitializeDatabase();
+                }
             }
             app.Run();
         }
