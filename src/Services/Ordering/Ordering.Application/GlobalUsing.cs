@@ -1,2 +1,9 @@
 ﻿global using Microsoft.Extensions.DependencyInjection;
+global using Ordering.Application.Data;
+global using Ordering.Application.Dtos;
+global using Ordering.Application.Mappers;
+global using Ordering.Domain.Models;
+global using Ordering.Domain.ValueObjects;
+global using Shared.CQRS;
+global using System;
 global using System.Reflection;

@@ -16,7 +16,7 @@ namespace Ordering.Infrastructure.Data.Interceptors
             DbContextEventData eventData,
             InterceptionResult<int> result)
         {
-            DispatchDomainEventsSync(eventData.Context);
+            DispatchDomainEvents(eventData.Context);
             return base.SavingChanges(eventData, result);
         }
 
@@ -25,13 +25,11 @@ namespace Ordering.Infrastructure.Data.Interceptors
             InterceptionResult<int> result,
             CancellationToken cancellationToken = default)
         {
-            await DispatchDomainEventsAsync(eventData.Context, cancellationToken)
-                .ConfigureAwait(false);
-            return await base.SavingChangesAsync(eventData, result, cancellationToken)
-                .ConfigureAwait(false);
+            await DispatchDomainEventsAsync(eventData.Context, cancellationToken).ConfigureAwait(false);
+            return await base.SavingChangesAsync(eventData, result, cancellationToken).ConfigureAwait(false);
         }
 
-        private void DispatchDomainEventsSync(DbContext? context)
+        private void DispatchDomainEvents(DbContext? context)
         {
             if (context == null) return;
 
