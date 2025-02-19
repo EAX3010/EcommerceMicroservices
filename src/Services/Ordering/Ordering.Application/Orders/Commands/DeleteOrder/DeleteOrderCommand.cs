@@ -1,16 +1,21 @@
-﻿using FluentValidation;
+﻿#region
 
-namespace Ordering.Application.Orders.Commands.DeleteOrder;
+using FluentValidation;
 
-public record DeleteOrderCommand(Guid OrderId) : ICommand<DeleteOrderResult>;
+#endregion
 
-public record DeleteOrderResult(bool IsSuccess);
-
-public class DeleteProductCommandValidator : AbstractValidator<DeleteOrderCommand>
+namespace Ordering.Application.Orders.Commands.DeleteOrder
 {
-    public DeleteProductCommandValidator()
+    public record DeleteOrderCommand(Guid OrderId) : ICommand<DeleteOrderResult>;
+
+    public record DeleteOrderResult(bool IsSuccess);
+
+    public class DeleteProductCommandValidator : AbstractValidator<DeleteOrderCommand>
     {
-        _ = RuleFor(x => x.OrderId)
-            .NotEmpty().WithMessage("Order Id is required");
+        public DeleteProductCommandValidator()
+        {
+            _ = RuleFor(x => x.OrderId)
+                .NotEmpty().WithMessage("Order Id is required");
+        }
     }
 }
