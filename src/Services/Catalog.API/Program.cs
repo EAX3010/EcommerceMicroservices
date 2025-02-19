@@ -1,10 +1,10 @@
 ﻿using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
 
-System.Reflection.Assembly assembly = typeof(Program).Assembly;
+var assembly = typeof(Program).Assembly;
 
 builder.Services.AddMediatR(config =>
 {
@@ -23,7 +23,7 @@ builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddHealthChecks().AddNpgSql(builder.Configuration.GetConnectionString("Database")!);
 
 
-WebApplication app = builder.Build();
+var app = builder.Build();
 app.MapCarter();
 app.UseExceptionHandler(options => { });
 app.UseHealthChecks("/health", new HealthCheckOptions

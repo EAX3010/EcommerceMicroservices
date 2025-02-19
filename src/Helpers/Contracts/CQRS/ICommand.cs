@@ -1,12 +1,11 @@
 ﻿using MediatR;
 
-namespace Shared.CQRS
-{
-    public interface ICommand : IRequest<Unit>
-    {
-    }
+namespace Shared.CQRS;
 
-    public interface ICommand<out TRespond> : IRequest<TRespond>
-    {
-    }
+public interface ICommand : IRequest<Unit>
+{
+}
+
+public interface ICommand<out TRespond> : IRequest<TRespond>
+{
 }

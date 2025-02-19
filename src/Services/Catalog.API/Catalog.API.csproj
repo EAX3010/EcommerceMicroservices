@@ -1,26 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>eee68ae2-07d7-41d2-9d45-d9c2e59381ac</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
-    <DockerfileContext>..\..</DockerfileContext>
-	 <AnalysisLevel>preview-recommended</AnalysisLevel>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>eee68ae2-07d7-41d2-9d45-d9c2e59381ac</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+        <DockerfileContext>..\..</DockerfileContext>
+        <AnalysisLevel>preview-recommended</AnalysisLevel>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.2" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
-    <PackageReference Include="Carter" Version="9.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-    <PackageReference Include="System.Text.Json" Version="9.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.2"/>
+        <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1"/>
+        <PackageReference Include="Carter" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0"/>
+        <PackageReference Include="System.Text.Json" Version="9.0.0"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Helpers\Contracts\Shared.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Helpers\Contracts\Shared.csproj"/>
+    </ItemGroup>
 
 </Project>

@@ -7,12 +7,9 @@ builder.Services.AddDbContext<MyDBContext>(p =>
     p.UseSqlite(builder.Configuration.GetConnectionString("Database"));
 });
 
-WebApplication app = builder.Build();
+var app = builder.Build();
 app.UseMigration();
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapGrpcReflectionService();
-}
+if (app.Environment.IsDevelopment()) app.MapGrpcReflectionService();
 app.MapGrpcService<DiscountService>();
 app.Run();

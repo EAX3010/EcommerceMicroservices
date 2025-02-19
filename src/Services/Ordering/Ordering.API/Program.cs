@@ -1,29 +1,24 @@
+namespace Ordering.API;
 
-namespace Ordering.API
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-
-            var builder = WebApplication.CreateBuilder(args);
-            builder.Services
-                .AddApplicationServices()
-                .AddInfrastructureServices(builder.Configuration)
-                .AddApiServices();
+        var builder = WebApplication.CreateBuilder(args);
+        builder.Services
+            .AddApplicationServices()
+            .AddInfrastructureServices(builder.Configuration)
+            .AddApiServices();
 
 
-            var app = builder.Build();
-            app.UseApiServices();
-            if (app.Environment.IsDevelopment())
+        var app = builder.Build();
+        app.UseApiServices();
+        if (app.Environment.IsDevelopment())
+            using (var scope = app.Services.CreateScope())
             {
-                using (var scope = app.Services.CreateScope())
-                {
-                    scope.InitializeDatabase();
-                }
+                scope.InitializeDatabase();
             }
-            app.Run();
-        }
+
+        app.Run();
     }
 }
-

@@ -1,36 +1,32 @@
-﻿namespace Basket.API.Data
+﻿namespace Basket.API.Data;
+
+public class BasketRepository(IDocumentSession session) : IBasketRepository
 {
-    public class BasketRepository(IDocumentSession session) : IBasketRepository
+    public async Task<ShoppingCart> GetBasket(string userName, CancellationToken cancellationToken = default)
     {
-        public async Task<ShoppingCart> GetBasket(string userName, CancellationToken cancellationToken = default)
-        {
-            ArgumentException.ThrowIfNullOrWhiteSpace(userName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(userName);
 
-            ShoppingCart? basket = await session.LoadAsync<ShoppingCart>(userName, cancellationToken);
-            return basket ?? throw new BasketNotFoundException($"Basket not found for user: {userName}");
-        }
+        var basket = await session.LoadAsync<ShoppingCart>(userName, cancellationToken);
+        return basket ?? throw new BasketNotFoundException($"Basket not found for user: {userName}");
+    }
 
-        public async Task<ShoppingCart> StoreBasket(ShoppingCart basket, CancellationToken cancellationToken = default)
-        {
-            ArgumentNullException.ThrowIfNull(basket);
-            ArgumentException.ThrowIfNullOrWhiteSpace(basket.Username);
+    public async Task<ShoppingCart> StoreBasket(ShoppingCart basket, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(basket);
+        ArgumentException.ThrowIfNullOrWhiteSpace(basket.Username);
 
-            session.Store(basket);
-            await session.SaveChangesAsync(cancellationToken);
-            return basket;
-        }
+        session.Store(basket);
+        await session.SaveChangesAsync(cancellationToken);
+        return basket;
+    }
 
-        public async Task<bool> DeleteBasket(string userName, CancellationToken cancellationToken = default)
-        {
-            ArgumentException.ThrowIfNullOrWhiteSpace(userName);
-            ShoppingCart? basket = await session.LoadAsync<ShoppingCart>(userName, cancellationToken);
-            if (basket is null)
-            {
-                return false;
-            }
-            session.Delete(basket);
-            await session.SaveChangesAsync(cancellationToken);
-            return true;
-        }
+    public async Task<bool> DeleteBasket(string userName, CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userName);
+        var basket = await session.LoadAsync<ShoppingCart>(userName, cancellationToken);
+        if (basket is null) return false;
+        session.Delete(basket);
+        await session.SaveChangesAsync(cancellationToken);
+        return true;
     }
 }

@@ -1,16 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+﻿namespace Ordering.API;
 
-namespace Ordering.API
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddApiServices(this IServiceCollection services)
     {
-        public static IServiceCollection AddApiServices(this IServiceCollection services)
-        {
-            return services;
-        }
-        public static WebApplication UseApiServices(this WebApplication app)
-        {
-            return app;
-        }
+        return services;
+    }
+
+    public static WebApplication UseApiServices(this WebApplication app)
+    {
+        return app;
     }
 }

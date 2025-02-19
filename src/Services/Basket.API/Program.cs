@@ -1,7 +1,8 @@
 using Discount.gRPC;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-System.Reflection.Assembly assembly = typeof(Program).Assembly;
+var builder = WebApplication.CreateBuilder(args);
+var assembly = typeof(Program).Assembly;
 builder.Services.AddCarter();
 builder.Services.AddMediatR(config =>
 {
@@ -21,7 +22,6 @@ builder.Services.AddHybridCache(op =>
         Expiration = TimeSpan.FromMinutes(5),
         LocalCacheExpiration = TimeSpan.FromMinutes(1)
     };
-
 });
 builder.Services.AddStackExchangeRedisCache(options =>
 {
@@ -29,8 +29,8 @@ builder.Services.AddStackExchangeRedisCache(options =>
 });
 #pragma warning restore EXTEXP0018
 
-builder.Services.AddScoped<IBasketRepository, BasketRepository>();  // Register concrete repository
-builder.Services.Decorate<IBasketRepository, CachedBasketRepository>();  // Register decorator as implementation
+builder.Services.AddScoped<IBasketRepository, BasketRepository>(); // Register concrete repository
+builder.Services.Decorate<IBasketRepository, CachedBasketRepository>(); // Register decorator as implementation
 
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 builder.Services.AddHealthChecks()
@@ -45,15 +45,15 @@ builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(
     return new HttpClientHandler
     {
         ServerCertificateCustomValidationCallback =
-        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
     };
 });
 
 
-WebApplication app = builder.Build();
+var app = builder.Build();
 app.MapCarter();
 app.UseExceptionHandler(_ => { });
-app.UseHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+app.UseHealthChecks("/health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });

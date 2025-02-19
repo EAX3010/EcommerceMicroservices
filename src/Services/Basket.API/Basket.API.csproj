@@ -1,37 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>e2ae45b1-8a30-4ed9-96d9-601c000576d2</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..</DockerfileContext>
-    <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
-    <AnalysisLevel>preview-recommended</AnalysisLevel>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>e2ae45b1-8a30-4ed9-96d9-601c000576d2</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <DockerfileContext>..\..</DockerfileContext>
+        <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
+        <AnalysisLevel>preview-recommended</AnalysisLevel>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.2" />
-    <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="8.0.1" />
-    <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1" />
-    <PackageReference Include="Carter" Version="9.0.0" />
-    <PackageReference Include="Grpc.AspNetCore" Version="2.67.0" />
-    <PackageReference Include="Microsoft.Azure.StackExchangeRedis" Version="3.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" Version="9.0.0-preview.9.24556.5" />
-    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-    <PackageReference Include="Scrutor" Version="5.0.2" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.2"/>
+        <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="8.0.1"/>
+        <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.1"/>
+        <PackageReference Include="Carter" Version="9.0.0"/>
+        <PackageReference Include="Grpc.AspNetCore" Version="2.67.0"/>
+        <PackageReference Include="Microsoft.Azure.StackExchangeRedis" Version="3.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.Caching.Hybrid" Version="9.0.0-preview.9.24556.5"/>
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0"/>
+        <PackageReference Include="Scrutor" Version="5.0.2"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Helpers\Contracts\Shared.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\Helpers\Contracts\Shared.csproj"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Protobuf Include="..\Discount.gRPC\Protos\discount.proto" GrpcServices="Client">
-      <Link>Protos\discount.proto</Link>
-    </Protobuf>
-  </ItemGroup>
+    <ItemGroup>
+        <Protobuf Include="..\Discount.gRPC\Protos\discount.proto" GrpcServices="Client">
+            <Link>Protos\discount.proto</Link>
+        </Protobuf>
+    </ItemGroup>
 
 </Project>
