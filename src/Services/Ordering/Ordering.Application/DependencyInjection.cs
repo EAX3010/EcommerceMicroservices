@@ -6,9 +6,11 @@ namespace Ordering.Application
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
+            var assembly = Assembly.GetExecutingAssembly();
+            var apiassembly = Assembly.GetCallingAssembly();
             services.AddMediatR(config =>
             {
-                config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+                config.RegisterServicesFromAssembly(assembly);
                 config.AddOpenBehavior(typeof(ValidationBehavior<,>));
                 config.AddOpenBehavior(typeof(LoggingBehavior<,>));
             });
