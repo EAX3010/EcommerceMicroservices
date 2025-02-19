@@ -1,8 +1,13 @@
-﻿using MediatR;
+﻿#region
 
-namespace Shared.CQRS;
+using MediatR;
 
-public interface IQuery<out TRespond> : IRequest<TRespond>
-    where TRespond : notnull
+#endregion
+
+namespace Shared.CQRS
 {
+    public interface IQuery<out TRespond> : IRequest<TRespond>
+        where TRespond : notnull
+    {
+    }
 }

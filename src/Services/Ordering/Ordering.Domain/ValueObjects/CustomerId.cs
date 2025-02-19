@@ -1,25 +1,30 @@
-﻿using Ordering.Domain.Exceptions;
+﻿#region
 
-namespace Ordering.Domain.ValueObjects;
+using Ordering.Domain.Exceptions;
 
-public readonly record struct CustomerId
+#endregion
+
+namespace Ordering.Domain.ValueObjects
 {
-    private CustomerId(Guid value)
+    public readonly record struct CustomerId
     {
-        Value = value;
-    }
+        private CustomerId(Guid value)
+        {
+            Value = value;
+        }
 
-    public Guid Value { get; init; }
+        public Guid Value { get; init; }
 
-    public static CustomerId Of(Guid value)
-    {
-        if (value == Guid.Empty) throw new DomainException("CustomerId cannot be empty.");
+        public static CustomerId Of(Guid value)
+        {
+            if (value == Guid.Empty) throw new DomainException("CustomerId cannot be empty.");
 
-        return new CustomerId(value);
-    }
+            return new CustomerId(value);
+        }
 
-    public override string ToString()
-    {
-        return Value.ToString();
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
     }
 }

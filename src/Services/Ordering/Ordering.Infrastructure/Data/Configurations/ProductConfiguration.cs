@@ -1,22 +1,27 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿#region
 
-namespace Ordering.Infrastructure.Data.Configurations;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public class ProductConfiguration : IEntityTypeConfiguration<Product>
+#endregion
+
+namespace Ordering.Infrastructure.Data.Configurations
 {
-    public void Configure(EntityTypeBuilder<Product> builder)
+    public class ProductConfiguration : IEntityTypeConfiguration<Product>
     {
-        builder.HasKey(p => p.Id);
+        public void Configure(EntityTypeBuilder<Product> builder)
+        {
+            builder.HasKey(p => p.Id);
 
-        builder.Property(p => p.Id).HasConversion(
-            Id => Id.Value,
-            Id => ProductId.Of(Id));
+            builder.Property(p => p.Id).HasConversion(
+                Id => Id.Value,
+                Id => ProductId.Of(Id));
 
-        builder.Property(p => p.Name)
-            .HasMaxLength(100)
-            .IsRequired();
+            builder.Property(p => p.Name)
+                .HasMaxLength(100)
+                .IsRequired();
 
-        builder.Property(p => p.Price)
-            .IsRequired();
+            builder.Property(p => p.Price)
+                .IsRequired();
+        }
     }
 }

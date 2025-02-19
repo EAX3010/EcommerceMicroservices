@@ -1,21 +1,22 @@
-﻿namespace Ordering.Domain.Models;
-
-public class OrderItem : Entity<OrderItemId>
+﻿namespace Ordering.Domain.Models
 {
-    public OrderId OrderId { get; set; } //navication property
-    public ProductId ProductId { get; set; } //navication property
-    public int Quantity { get; set; }
-    public decimal Price { get; set; }
-
-    public static OrderItem Create(OrderId orderId, ProductId productId, int quantity, decimal price)
+    public class OrderItem : Entity<OrderItemId>
     {
-        return new OrderItem
+        public OrderId OrderId { get; set; } //navication property
+        public ProductId ProductId { get; set; } //navication property
+        public int Quantity { get; set; }
+        public decimal Price { get; set; }
+
+        public static OrderItem Create(OrderId orderId, ProductId productId, int quantity, decimal price)
         {
-            Id = OrderItemId.Of(Guid.NewGuid()),
-            OrderId = orderId,
-            ProductId = productId,
-            Quantity = quantity,
-            Price = price
-        };
+            return new OrderItem
+            {
+                Id = OrderItemId.Of(Guid.NewGuid()),
+                OrderId = orderId,
+                ProductId = productId,
+                Quantity = quantity,
+                Price = price
+            };
+        }
     }
 }

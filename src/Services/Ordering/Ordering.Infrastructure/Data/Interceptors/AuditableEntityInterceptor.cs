@@ -1,56 +1,62 @@
-﻿using Ordering.Domain.Interfaces;
+﻿#region
 
-namespace Ordering.Infrastructure.Data.Interceptors;
+using Ordering.Domain.Interfaces;
 
-public class AuditableEntityInterceptor : SaveChangesInterceptor
+#endregion
+
+namespace Ordering.Infrastructure.Data.Interceptors
 {
-    private static readonly string SystemUser = "System";
-
-    public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
+    public class AuditableEntityInterceptor : SaveChangesInterceptor
     {
-        UpdateEntities(eventData.Context);
-        return base.SavingChanges(eventData, result);
-    }
+        private static readonly string SystemUser = "System";
 
-    public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
-        DbContextEventData eventData,
-        InterceptionResult<int> result,
-        CancellationToken cancellationToken = default)
-    {
-        UpdateEntities(eventData.Context);
-        return await base.SavingChangesAsync(eventData, result, cancellationToken).ConfigureAwait(false);
-    }
+        public override InterceptionResult<int> SavingChanges(DbContextEventData eventData,
+            InterceptionResult<int> result)
+        {
+            UpdateEntities(eventData.Context);
+            return base.SavingChanges(eventData, result);
+        }
 
-    private static void UpdateEntities(DbContext? context)
-    {
-        if (context == null) return;
+        public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
+            DbContextEventData eventData,
+            InterceptionResult<int> result,
+            CancellationToken cancellationToken = default)
+        {
+            UpdateEntities(eventData.Context);
+            return await base.SavingChangesAsync(eventData, result, cancellationToken).ConfigureAwait(false);
+        }
 
-        var timestamp = DateTime.UtcNow;
-        var entries = context.ChangeTracker.Entries<IEntity>();
+        private static void UpdateEntities(DbContext? context)
+        {
+            if (context == null) return;
 
-        foreach (var entry in entries)
-            switch (entry.State)
-            {
-                case EntityState.Added:
-                    SetCreatedProperties(entry.Entity, timestamp);
-                    SetModifiedProperties(entry.Entity, timestamp);
-                    break;
+            var timestamp = DateTime.UtcNow;
+            var entries = context.ChangeTracker.Entries<IEntity>();
 
-                case EntityState.Modified:
-                    SetModifiedProperties(entry.Entity, timestamp);
-                    break;
-            }
-    }
+            foreach (var entry in entries)
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        SetCreatedProperties(entry.Entity, timestamp);
+                        SetModifiedProperties(entry.Entity, timestamp);
+                        break;
 
-    private static void SetCreatedProperties(IEntity entity, DateTime timestamp)
-    {
-        entity.CreatedAt = timestamp;
-        entity.CreatedBy = SystemUser;
-    }
+                    case EntityState.Modified:
+                        SetModifiedProperties(entry.Entity, timestamp);
+                        break;
+                }
+        }
 
-    private static void SetModifiedProperties(IEntity entity, DateTime timestamp)
-    {
-        entity.LastModified = timestamp;
-        entity.LastModifiedBy = SystemUser;
+        private static void SetCreatedProperties(IEntity entity, DateTime timestamp)
+        {
+            entity.CreatedAt = timestamp;
+            entity.CreatedBy = SystemUser;
+        }
+
+        private static void SetModifiedProperties(IEntity entity, DateTime timestamp)
+        {
+            entity.LastModified = timestamp;
+            entity.LastModifiedBy = SystemUser;
+        }
     }
 }

@@ -1,5 +1,10 @@
-﻿using Ordering.Domain.Interfaces;
+﻿#region
 
-namespace Ordering.Domain.Events;
+using Ordering.Domain.Interfaces;
 
-public record OrderCreatedEvent(Order Order) : IDomainEvent;
+#endregion
+
+namespace Ordering.Domain.Events
+{
+    public record OrderCreatedEvent(Order Order) : IDomainEvent;
+}

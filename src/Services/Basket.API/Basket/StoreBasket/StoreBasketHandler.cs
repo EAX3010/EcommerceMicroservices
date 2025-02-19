@@ -1,63 +1,68 @@
-﻿using Discount.gRPC;
+﻿#region
+
+using Discount.gRPC;
 using Grpc.Core;
 
-namespace Basket.API.Basket.StoreBasket;
+#endregion
 
-public record StoreBasketCommand(ShoppingCart Cart) : ICommand<StoreBasketResult>;
-
-public record StoreBasketResult(string Username);
-
-public class StoreBasketCommandValidator : AbstractValidator<StoreBasketCommand>
+namespace Basket.API.Basket.StoreBasket
 {
-    public StoreBasketCommandValidator()
-    {
-        _ = RuleFor(x => x.Cart)
-            .NotNull()
-            .WithMessage("Shopping cart cannot be null")
-            .DependentRules(() =>
-            {
-                _ = RuleFor(x => x.Cart.Username).NotEmpty().WithMessage("Username is required");
-            });
-    }
-}
+    public record StoreBasketCommand(ShoppingCart Cart) : ICommand<StoreBasketResult>;
 
-public class StoreBasketCommandHandler(
-    IBasketRepository repository,
-    DiscountProtoService.DiscountProtoServiceClient Proto,
-    ILogger<StoreBasketCommandHandler> logger) : ICommandHandler<StoreBasketCommand, StoreBasketResult>
-{
-    public async Task<StoreBasketResult> Handle(StoreBasketCommand command, CancellationToken cancellationToken)
-    {
-        await GetDiscount(command.Cart, cancellationToken);
-        var Cart = await repository.StoreBasket(command.Cart, cancellationToken);
-        return new StoreBasketResult(Cart.Username);
-    }
+    public record StoreBasketResult(string Username);
 
-    public async Task GetDiscount(ShoppingCart cart, CancellationToken cancellationToken)
+    public class StoreBasketCommandValidator : AbstractValidator<StoreBasketCommand>
     {
-        IEnumerable<Task> discountTasks = cart.Items.Select(item =>
+        public StoreBasketCommandValidator()
         {
-            return ApplyDiscountToItem(item, cancellationToken);
-        });
-        await Task.WhenAll(discountTasks);
-    }
-
-    public async Task ApplyDiscountToItem(ShoppingCartItem item, CancellationToken cancellationToken)
-    {
-        item.DiscountAmount = 0;
-        try
-        {
-            var coupon = await Proto.GetDiscountAsync(
-                new GetDiscountRequest { ProductName = item.ProductName },
-                deadline: null,
-                headers: null,
-                cancellationToken: cancellationToken);
-            item.DiscountAmount = coupon.Amount;
+            _ = RuleFor(x => x.Cart)
+                .NotNull()
+                .WithMessage("Shopping cart cannot be null")
+                .DependentRules(() =>
+                {
+                    _ = RuleFor(x => x.Cart.Username).NotEmpty().WithMessage("Username is required");
+                });
         }
-        catch (RpcException e) when (e.StatusCode == StatusCode.NotFound)
+    }
+
+    public class StoreBasketCommandHandler(
+        IBasketRepository repository,
+        DiscountProtoService.DiscountProtoServiceClient Proto,
+        ILogger<StoreBasketCommandHandler> logger) : ICommandHandler<StoreBasketCommand, StoreBasketResult>
+    {
+        public async Task<StoreBasketResult> Handle(StoreBasketCommand command, CancellationToken cancellationToken)
         {
-            logger.LogInformation("No discount available for product {ProductName}.",
-                item.ProductName);
+            await GetDiscount(command.Cart, cancellationToken);
+            var Cart = await repository.StoreBasket(command.Cart, cancellationToken);
+            return new StoreBasketResult(Cart.Username);
+        }
+
+        public async Task GetDiscount(ShoppingCart cart, CancellationToken cancellationToken)
+        {
+            IEnumerable<Task> discountTasks = cart.Items.Select(item =>
+            {
+                return ApplyDiscountToItem(item, cancellationToken);
+            });
+            await Task.WhenAll(discountTasks);
+        }
+
+        public async Task ApplyDiscountToItem(ShoppingCartItem item, CancellationToken cancellationToken)
+        {
+            item.DiscountAmount = 0;
+            try
+            {
+                var coupon = await Proto.GetDiscountAsync(
+                    new GetDiscountRequest { ProductName = item.ProductName },
+                    deadline: null,
+                    headers: null,
+                    cancellationToken: cancellationToken);
+                item.DiscountAmount = coupon.Amount;
+            }
+            catch (RpcException e) when (e.StatusCode == StatusCode.NotFound)
+            {
+                logger.LogInformation("No discount available for product {ProductName}.",
+                    item.ProductName);
+            }
         }
     }
 }

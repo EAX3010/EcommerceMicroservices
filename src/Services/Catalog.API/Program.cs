@@ -1,5 +1,9 @@
-﻿using HealthChecks.UI.Client;
+﻿#region
+
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+
+#endregion
 
 var builder = WebApplication.CreateBuilder(args);
 

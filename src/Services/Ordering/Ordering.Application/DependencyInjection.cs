@@ -1,18 +1,23 @@
-﻿using Shared.Behavior;
+﻿#region
 
-namespace Ordering.Application;
+using Shared.Behavior;
 
-public static class DependencyInjection
+#endregion
+
+namespace Ordering.Application
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+    public static class DependencyInjection
     {
-        var assembly = Assembly.GetExecutingAssembly();
-        services.AddMediatR(config =>
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            config.RegisterServicesFromAssembly(assembly);
-            config.AddOpenBehavior(typeof(ValidationBehavior<,>));
-            config.AddOpenBehavior(typeof(LoggingBehavior<,>));
-        });
-        return services;
+            var assembly = Assembly.GetExecutingAssembly();
+            services.AddMediatR(config =>
+            {
+                config.RegisterServicesFromAssembly(assembly);
+                config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+                config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+            });
+            return services;
+        }
     }
 }

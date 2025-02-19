@@ -1,98 +1,103 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿#region
+
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 
-namespace Shared.Exceptions.Handler;
+#endregion
 
-internal readonly record struct ExceptionDetails(string Message, string Name, int StatusCode);
-
-public sealed class CustomExceptionHandler(ILogger<CustomExceptionHandler> logger) : IExceptionHandler
+namespace Shared.Exceptions.Handler
 {
-    private const string TraceIdKey = "traceId";
-    private const string ValidationErrorsKey = "validationErrors";
+    internal readonly record struct ExceptionDetails(string Message, string Name, int StatusCode);
 
-    public async ValueTask<bool> TryHandleAsync(
-        HttpContext httpContext,
-        Exception exception,
-        CancellationToken cancellationToken)
+    public sealed class CustomExceptionHandler(ILogger<CustomExceptionHandler> logger) : IExceptionHandler
     {
-        ArgumentNullException.ThrowIfNull(httpContext);
-        ArgumentNullException.ThrowIfNull(exception);
+        private const string TraceIdKey = "traceId";
+        private const string ValidationErrorsKey = "validationErrors";
 
-        LogException(exception);
-
-        var details = GetExceptionDetails(exception, httpContext);
-        var problemDetails = CreateProblemDetails(details, httpContext, exception);
-
-        httpContext.Response.StatusCode = details.StatusCode;
-        httpContext.Response.ContentType = "application/problem+json";
-
-        await httpContext.Response.WriteAsJsonAsync(
-            problemDetails, cancellationToken);
-
-        return true;
-    }
-
-    private void LogException(Exception exception)
-    {
-        logger.LogError(
-            "Error Message: {ExceptionMessage}, Time: {Time}, StackTrace: {StackTrace}",
-            exception.Message,
-            DateTime.UtcNow,
-            exception.StackTrace);
-    }
-
-    private static ExceptionDetails GetExceptionDetails(Exception exception, HttpContext httpContext)
-    {
-        return exception switch
+        public async ValueTask<bool> TryHandleAsync(
+            HttpContext httpContext,
+            Exception exception,
+            CancellationToken cancellationToken)
         {
-            InternalServerException => new ExceptionDetails(
-                exception.Message,
-                exception.GetType().Name,
-                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError),
+            ArgumentNullException.ThrowIfNull(httpContext);
+            ArgumentNullException.ThrowIfNull(exception);
 
-            CustomValidationException or BadRequestException => new ExceptionDetails(
-                exception.Message,
-                exception.GetType().Name,
-                httpContext.Response.StatusCode = StatusCodes.Status400BadRequest),
+            LogException(exception);
 
-            NotFoundException => new ExceptionDetails(
-                exception.Message,
-                exception.GetType().Name,
-                httpContext.Response.StatusCode = StatusCodes.Status404NotFound),
+            var details = GetExceptionDetails(exception, httpContext);
+            var problemDetails = CreateProblemDetails(details, httpContext, exception);
 
-            NpgsqlException => new ExceptionDetails(
-                exception.Message,
-                exception.GetType().Name,
-                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError),
+            httpContext.Response.StatusCode = details.StatusCode;
+            httpContext.Response.ContentType = "application/problem+json";
 
-            _ => new ExceptionDetails(
-                exception.Message,
-                exception.GetType().Name,
-                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError)
-        };
-    }
+            await httpContext.Response.WriteAsJsonAsync(
+                problemDetails, cancellationToken);
 
-    private static ProblemDetails CreateProblemDetails(
-        ExceptionDetails details,
-        HttpContext httpContext,
-        Exception exception)
-    {
-        var problemDetails = new ProblemDetails
+            return true;
+        }
+
+        private void LogException(Exception exception)
         {
-            Title = details.Name,
-            Detail = details.Message,
-            Status = details.StatusCode,
-            Instance = httpContext.Request.Path,
-            Type = $"https://httpstatuses.com/{details.StatusCode}"
-        };
+            logger.LogError(
+                "Error Message: {ExceptionMessage}, Time: {Time}, StackTrace: {StackTrace}",
+                exception.Message,
+                DateTime.UtcNow,
+                exception.StackTrace);
+        }
 
-        problemDetails.Extensions[TraceIdKey] = httpContext.TraceIdentifier;
+        private static ExceptionDetails GetExceptionDetails(Exception exception, HttpContext httpContext)
+        {
+            return exception switch
+            {
+                InternalServerException => new ExceptionDetails(
+                    exception.Message,
+                    exception.GetType().Name,
+                    httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError),
 
-        if (exception is CustomValidationException validationException)
-            problemDetails.Extensions[ValidationErrorsKey] = validationException.Errors;
-        return problemDetails;
+                CustomValidationException or BadRequestException => new ExceptionDetails(
+                    exception.Message,
+                    exception.GetType().Name,
+                    httpContext.Response.StatusCode = StatusCodes.Status400BadRequest),
+
+                NotFoundException => new ExceptionDetails(
+                    exception.Message,
+                    exception.GetType().Name,
+                    httpContext.Response.StatusCode = StatusCodes.Status404NotFound),
+
+                NpgsqlException => new ExceptionDetails(
+                    exception.Message,
+                    exception.GetType().Name,
+                    httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError),
+
+                _ => new ExceptionDetails(
+                    exception.Message,
+                    exception.GetType().Name,
+                    httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError)
+            };
+        }
+
+        private static ProblemDetails CreateProblemDetails(
+            ExceptionDetails details,
+            HttpContext httpContext,
+            Exception exception)
+        {
+            var problemDetails = new ProblemDetails
+            {
+                Title = details.Name,
+                Detail = details.Message,
+                Status = details.StatusCode,
+                Instance = httpContext.Request.Path,
+                Type = $"https://httpstatuses.com/{details.StatusCode}"
+            };
+
+            problemDetails.Extensions[TraceIdKey] = httpContext.TraceIdentifier;
+
+            if (exception is CustomValidationException validationException)
+                problemDetails.Extensions[ValidationErrorsKey] = validationException.Errors;
+            return problemDetails;
+        }
     }
 }

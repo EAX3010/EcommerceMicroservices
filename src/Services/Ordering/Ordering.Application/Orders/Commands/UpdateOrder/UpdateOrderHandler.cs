@@ -1,20 +1,25 @@
-﻿using Ordering.Application.Exceptions;
+﻿#region
 
-namespace Ordering.Application.Orders.Commands.UpdateOrder;
+using Ordering.Application.Exceptions;
 
-public class UpdateOrderHandler(IApplicationDbContext dbContext)
-    : ICommandHandler<UpdateOrderCommand, UpdateOrderResult>
+#endregion
+
+namespace Ordering.Application.Orders.Commands.UpdateOrder
 {
-    public async Task<UpdateOrderResult> Handle(UpdateOrderCommand command, CancellationToken cancellationToken)
+    public class UpdateOrderHandler(IApplicationDbContext dbContext)
+        : ICommandHandler<UpdateOrderCommand, UpdateOrderResult>
     {
-        var order = command.orderDto.ToOrder();
-        var orderId = order.Id;
+        public async Task<UpdateOrderResult> Handle(UpdateOrderCommand command, CancellationToken cancellationToken)
+        {
+            var order = command.orderDto.ToOrder();
+            var orderId = order.Id;
 
-        var DbOrder = await dbContext.Orders.FindAsync(orderId, cancellationToken);
-        if (DbOrder == null) throw new OrderNotFoundException(orderId.Value);
-        DbOrder.Update(order.OrderName, order.ShippingAddress, order.BillingAddress, order.Payment, order.Status);
-        dbContext.Orders.Update(DbOrder);
-        await dbContext.SaveChangesAsync(cancellationToken);
-        return new UpdateOrderResult(true);
+            var DbOrder = await dbContext.Orders.FindAsync(orderId, cancellationToken);
+            if (DbOrder == null) throw new OrderNotFoundException(orderId.Value);
+            DbOrder.Update(order.OrderName, order.ShippingAddress, order.BillingAddress, order.Payment, order.Status);
+            dbContext.Orders.Update(DbOrder);
+            await dbContext.SaveChangesAsync(cancellationToken);
+            return new UpdateOrderResult(true);
+        }
     }
 }

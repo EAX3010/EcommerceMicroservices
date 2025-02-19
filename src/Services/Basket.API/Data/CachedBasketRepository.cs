@@ -1,29 +1,30 @@
-﻿namespace Basket.API.Data;
-
-public class CachedBasketRepository(IBasketRepository basketRepository, HybridCache cache) : IBasketRepository
+﻿namespace Basket.API.Data
 {
-    public async Task<ShoppingCart> GetBasket(string userName, CancellationToken cancellationToken = default)
+    public class CachedBasketRepository(IBasketRepository basketRepository, HybridCache cache) : IBasketRepository
     {
-        return await cache.GetOrCreateAsync<ShoppingCart>($"{userName}",
-            async cancel => { return await basketRepository.GetBasket(userName, cancel); },
-            cancellationToken: cancellationToken);
-    }
+        public async Task<ShoppingCart> GetBasket(string userName, CancellationToken cancellationToken = default)
+        {
+            return await cache.GetOrCreateAsync<ShoppingCart>($"{userName}",
+                async cancel => { return await basketRepository.GetBasket(userName, cancel); },
+                cancellationToken: cancellationToken);
+        }
 
-    public async Task<ShoppingCart> StoreBasket(ShoppingCart basket, CancellationToken cancellationToken = default)
-    {
-        var storedBasket = await basketRepository.StoreBasket(basket, cancellationToken);
-        await cache.SetAsync(
-            $"{basket.Username}",
-            storedBasket,
-            cancellationToken: cancellationToken);
+        public async Task<ShoppingCart> StoreBasket(ShoppingCart basket, CancellationToken cancellationToken = default)
+        {
+            var storedBasket = await basketRepository.StoreBasket(basket, cancellationToken);
+            await cache.SetAsync(
+                $"{basket.Username}",
+                storedBasket,
+                cancellationToken: cancellationToken);
 
-        return storedBasket;
-    }
+            return storedBasket;
+        }
 
-    public async Task<bool> DeleteBasket(string userName, CancellationToken cancellationToken = default)
-    {
-        await cache.RemoveAsync($"{userName}", cancellationToken);
-        var isSuccess = await basketRepository.DeleteBasket(userName, cancellationToken);
-        return isSuccess;
+        public async Task<bool> DeleteBasket(string userName, CancellationToken cancellationToken = default)
+        {
+            await cache.RemoveAsync($"{userName}", cancellationToken);
+            var isSuccess = await basketRepository.DeleteBasket(userName, cancellationToken);
+            return isSuccess;
+        }
     }
 }

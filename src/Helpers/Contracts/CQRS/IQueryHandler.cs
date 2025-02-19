@@ -1,9 +1,14 @@
-﻿using MediatR;
+﻿#region
 
-namespace Shared.CQRS;
+using MediatR;
 
-public interface IQueryHandler<in TQuery, TResponse> : IRequestHandler<TQuery, TResponse>
-    where TQuery : IQuery<TResponse>
-    where TResponse : notnull
+#endregion
+
+namespace Shared.CQRS
 {
+    public interface IQueryHandler<in TQuery, TResponse> : IRequestHandler<TQuery, TResponse>
+        where TQuery : IQuery<TResponse>
+        where TResponse : notnull
+    {
+    }
 }

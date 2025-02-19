@@ -1,22 +1,27 @@
-﻿using FluentValidation;
+﻿#region
 
-namespace Ordering.Application.Orders.Commands.CreateOrder;
+using FluentValidation;
 
-public record CreateOrderCommand(OrderDto orderDto) : ICommand<CreateOrderResult>;
+#endregion
 
-public record CreateOrderResult(Guid orderId);
-
-public class CreateProductCommandValidator : AbstractValidator<CreateOrderCommand>
+namespace Ordering.Application.Orders.Commands.CreateOrder
 {
-    public CreateProductCommandValidator()
+    public record CreateOrderCommand(OrderDto orderDto) : ICommand<CreateOrderResult>;
+
+    public record CreateOrderResult(Guid orderId);
+
+    public class CreateProductCommandValidator : AbstractValidator<CreateOrderCommand>
     {
-        _ = RuleFor(x => x.orderDto.OrderName)
-            .NotEmpty().WithMessage("OrderName is required");
+        public CreateProductCommandValidator()
+        {
+            _ = RuleFor(x => x.orderDto.OrderName)
+                .NotEmpty().WithMessage("OrderName is required");
 
-        _ = RuleFor(x => x.orderDto.CustomerId)
-            .NotEmpty().NotNull().WithMessage("CustomerId is required");
+            _ = RuleFor(x => x.orderDto.CustomerId)
+                .NotEmpty().NotNull().WithMessage("CustomerId is required");
 
-        _ = RuleFor(x => x.orderDto.OrderItems)
-            .NotEmpty().NotNull().WithMessage("OrderItems is required");
+            _ = RuleFor(x => x.orderDto.OrderItems)
+                .NotEmpty().NotNull().WithMessage("OrderItems is required");
+        }
     }
 }

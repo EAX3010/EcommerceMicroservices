@@ -1,18 +1,19 @@
-﻿namespace Ordering.Domain.Models;
-
-public class Customer : Entity<CustomerId>
+﻿namespace Ordering.Domain.Models
 {
-    public string Name { get; set; } = default!;
-    public string Email { get; set; } = default!;
-
-    public static Customer Create(CustomerId id, string name, string email)
+    public class Customer : Entity<CustomerId>
     {
-        var customer = new Customer
+        public string Name { get; set; } = default!;
+        public string Email { get; set; } = default!;
+
+        public static Customer Create(CustomerId id, string name, string email)
         {
-            Id = id,
-            Name = name,
-            Email = email
-        };
-        return customer;
+            var customer = new Customer
+            {
+                Id = id,
+                Name = name,
+                Email = email
+            };
+            return customer;
+        }
     }
 }

@@ -1,12 +1,17 @@
+#region
+
 using Ordering.Domain.Interfaces;
 
-namespace Ordering.Domain.Abstractions;
+#endregion
 
-public abstract class Entity<T> : IEntity<T>
+namespace Ordering.Domain.Abstractions
 {
-    public T Id { get; set; }
-    public DateTime? CreatedAt { get; set; } = default;
-    public string? CreatedBy { get; set; } = default;
-    public DateTime? LastModified { get; set; } = default;
-    public string? LastModifiedBy { get; set; } = default;
+    public abstract class Entity<T> : IEntity<T>
+    {
+        public T Id { get; set; }
+        public DateTime? CreatedAt { get; set; } = default;
+        public string? CreatedBy { get; set; } = default;
+        public DateTime? LastModified { get; set; } = default;
+        public string? LastModifiedBy { get; set; } = default;
+    }
 }

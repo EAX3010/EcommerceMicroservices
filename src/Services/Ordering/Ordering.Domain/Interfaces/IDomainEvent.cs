@@ -1,10 +1,15 @@
-﻿using MediatR;
+﻿#region
 
-namespace Ordering.Domain.Interfaces;
+using MediatR;
 
-public interface IDomainEvent : INotification
+#endregion
+
+namespace Ordering.Domain.Interfaces
 {
-    Guid EventId => Guid.NewGuid();
-    DateTime OccurredOn => DateTime.UtcNow;
-    string EventType => GetType().AssemblyQualifiedName!;
+    public interface IDomainEvent : INotification
+    {
+        Guid EventId => Guid.NewGuid();
+        DateTime OccurredOn => DateTime.UtcNow;
+        string EventType => GetType().AssemblyQualifiedName!;
+    }
 }

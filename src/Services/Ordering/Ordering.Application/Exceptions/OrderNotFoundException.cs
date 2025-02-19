@@ -1,14 +1,16 @@
-﻿using Shared.Exceptions;
+﻿#region
 
-namespace Ordering.Application.Exceptions;
+using Shared.Exceptions;
 
-public class OrderNotFoundException : NotFoundException
+#endregion
+
+namespace Ordering.Application.Exceptions
 {
-    public OrderNotFoundException(Guid id)
-        : base($"Order with Id {id} was not found")
+    public class OrderNotFoundException : NotFoundException
     {
+        public OrderNotFoundException(Guid id)
+            : base($"Order with Id {id} was not found")
+        {
+        }
     }
-
-    public string? EntityName { get; }
-    public object? EntityId { get; }
 }

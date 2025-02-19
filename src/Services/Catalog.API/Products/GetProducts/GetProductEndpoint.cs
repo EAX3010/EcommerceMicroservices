@@ -1,22 +1,23 @@
-﻿namespace Catalog.API.Products.GetProduct;
-
-public record GetProductResponse(IEnumerable<Product> Products);
-
-public class GetProductEndpoint : ICarterModule
+﻿namespace Catalog.API.Products.GetProduct
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
+    public record GetProductResponse(IEnumerable<Product> Products);
+
+    public class GetProductEndpoint : ICarterModule
     {
-        app.MapGet("/products", Handle).Produces<GetProductResponse>()
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .WithName("GetAllProducts");
-
-        static async Task<IResult> Handle([AsParameters] CreateProductQuery request, ISender sender)
+        public void AddRoutes(IEndpointRouteBuilder app)
         {
-            var result = await sender.Send(request);
+            app.MapGet("/products", Handle).Produces<GetProductResponse>()
+                .ProducesProblem(StatusCodes.Status400BadRequest)
+                .WithName("GetAllProducts");
 
-            var response = result.Adapt<GetProductResponse>();
+            static async Task<IResult> Handle([AsParameters] CreateProductQuery request, ISender sender)
+            {
+                var result = await sender.Send(request);
 
-            return Results.Ok(response);
+                var response = result.Adapt<GetProductResponse>();
+
+                return Results.Ok(response);
+            }
         }
     }
 }

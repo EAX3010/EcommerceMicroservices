@@ -1,25 +1,30 @@
-﻿using Marten.Schema;
+﻿#region
 
-namespace Basket.API.Models;
+using Marten.Schema;
 
-public class ShoppingCart
+#endregion
+
+namespace Basket.API.Models
 {
-    public ShoppingCart(string _Username)
+    public class ShoppingCart
     {
-        Username = _Username;
+        public ShoppingCart(string _Username)
+        {
+            Username = _Username;
+        }
+
+        public ShoppingCart()
+        {
+        }
+
+        [Identity] public string Username { get; set; } = default!;
+
+        public List<ShoppingCartItem> Items { get; set; } = [];
+
+        public decimal TotalPrice => Items.Sum(x => { return x.Price * x.Count; });
+
+        public decimal TotalDiscount => Items.Sum(x => { return x.DiscountAmount * x.Count; });
+
+        public decimal FinalPrice => Items.Sum(x => { return (x.Price - x.DiscountAmount) * x.Count; });
     }
-
-    public ShoppingCart()
-    {
-    }
-
-    [Identity] public string Username { get; set; } = default!;
-
-    public List<ShoppingCartItem> Items { get; set; } = [];
-
-    public decimal TotalPrice => Items.Sum(x => { return x.Price * x.Count; });
-
-    public decimal TotalDiscount => Items.Sum(x => { return x.DiscountAmount * x.Count; });
-
-    public decimal FinalPrice => Items.Sum(x => { return (x.Price - x.DiscountAmount) * x.Count; });
 }

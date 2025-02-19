@@ -1,4 +1,6 @@
-﻿global using Basket.API.Exceptions;
+﻿#region
+
+global using Basket.API.Exceptions;
 global using Basket.API.Models;
 global using Carter;
 global using FluentValidation;
@@ -11,3 +13,5 @@ global using Shared.Exceptions.Handler;
 global using Basket.API.Data;
 global using Microsoft.Extensions.Caching.Hybrid;
 global using HealthChecks.UI.Client;
+
+#endregion

@@ -1,31 +1,36 @@
-﻿using Ordering.Domain.Exceptions;
+﻿#region
 
-namespace Ordering.Domain.ValueObjects;
+using Ordering.Domain.Exceptions;
 
-public readonly record struct OrderName
+#endregion
+
+namespace Ordering.Domain.ValueObjects
 {
-    private const int DefaultLength = 8;
-
-    private OrderName(string value)
+    public readonly record struct OrderName
     {
-        Value = value;
-    }
+        private const int DefaultLength = 8;
 
-    public string Value { get; init; }
+        private OrderName(string value)
+        {
+            Value = value;
+        }
 
-    public static OrderName Of(string value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-            throw new DomainException("Order name cannot be null, empty, or whitespace.");
+        public string Value { get; init; }
 
-        if (value.Length < DefaultLength)
-            throw new DomainException($"Order name must be {DefaultLength} characters long.");
+        public static OrderName Of(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new DomainException("Order name cannot be null, empty, or whitespace.");
 
-        return new OrderName(value);
-    }
+            if (value.Length < DefaultLength)
+                throw new DomainException($"Order name must be {DefaultLength} characters long.");
 
-    public override string ToString()
-    {
-        return Value;
+            return new OrderName(value);
+        }
+
+        public override string ToString()
+        {
+            return Value;
+        }
     }
 }

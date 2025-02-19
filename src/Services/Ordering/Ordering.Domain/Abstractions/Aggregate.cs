@@ -1,23 +1,28 @@
-﻿using Ordering.Domain.Interfaces;
+﻿#region
 
-namespace Ordering.Domain.Abstractions;
+using Ordering.Domain.Interfaces;
 
-public class Aggregate<Tid> : Entity<Tid>, IAggregate<Tid>
+#endregion
+
+namespace Ordering.Domain.Abstractions
 {
-    private readonly List<IDomainEvent> _domainEvents = new();
-
-    public IReadOnlyList<IDomainEvent> DomainEvents =>
-        _domainEvents.AsReadOnly();
-
-    public IDomainEvent[] ClearDomainEvents()
+    public class Aggregate<Tid> : Entity<Tid>, IAggregate<Tid>
     {
-        var domainEvents = _domainEvents.ToArray();
-        _domainEvents.Clear();
-        return domainEvents;
-    }
+        private readonly List<IDomainEvent> _domainEvents = new();
 
-    public void AddDomainEvent(IDomainEvent domainEvent)
-    {
-        _domainEvents.Add(domainEvent);
+        public IReadOnlyList<IDomainEvent> DomainEvents =>
+            _domainEvents.AsReadOnly();
+
+        public IDomainEvent[] ClearDomainEvents()
+        {
+            var domainEvents = _domainEvents.ToArray();
+            _domainEvents.Clear();
+            return domainEvents;
+        }
+
+        public void AddDomainEvent(IDomainEvent domainEvent)
+        {
+            _domainEvents.Add(domainEvent);
+        }
     }
 }

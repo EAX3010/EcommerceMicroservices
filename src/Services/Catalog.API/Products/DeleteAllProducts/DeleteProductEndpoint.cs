@@ -1,20 +1,21 @@
-﻿namespace Catalog.API.Products.DeleteAllProducts;
-
-public record DeleteAllProductsResponse(bool IsSuccess = false, int DeletedCount = 0);
-
-public class DeleteAllProductsEndpoint : ICarterModule
+﻿namespace Catalog.API.Products.DeleteAllProducts
 {
-    public void AddRoutes(IEndpointRouteBuilder app)
-    {
-        _ = app.MapDelete("/products", Handle)
-            .Produces<DeleteAllProductsResponse>()
-            .WithName("DeleteAllProducts");
+    public record DeleteAllProductsResponse(bool IsSuccess = false, int DeletedCount = 0);
 
-        static async Task<IResult> Handle(ISender sender)
+    public class DeleteAllProductsEndpoint : ICarterModule
+    {
+        public void AddRoutes(IEndpointRouteBuilder app)
         {
-            var result = await sender.Send(new DeleteAllProductsQuery());
-            var response = result.Adapt<DeleteAllProductsResponse>();
-            return Results.Ok(response);
+            _ = app.MapDelete("/products", Handle)
+                .Produces<DeleteAllProductsResponse>()
+                .WithName("DeleteAllProducts");
+
+            static async Task<IResult> Handle(ISender sender)
+            {
+                var result = await sender.Send(new DeleteAllProductsQuery());
+                var response = result.Adapt<DeleteAllProductsResponse>();
+                return Results.Ok(response);
+            }
         }
     }
 }

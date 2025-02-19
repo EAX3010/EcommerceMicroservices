@@ -1,6 +1,6 @@
 ﻿namespace Ordering.Application.Orders.Queries.GetOrdersByName
 {
-    public class GetOrdersByName
-    {
-    }
+    public record GetOrdersByNameQuery(string Name) : IQuery<GetOrdersByNameResult>;
+
+    public record GetOrdersByNameResult(IEnumerable<OrderDto> Orders);
 }

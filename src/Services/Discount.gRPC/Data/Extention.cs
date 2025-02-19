@@ -1,12 +1,13 @@
-﻿namespace Discount.gRPC.Data;
-
-public static class Extention
+﻿namespace Discount.gRPC.Data
 {
-    public static IApplicationBuilder UseMigration(this IApplicationBuilder app)
+    public static class Extention
     {
-        using var scope = app.ApplicationServices.CreateScope();
-        using var dbContext = scope.ServiceProvider.GetRequiredService<MyDBContext>();
-        dbContext.Database.MigrateAsync();
-        return app;
+        public static IApplicationBuilder UseMigration(this IApplicationBuilder app)
+        {
+            using var scope = app.ApplicationServices.CreateScope();
+            using var dbContext = scope.ServiceProvider.GetRequiredService<MyDBContext>();
+            dbContext.Database.MigrateAsync();
+            return app;
+        }
     }
 }

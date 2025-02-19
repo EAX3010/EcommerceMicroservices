@@ -1,20 +1,25 @@
-﻿using Shared.Exceptions;
+﻿#region
 
-namespace Basket.API.Exceptions;
+using Shared.Exceptions;
 
-public class BasketNotFoundException : NotFoundException
+#endregion
+
+namespace Basket.API.Exceptions
 {
-    public BasketNotFoundException(string Username)
-        : base($"Basket for user {Username} was not found")
+    public class BasketNotFoundException : NotFoundException
     {
-    }
+        public BasketNotFoundException(string Username)
+            : base($"Basket for user {Username} was not found")
+        {
+        }
 
-    public BasketNotFoundException(string name, object id) : base($"Entity {name} {id} was not Found")
-    {
-        EntityName = name;
-        EntityId = id;
-    }
+        public BasketNotFoundException(string name, object id) : base($"Entity {name} {id} was not Found")
+        {
+            EntityName = name;
+            EntityId = id;
+        }
 
-    public string? EntityName { get; }
-    public object? EntityId { get; }
+        public string? EntityName { get; }
+        public object? EntityId { get; }
+    }
 }

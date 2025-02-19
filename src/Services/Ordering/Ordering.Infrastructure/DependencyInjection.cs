@@ -1,23 +1,28 @@
-﻿using Ordering.Application.Data;
+﻿#region
+
+using Ordering.Application.Data;
 using Ordering.Infrastructure.Data.Interceptors;
 
-namespace Ordering.Infrastructure;
+#endregion
 
-public static class DependencyInjection
+namespace Ordering.Infrastructure
 {
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
-        IConfiguration configuration)
+    public static class DependencyInjection
     {
-        var connectionString = configuration.GetConnectionString("Database");
-        services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
-        services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
-        services.AddDbContext<ApplicationDbContext>((sp, options) =>
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
+            IConfiguration configuration)
         {
-            options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-            options.UseSqlServer(connectionString);
-        });
+            var connectionString = configuration.GetConnectionString("Database");
+            services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+            services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+            services.AddDbContext<ApplicationDbContext>((sp, options) =>
+            {
+                options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+                options.UseSqlServer(connectionString);
+            });
 
-        services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
-        return services;
+            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+            return services;
+        }
     }
 }

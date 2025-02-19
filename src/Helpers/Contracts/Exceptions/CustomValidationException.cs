@@ -1,8 +1,13 @@
-﻿using FluentValidation;
+﻿#region
+
+using FluentValidation;
 using FluentValidation.Results;
 
-namespace Shared.Exceptions;
+#endregion
 
-internal class CustomValidationException(IEnumerable<ValidationFailure> errors) : ValidationException(errors)
+namespace Shared.Exceptions
 {
+    internal class CustomValidationException(IEnumerable<ValidationFailure> errors) : ValidationException(errors)
+    {
+    }
 }

@@ -1,5 +1,9 @@
+#region
+
 using Discount.gRPC;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+
+#endregion
 
 var builder = WebApplication.CreateBuilder(args);
 var assembly = typeof(Program).Assembly;

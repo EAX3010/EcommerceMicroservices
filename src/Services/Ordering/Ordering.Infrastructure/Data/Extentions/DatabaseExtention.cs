@@ -1,33 +1,38 @@
-﻿using Microsoft.Extensions.Logging;
+﻿#region
+
+using Microsoft.Extensions.Logging;
 using Ordering.Infrastructure.Data.Extensions;
 
-namespace Ordering.Infrastructure.Data.Extentions;
+#endregion
 
-public static class DatabaseExtention
+namespace Ordering.Infrastructure.Data.Extentions
 {
-    public static async Task InitializeDatabase(this IServiceScope scope)
+    public static class DatabaseExtention
     {
-        var services = scope.ServiceProvider;
-        var logger = services.GetRequiredService<ILogger<ApplicationDbContext>>();
-        try
+        public static async Task InitializeDatabase(this IServiceScope scope)
         {
-            var context = services.GetRequiredService<ApplicationDbContext>();
-            if (context.Database.IsSqlServer())
+            var services = scope.ServiceProvider;
+            var logger = services.GetRequiredService<ILogger<ApplicationDbContext>>();
+            try
             {
-                context.Database.MigrateAsync().GetAwaiter().GetResult();
-                await SeedAsync(context);
+                var context = services.GetRequiredService<ApplicationDbContext>();
+                if (context.Database.IsSqlServer())
+                {
+                    context.Database.MigrateAsync().GetAwaiter().GetResult();
+                    await SeedAsync(context);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred while migrating or initializing the database.");
             }
         }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "An error occurred while migrating or initializing the database.");
-        }
-    }
 
-    private static async Task SeedAsync(ApplicationDbContext context)
-    {
-        await DatabaseSeed.GenerateCustomers(context, 300);
-        await DatabaseSeed.GenerateProducts(context, 1000);
-        await DatabaseSeed.GenerateOrders(context, 1200);
+        private static async Task SeedAsync(ApplicationDbContext context)
+        {
+            await DatabaseSeed.GenerateCustomers(context, 300);
+            await DatabaseSeed.GenerateProducts(context, 1000);
+            await DatabaseSeed.GenerateOrders(context, 1200);
+        }
     }
 }
