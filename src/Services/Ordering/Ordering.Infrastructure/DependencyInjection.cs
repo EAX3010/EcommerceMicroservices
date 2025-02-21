@@ -12,7 +12,7 @@ namespace Ordering.Infrastructure
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services,
             IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("Database");
+            string? connectionString = configuration.GetConnectionString("Database");
             services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
             services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
             services.AddDbContext<ApplicationDbContext>((sp, options) =>

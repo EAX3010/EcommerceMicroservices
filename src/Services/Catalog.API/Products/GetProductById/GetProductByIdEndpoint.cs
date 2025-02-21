@@ -12,9 +12,9 @@
 
             static async Task<IResult> Handle(Guid Id, ISender sender)
             {
-                var result = await sender.Send(new GetProductByIdQuery(Id));
+                GetProductByIdResult result = await sender.Send(new GetProductByIdQuery(Id));
 
-                var response = result.Adapt<GetProductByIdResponse>();
+                GetProductByIdResponse response = result.Adapt<GetProductByIdResponse>();
 
                 return Results.Ok(response);
             }

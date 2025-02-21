@@ -8,7 +8,7 @@
         <UserSecretsId>cd3fc4bd-f35a-4a7b-8918-8ae1d7f1d7db</UserSecretsId>
         <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
         <DockerfileContext>..\..</DockerfileContext>
-        <AnalysisLevel>preview-recommended</AnalysisLevel>
+		<AnalysisLevel>preview-all</AnalysisLevel>
     </PropertyGroup>
 
     <ItemGroup>

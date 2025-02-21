@@ -11,11 +11,11 @@ namespace Ordering.Infrastructure.Data.Extentions
     {
         public static async Task InitializeDatabase(this IServiceScope scope)
         {
-            var services = scope.ServiceProvider;
-            var logger = services.GetRequiredService<ILogger<ApplicationDbContext>>();
+            IServiceProvider services = scope.ServiceProvider;
+            ILogger<ApplicationDbContext> logger = services.GetRequiredService<ILogger<ApplicationDbContext>>();
             try
             {
-                var context = services.GetRequiredService<ApplicationDbContext>();
+                ApplicationDbContext context = services.GetRequiredService<ApplicationDbContext>();
                 if (context.Database.IsSqlServer())
                 {
                     context.Database.MigrateAsync().GetAwaiter().GetResult();

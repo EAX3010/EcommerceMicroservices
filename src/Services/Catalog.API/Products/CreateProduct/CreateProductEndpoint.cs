@@ -22,11 +22,11 @@
 
             static async Task<IResult> Handle(CreateProductRequest request, ISender sender)
             {
-                var command = request.Adapt<CreateProductCommand>();
+                CreateProductCommand command = request.Adapt<CreateProductCommand>();
 
-                var result = await sender.Send(command);
+                CreateProductResult result = await sender.Send(command);
 
-                var response = result.Adapt<CreateProductResponse>();
+                CreateProductResponse response = result.Adapt<CreateProductResponse>();
 
                 return Results.Created($"/products/{response.Id}", response);
             }

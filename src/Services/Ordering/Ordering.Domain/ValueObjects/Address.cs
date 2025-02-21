@@ -1,7 +1,7 @@
 ﻿#region
 
-using System.Text.RegularExpressions;
 using Ordering.Domain.Exceptions;
+using System.Text.RegularExpressions;
 
 #endregion
 
@@ -33,16 +33,51 @@ namespace Ordering.Domain.ValueObjects
             string state,
             string country, string zipCode)
         {
-            if (string.IsNullOrWhiteSpace(firstName)) throw new DomainException("First name cannot be empty.");
-            if (string.IsNullOrWhiteSpace(lastName)) throw new DomainException("Last name cannot be empty.");
-            if (string.IsNullOrWhiteSpace(emailAddress)) throw new DomainException("Email address cannot be empty.");
+            if (string.IsNullOrWhiteSpace(firstName))
+            {
+                throw new DomainException("First name cannot be empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(lastName))
+            {
+                throw new DomainException("Last name cannot be empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(emailAddress))
+            {
+                throw new DomainException("Email address cannot be empty.");
+            }
+
             if (!Regex.IsMatch(emailAddress, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
                 throw new DomainException("Invalid email address format.");
-            if (string.IsNullOrWhiteSpace(addressLine)) throw new DomainException("Address line cannot be empty.");
-            if (string.IsNullOrWhiteSpace(state)) throw new DomainException("State cannot be empty.");
-            if (string.IsNullOrWhiteSpace(country)) throw new DomainException("Country cannot be empty.");
-            if (string.IsNullOrWhiteSpace(zipCode)) throw new DomainException("Zip code cannot be empty.");
-            if (zipCode.Length < 3) throw new DomainException("Zip code is too short.");
+            }
+
+            if (string.IsNullOrWhiteSpace(addressLine))
+            {
+                throw new DomainException("Address line cannot be empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(state))
+            {
+                throw new DomainException("State cannot be empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(country))
+            {
+                throw new DomainException("Country cannot be empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(zipCode))
+            {
+                throw new DomainException("Zip code cannot be empty.");
+            }
+
+            if (zipCode.Length < 3)
+            {
+                throw new DomainException("Zip code is too short.");
+            }
+
             return new Address(firstName, lastName, emailAddress, addressLine, state, country, zipCode);
         }
     }

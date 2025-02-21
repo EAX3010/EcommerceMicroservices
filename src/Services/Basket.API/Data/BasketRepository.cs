@@ -6,7 +6,7 @@
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(userName);
 
-            var basket = await session.LoadAsync<ShoppingCart>(userName, cancellationToken);
+            ShoppingCart? basket = await session.LoadAsync<ShoppingCart>(userName, cancellationToken);
             return basket ?? throw new BasketNotFoundException($"Basket not found for user: {userName}");
         }
 
@@ -23,8 +23,12 @@
         public async Task<bool> DeleteBasket(string userName, CancellationToken cancellationToken = default)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(userName);
-            var basket = await session.LoadAsync<ShoppingCart>(userName, cancellationToken);
-            if (basket is null) return false;
+            ShoppingCart? basket = await session.LoadAsync<ShoppingCart>(userName, cancellationToken);
+            if (basket is null)
+            {
+                return false;
+            }
+
             session.Delete(basket);
             await session.SaveChangesAsync(cancellationToken);
             return true;

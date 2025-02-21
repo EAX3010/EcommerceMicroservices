@@ -55,9 +55,7 @@
     {
         public async Task<UpdateProductResult> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
-            var product = await session.LoadAsync<Product>(request.Id, cancellationToken);
-            if (product == null) throw new ProductNotFoundException("Products", request.Id);
-
+            Product? product = await session.LoadAsync<Product>(request.Id, cancellationToken) ?? throw new ProductNotFoundException("Products", request.Id);
             product.Name = request.Name;
             product.Category = request.Category;
             product.Description = request.Description;

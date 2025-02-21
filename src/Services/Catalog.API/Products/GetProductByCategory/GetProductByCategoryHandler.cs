@@ -10,11 +10,13 @@
         public async Task<GetProductsByCategoryResult> Handle(GetProductsByCategoryQuery request,
             CancellationToken cancellationToken)
         {
-            var category = request.category;
+            string category = request.category;
             IReadOnlyList<Product> products = await session.Query<Product>().Where(p => p.Category.Contains(category))
                 .ToListAsync(cancellationToken);
             if (products == null || products?.Count == 0)
+            {
                 throw new ProductNotFoundException("Products", request.category);
+            }
 
             return new GetProductsByCategoryResult(products!);
         }

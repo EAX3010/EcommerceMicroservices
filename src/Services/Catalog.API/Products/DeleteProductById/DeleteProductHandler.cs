@@ -10,10 +10,7 @@
         public async Task<DeleteProductByIdResult> Handle(DeleteProductByIdQuery request,
             CancellationToken cancellationToken)
         {
-            var product = await session.LoadAsync<Product>(request.Id, cancellationToken);
-            if (product == null)
-                throw new ProductNotFoundException("Product", request.Id);
-
+            Product? product = await session.LoadAsync<Product>(request.Id, cancellationToken) ?? throw new ProductNotFoundException("Product", request.Id);
             session.Delete(product);
             await session.SaveChangesAsync(cancellationToken);
             return new DeleteProductByIdResult(true);

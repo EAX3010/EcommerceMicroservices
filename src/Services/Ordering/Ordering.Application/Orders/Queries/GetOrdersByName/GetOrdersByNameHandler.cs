@@ -6,13 +6,12 @@
         public async Task<GetOrdersByNameResult> Handle(GetOrdersByNameQuery request,
             CancellationToken cancellationToken)
         {
-            var orders = await dbContext.Orders.Include(o => o.OrderItems)
+            List<Order> orders = await dbContext.Orders.Include(o => o.OrderItems)
                 .AsNoTracking()
                 .Where(o => o.OrderName.Value.Contains(request.Name))
-                .OrderBy(o => o.OrderName).ToListAsync(cancellationToken);
+                .OrderBy(o => o.OrderName).ToListAsync(cancellationToken).ConfigureAwait(false);
 
-            List<OrderDto> orderDtos = new();
-            orderDtos.AddRange(orders.Select(p => p.ToDto()));
+            List<OrderDto> orderDtos = [.. orders.Select(p => p.ToDto())];
             return new GetOrdersByNameResult(orderDtos);
         }
     }

@@ -35,22 +35,31 @@ namespace Ordering.Infrastructure.Data.Interceptors
 
         private void DispatchDomainEvents(DbContext? context)
         {
-            if (context == null) return;
+            if (context == null)
+            {
+                return;
+            }
 
-            var aggregates = context.ChangeTracker
+            List<IAggregate> aggregates = context.ChangeTracker
                 .Entries<IAggregate>()
                 .Where(e => e.Entity.DomainEvents.Count > 0)
                 .Select(e => e.Entity)
                 .ToList();
 
-            if (aggregates.Count == 0) return;
-
-            foreach (var aggregate in aggregates)
+            if (aggregates.Count == 0)
             {
-                var events = aggregate.DomainEvents.ToList();
+                return;
+            }
+
+            foreach (IAggregate? aggregate in aggregates)
+            {
+                List<IDomainEvent> events = aggregate.DomainEvents.ToList();
                 aggregate.ClearDomainEvents();
 
-                foreach (var domainEvent in events) _mediator.Publish(domainEvent).GetAwaiter().GetResult();
+                foreach (IDomainEvent? domainEvent in events)
+                {
+                    _mediator.Publish(domainEvent).GetAwaiter().GetResult();
+                }
             }
         }
 
@@ -58,24 +67,32 @@ namespace Ordering.Infrastructure.Data.Interceptors
             DbContext? context,
             CancellationToken cancellationToken)
         {
-            if (context == null) return;
+            if (context == null)
+            {
+                return;
+            }
 
-            var aggregates = context.ChangeTracker
+            List<IAggregate> aggregates = context.ChangeTracker
                 .Entries<IAggregate>()
                 .Where(e => e.Entity.DomainEvents.Count > 0)
                 .Select(e => e.Entity)
                 .ToList();
 
-            if (aggregates.Count == 0) return;
-
-            foreach (var aggregate in aggregates)
+            if (aggregates.Count == 0)
             {
-                var events = aggregate.DomainEvents.ToList();
+                return;
+            }
+
+            foreach (IAggregate? aggregate in aggregates)
+            {
+                List<IDomainEvent> events = aggregate.DomainEvents.ToList();
                 aggregate.ClearDomainEvents();
 
-                foreach (var domainEvent in events)
+                foreach (IDomainEvent? domainEvent in events)
+                {
                     await _mediator.Publish(domainEvent, cancellationToken)
                         .ConfigureAwait(false);
+                }
             }
         }
     }

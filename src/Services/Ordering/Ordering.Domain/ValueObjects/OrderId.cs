@@ -17,7 +17,11 @@ namespace Ordering.Domain.ValueObjects
 
         public static OrderId Of(Guid value)
         {
-            if (value == Guid.Empty) throw new DomainException("Order ID cannot be empty.");
+            if (value == Guid.Empty)
+            {
+                throw new DomainException("Order ID cannot be empty.");
+            }
+
             return new OrderId(value);
         }
 

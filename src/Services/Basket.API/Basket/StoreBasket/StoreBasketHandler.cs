@@ -33,7 +33,7 @@ namespace Basket.API.Basket.StoreBasket
         public async Task<StoreBasketResult> Handle(StoreBasketCommand command, CancellationToken cancellationToken)
         {
             await GetDiscount(command.Cart, cancellationToken);
-            var Cart = await repository.StoreBasket(command.Cart, cancellationToken);
+            ShoppingCart Cart = await repository.StoreBasket(command.Cart, cancellationToken);
             return new StoreBasketResult(Cart.Username);
         }
 
@@ -51,7 +51,7 @@ namespace Basket.API.Basket.StoreBasket
             item.DiscountAmount = 0;
             try
             {
-                var coupon = await Proto.GetDiscountAsync(
+                CouponModel coupon = await Proto.GetDiscountAsync(
                     new GetDiscountRequest { ProductName = item.ProductName },
                     deadline: null,
                     headers: null,

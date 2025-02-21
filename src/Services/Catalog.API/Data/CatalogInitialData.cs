@@ -10,8 +10,12 @@ namespace Catalog.API.Data
     {
         public async Task Populate(IDocumentStore store, CancellationToken cancellation)
         {
-            using var session = store.LightweightSession();
-            if (await session.Query<Product>().AnyAsync(cancellation)) return;
+            using IDocumentSession session = store.LightweightSession();
+            if (await session.Query<Product>().AnyAsync(cancellation))
+            {
+                return;
+            }
+
             session.Store(PreProducts());
             await session.SaveChangesAsync(cancellation);
         }

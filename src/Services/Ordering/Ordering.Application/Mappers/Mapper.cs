@@ -12,12 +12,12 @@
                 order.BillingAddress.ToDto(),
                 order.Payment.ToDto(),
                 order.Status,
-                order.OrderItems.Select(item => new OrderItemDto(
+                [.. order.OrderItems.Select(item => new OrderItemDto(
                     item.Id.Value,
                     item.ProductId.Value,
                     item.Quantity,
                     item.Price
-                )).ToList()
+                ))]
             );
         }
 
@@ -47,7 +47,7 @@
 
         public static Order ToOrder(this OrderDto dto)
         {
-            var order = Order.Create(
+            Order order = Order.Create(
                 OrderId.Of(dto.Id),
                 CustomerId.Of(dto.CustomerId),
                 OrderName.Of(dto.OrderName),
@@ -55,7 +55,11 @@
                 dto.BillingAddress.ToAddress(),
                 dto.Payment.ToPayment());
 
-            foreach (var item in dto.OrderItems) order.Add(ProductId.Of(item.ProductId), item.Quantity, item.Price);
+            foreach (OrderItemDto item in dto.OrderItems)
+            {
+                order.Add(ProductId.Of(item.ProductId), item.Quantity, item.Price);
+            }
+
             return order;
         }
 

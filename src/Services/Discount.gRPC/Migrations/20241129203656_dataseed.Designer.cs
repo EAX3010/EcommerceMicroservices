@@ -11,7 +11,9 @@ namespace Discount.gRPC.Migrations
 {
     [DbContext(typeof(MyDBContext))]
     [Migration("20241129203656_dataseed")]
+#pragma warning disable CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
     partial class dataseed
+#pragma warning restore CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

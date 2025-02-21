@@ -20,10 +20,14 @@ namespace Ordering.Domain.ValueObjects
         public static OrderName Of(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
+            {
                 throw new DomainException("Order name cannot be null, empty, or whitespace.");
+            }
 
             if (value.Length < DefaultLength)
+            {
                 throw new DomainException($"Order name must be {DefaultLength} characters long.");
+            }
 
             return new OrderName(value);
         }

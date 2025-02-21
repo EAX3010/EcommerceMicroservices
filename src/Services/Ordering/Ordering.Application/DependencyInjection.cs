@@ -10,12 +10,12 @@ namespace Ordering.Application
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            services.AddMediatR(config =>
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            _ = services.AddMediatR(config =>
             {
-                config.RegisterServicesFromAssembly(assembly);
-                config.AddOpenBehavior(typeof(ValidationBehavior<,>));
-                config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+                _ = config.RegisterServicesFromAssembly(assembly);
+                _ = config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+                _ = config.AddOpenBehavior(typeof(LoggingBehavior<,>));
             });
             return services;
         }

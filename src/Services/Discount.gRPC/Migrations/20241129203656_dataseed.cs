@@ -7,14 +7,16 @@
 namespace Discount.gRPC.Migrations
 {
     /// <inheritdoc />
+#pragma warning disable CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
     public partial class dataseed : Migration
+#pragma warning restore CS8981 // The type name only contains lower-cased ascii characters. Such names may become reserved for the language.
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.InsertData(
+            _ = migrationBuilder.InsertData(
                 table: "Coupons",
-                columns: new[] { "Id", "Amount", "Description", "ProductName" },
+                columns: ["Id", "Amount", "Description", "ProductName"],
                 values: new object[,]
                 {
                     { 3, 120, "Google Pixel Discount", "Google Pixel 6" },
@@ -37,7 +39,7 @@ namespace Discount.gRPC.Migrations
                     { 20, 170, "HP x360 Discount", "HP x360" }
                 });
 
-            migrationBuilder.CreateIndex(
+            _ = migrationBuilder.CreateIndex(
                 name: "IX_Coupons_ProductName",
                 table: "Coupons",
                 column: "ProductName",
@@ -47,7 +49,7 @@ namespace Discount.gRPC.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
+            _ = migrationBuilder.DropIndex(
                 name: "IX_Coupons_ProductName",
                 table: "Coupons");
 

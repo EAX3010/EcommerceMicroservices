@@ -6,11 +6,7 @@ using Shared.Exceptions;
 
 namespace Ordering.Application.Exceptions
 {
-    public class OrderNotFoundException : NotFoundException
+    public class OrderNotFoundException(Guid id) : NotFoundException($"Order with Id {id} was not found")
     {
-        public OrderNotFoundException(Guid id)
-            : base($"Order with Id {id} was not found")
-        {
-        }
     }
 }

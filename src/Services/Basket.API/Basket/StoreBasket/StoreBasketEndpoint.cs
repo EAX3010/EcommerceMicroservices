@@ -14,11 +14,11 @@
 
             static async Task<IResult> Handle(StoreBasketRequest request, ISender sender)
             {
-                var command = request.Adapt<StoreBasketCommand>();
+                StoreBasketCommand command = request.Adapt<StoreBasketCommand>();
 
-                var result = await sender.Send(command);
+                StoreBasketResult result = await sender.Send(command);
 
-                var response = result.Adapt<StoreBasketResponse>();
+                StoreBasketResponse response = result.Adapt<StoreBasketResponse>();
 
                 return Results.Created($"/basket/{response.Username}", response);
             }

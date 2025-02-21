@@ -4,8 +4,8 @@
     {
         public static IApplicationBuilder UseMigration(this IApplicationBuilder app)
         {
-            using var scope = app.ApplicationServices.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetRequiredService<MyDBContext>();
+            using IServiceScope scope = app.ApplicationServices.CreateScope();
+            using MyDBContext dbContext = scope.ServiceProvider.GetRequiredService<MyDBContext>();
             dbContext.Database.MigrateAsync();
             return app;
         }

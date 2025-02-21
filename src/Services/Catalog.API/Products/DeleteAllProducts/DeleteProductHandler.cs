@@ -14,10 +14,15 @@
             IReadOnlyList<Product> products = await session.Query<Product>().ToListAsync(cancellationToken);
 
             if (!products.Any())
+            {
                 return new DeleteAllProductsResult(true);
+            }
 
             // Delete all products
-            foreach (var product in products) session.Delete<Product>(product);
+            foreach (Product product in products)
+            {
+                session.Delete<Product>(product);
+            }
 
             await session.SaveChangesAsync(cancellationToken);
             return new DeleteAllProductsResult(true, products.Count);

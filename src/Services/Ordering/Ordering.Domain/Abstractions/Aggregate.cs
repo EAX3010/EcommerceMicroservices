@@ -6,7 +6,8 @@ using Ordering.Domain.Interfaces;
 
 namespace Ordering.Domain.Abstractions
 {
-    public class Aggregate<Tid> : Entity<Tid>, IAggregate<Tid>
+#pragma warning disable CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
+    public class Aggregate<Tid> : Entity<Tid>, IAggregate<Tid> where Tid : notnull
     {
         private readonly List<IDomainEvent> _domainEvents = new();
 
@@ -15,7 +16,7 @@ namespace Ordering.Domain.Abstractions
 
         public IDomainEvent[] ClearDomainEvents()
         {
-            var domainEvents = _domainEvents.ToArray();
+            IDomainEvent[] domainEvents = _domainEvents.ToArray();
             _domainEvents.Clear();
             return domainEvents;
         }
@@ -25,4 +26,5 @@ namespace Ordering.Domain.Abstractions
             _domainEvents.Add(domainEvent);
         }
     }
+
 }

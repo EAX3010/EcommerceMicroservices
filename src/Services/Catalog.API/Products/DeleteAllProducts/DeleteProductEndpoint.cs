@@ -12,8 +12,8 @@
 
             static async Task<IResult> Handle(ISender sender)
             {
-                var result = await sender.Send(new DeleteAllProductsQuery());
-                var response = result.Adapt<DeleteAllProductsResponse>();
+                DeleteAllProductsResult result = await sender.Send(new DeleteAllProductsQuery());
+                DeleteAllProductsResponse response = result.Adapt<DeleteAllProductsResponse>();
                 return Results.Ok(response);
             }
         }

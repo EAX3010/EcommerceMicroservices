@@ -1,8 +1,8 @@
 ﻿#region
 
-using System.Diagnostics;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 #endregion
 
@@ -23,12 +23,14 @@ namespace Shared.Behavior
 
             Stopwatch timer = new();
             timer.Start();
-            var response = await next();
+            TResponse response = await next();
             timer.Stop();
-            var timeTaken = timer.Elapsed;
+            TimeSpan timeTaken = timer.Elapsed;
             if (timeTaken.Milliseconds > 500) // if the request is greater than 500 Milliseconds, then
+            {
                 logger.LogWarning("[PERFORMANCE] The request {Request} took {TimeTaken}",
                     typeof(TRequest).Name, timeTaken.Seconds);
+            }
 
             logger.LogInformation("[END] Handle request={Request} with Response={Response} timeTaken={timeTaken}",
                 typeof(TRequest).Name, typeof(TResponse).Name, timeTaken.Milliseconds);

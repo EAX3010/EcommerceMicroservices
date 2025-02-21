@@ -4,20 +4,22 @@ namespace Ordering.API
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
             builder.Services
                 .AddApplicationServices()
                 .AddInfrastructureServices(builder.Configuration)
                 .AddApiServices();
 
 
-            var app = builder.Build();
+            WebApplication app = builder.Build();
             app.UseApiServices();
             if (app.Environment.IsDevelopment())
-                using (var scope = app.Services.CreateScope())
+            {
+                using (IServiceScope scope = app.Services.CreateScope())
                 {
-                    scope.InitializeDatabase();
+                    using var _ = scope.InitializeDatabase();
                 }
+            }
 
             app.Run();
         }

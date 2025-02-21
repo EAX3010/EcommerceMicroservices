@@ -9,11 +9,8 @@
     {
         public async Task<GetProductByIdResult> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
-            var productId = request.Id;
-            var product = await session.LoadAsync<Product>(productId, cancellationToken);
-            if (product == null)
-                throw new ProductNotFoundException("Products", request.Id);
-
+            Guid productId = request.Id;
+            Product? product = await session.LoadAsync<Product>(productId, cancellationToken) ?? throw new ProductNotFoundException("Products", request.Id);
             return new GetProductByIdResult(product);
         }
     }

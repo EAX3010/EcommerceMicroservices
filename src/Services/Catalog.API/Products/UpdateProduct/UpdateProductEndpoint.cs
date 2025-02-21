@@ -21,11 +21,11 @@
 
             static async Task<IResult> Handle(UpdateProductRequest request, ISender sender)
             {
-                var command = request.Adapt<UpdateProductCommand>();
+                UpdateProductCommand command = request.Adapt<UpdateProductCommand>();
 
-                var result = await sender.Send(command);
+                UpdateProductResult result = await sender.Send(command);
 
-                var response = result.Adapt<UpdateProductResponse>();
+                UpdateProductResponse response = result.Adapt<UpdateProductResponse>();
 
                 return Results.Ok(response);
             }

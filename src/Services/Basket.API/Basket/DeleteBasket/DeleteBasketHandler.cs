@@ -17,7 +17,7 @@
     {
         public async Task<DeleteBasketResult> Handle(DeleteBasketCommand command, CancellationToken cancellationToken)
         {
-            var result = await repository.DeleteBasket(command.Username, cancellationToken);
+            bool result = await repository.DeleteBasket(command.Username, cancellationToken);
             return new DeleteBasketResult(result);
         }
     }

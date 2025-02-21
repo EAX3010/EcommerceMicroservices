@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 #endregion
 
-var builder = WebApplication.CreateBuilder(args);
-var assembly = typeof(Program).Assembly;
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+System.Reflection.Assembly assembly = typeof(Program).Assembly;
 builder.Services.AddCarter();
 builder.Services.AddMediatR(config =>
 {
@@ -54,7 +54,7 @@ builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(
 });
 
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 app.MapCarter();
 app.UseExceptionHandler(_ => { });
 app.UseHealthChecks("/health", new HealthCheckOptions

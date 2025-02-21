@@ -7,7 +7,7 @@
 
         public static Customer Create(CustomerId id, string name, string email)
         {
-            var customer = new Customer
+            Customer customer = new Customer
             {
                 Id = id,
                 Name = name,

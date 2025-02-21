@@ -19,17 +19,19 @@ namespace Shared.Behavior
             RequestHandlerDelegate<TResponse> next,
             CancellationToken cancellationToken)
         {
-            if (!validators.Any()) return await next();
+            if (!validators.Any())
+            {
+                return await next();
+            }
 
             ValidationContext<TRequest> context = new(request);
 
             ValidationResult[] validationResults = await Task.WhenAll(
                 validators.Select(validator => { return validator.ValidateAsync(context, cancellationToken); }));
 
-            List<ValidationFailure> failures = validationResults
+            List<ValidationFailure> failures = [..validationResults
                 .Where(result => { return !result.IsValid; })
-                .SelectMany(result => { return result.Errors; })
-                .ToList();
+                .SelectMany(result => { return result.Errors; })];
 
             return failures.Count > 0 ? throw new CustomValidationException(failures) : await next();
         }

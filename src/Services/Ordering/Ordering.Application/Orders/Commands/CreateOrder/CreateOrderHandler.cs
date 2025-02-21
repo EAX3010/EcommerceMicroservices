@@ -5,10 +5,10 @@
     {
         public async Task<CreateOrderResult> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
         {
-            var order = command.orderDto.ToOrder();
+            Order order = command.OrderDto.ToOrder();
 
-            dbContext.Orders.Add(order);
-            await dbContext.SaveChangesAsync(cancellationToken);
+            _ = dbContext.Orders.Add(order);
+            _ = await dbContext.SaveChangesAsync(cancellationToken);
             return new CreateOrderResult(order.Id.Value);
         }
     }

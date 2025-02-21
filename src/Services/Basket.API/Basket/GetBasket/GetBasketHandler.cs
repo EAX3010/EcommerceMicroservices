@@ -9,7 +9,7 @@
     {
         public async Task<GetBasketResult> Handle(GetBasketQuery request, CancellationToken cancellationToken)
         {
-            var Cart = await repository.GetBasket(request.Username, cancellationToken);
+            ShoppingCart Cart = await repository.GetBasket(request.Username, cancellationToken);
             return Cart == null ? throw new BasketNotFoundException(request.Username) : new GetBasketResult(Cart);
         }
     }

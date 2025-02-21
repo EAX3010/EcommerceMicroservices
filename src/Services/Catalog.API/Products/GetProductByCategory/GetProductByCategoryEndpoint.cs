@@ -12,9 +12,9 @@
 
             static async Task<IResult> Handle(string category, ISender sender)
             {
-                var result = await sender.Send(new GetProductsByCategoryQuery(category));
+                GetProductsByCategoryResult result = await sender.Send(new GetProductsByCategoryQuery(category));
 
-                var response = result.Adapt<GetProductsByCategoryResponse>();
+                GetProductsByCategoryResponse response = result.Adapt<GetProductsByCategoryResponse>();
 
                 return Results.Ok(response);
             }

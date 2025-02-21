@@ -28,12 +28,16 @@ namespace Ordering.Infrastructure.Data.Interceptors
 
         private static void UpdateEntities(DbContext? context)
         {
-            if (context == null) return;
+            if (context == null)
+            {
+                return;
+            }
 
-            var timestamp = DateTime.UtcNow;
-            var entries = context.ChangeTracker.Entries<IEntity>();
+            DateTime timestamp = DateTime.UtcNow;
+            IEnumerable<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<IEntity>> entries = context.ChangeTracker.Entries<IEntity>();
 
-            foreach (var entry in entries)
+            foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<IEntity> entry in entries)
+            {
                 switch (entry.State)
                 {
                     case EntityState.Added:
@@ -45,6 +49,7 @@ namespace Ordering.Infrastructure.Data.Interceptors
                         SetModifiedProperties(entry.Entity, timestamp);
                         break;
                 }
+            }
         }
 
         private static void SetCreatedProperties(IEntity entity, DateTime timestamp)

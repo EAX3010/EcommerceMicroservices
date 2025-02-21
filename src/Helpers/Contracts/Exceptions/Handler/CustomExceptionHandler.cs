@@ -27,8 +27,8 @@ namespace Shared.Exceptions.Handler
 
             LogException(exception);
 
-            var details = GetExceptionDetails(exception, httpContext);
-            var problemDetails = CreateProblemDetails(details, httpContext, exception);
+            ExceptionDetails details = GetExceptionDetails(exception, httpContext);
+            ProblemDetails problemDetails = CreateProblemDetails(details, httpContext, exception);
 
             httpContext.Response.StatusCode = details.StatusCode;
             httpContext.Response.ContentType = "application/problem+json";
@@ -84,7 +84,7 @@ namespace Shared.Exceptions.Handler
             HttpContext httpContext,
             Exception exception)
         {
-            var problemDetails = new ProblemDetails
+            ProblemDetails problemDetails = new ProblemDetails
             {
                 Title = details.Name,
                 Detail = details.Message,
@@ -96,7 +96,10 @@ namespace Shared.Exceptions.Handler
             problemDetails.Extensions[TraceIdKey] = httpContext.TraceIdentifier;
 
             if (exception is CustomValidationException validationException)
+            {
                 problemDetails.Extensions[ValidationErrorsKey] = validationException.Errors;
+            }
+
             return problemDetails;
         }
     }

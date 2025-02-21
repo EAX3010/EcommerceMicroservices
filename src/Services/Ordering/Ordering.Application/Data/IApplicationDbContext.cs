@@ -1,10 +1,4 @@
-﻿#region
-
-using Microsoft.EntityFrameworkCore;
-
-#endregion
-
-namespace Ordering.Application.Data
+﻿namespace Ordering.Application.Data
 {
     public interface IApplicationDbContext
     {

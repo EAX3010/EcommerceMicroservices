@@ -54,14 +54,14 @@
         {
             if (!context.Customers.Any())
             {
-                var random = new Random();
-                var customers = new List<Customer>();
+                Random random = new Random();
+                List<Customer> customers = new List<Customer>();
 
-                for (var i = 0; i < count; i++)
+                for (int i = 0; i < count; i++)
                 {
-                    var firstName = FirstNames[random.Next(FirstNames.Length)];
-                    var lastName = LastNames[random.Next(LastNames.Length)];
-                    var email =
+                    string firstName = FirstNames[random.Next(FirstNames.Length)];
+                    string lastName = LastNames[random.Next(LastNames.Length)];
+                    string email =
                         $"{firstName.ToLower()}.{lastName.ToLower()}{random.Next(100, 999)}@{GetRandomEmailDomain(random)}";
 
                     customers.Add(Customer.Create(
@@ -80,24 +80,24 @@
         {
             if (!context.Products.Any())
             {
-                var random = new Random();
-                var products = new List<Product>();
+                Random random = new Random();
+                List<Product> products = new List<Product>();
 
-                foreach (var category in ProductCategories)
+                foreach ((string Category, string[] Products, decimal[] PriceRanges) category in ProductCategories)
                 {
-                    var categoryCount = count / ProductCategories.Length;
+                    int categoryCount = count / ProductCategories.Length;
 
-                    for (var i = 0; i < categoryCount; i++)
+                    for (int i = 0; i < categoryCount; i++)
                     {
-                        var baseProduct = category.Products[random.Next(category.Products.Length)];
-                        var basePrice = category.PriceRanges[random.Next(category.PriceRanges.Length)];
+                        string baseProduct = category.Products[random.Next(category.Products.Length)];
+                        decimal basePrice = category.PriceRanges[random.Next(category.PriceRanges.Length)];
 
                         // Add slight price variation
-                        var priceVariation = (decimal)(random.NextDouble() * 0.1 - 0.05); // ±5%
-                        var finalPrice = Math.Round(basePrice * (1 + priceVariation), 2);
+                        decimal priceVariation = (decimal)(random.NextDouble() * 0.1 - 0.05); // ±5%
+                        decimal finalPrice = Math.Round(basePrice * (1 + priceVariation), 2);
 
-                        var year = random.Next(2023, 2026);
-                        var productName = $"{baseProduct} {year}";
+                        int year = random.Next(2023, 2026);
+                        string productName = $"{baseProduct} {year}";
 
                         products.Add(Product.Create(productName, finalPrice));
                     }
@@ -118,25 +118,25 @@
                     return;
                 }
 
-                var customers = await context.Customers.ToListAsync();
-                var products = await context.Products.ToListAsync();
-                var random = new Random();
-                var orders = new List<Order>();
+                List<Customer> customers = await context.Customers.ToListAsync();
+                List<Product> products = await context.Products.ToListAsync();
+                Random random = new Random();
+                List<Order> orders = new List<Order>();
 
                 // Generate orders distributed over the last 12 months
-                var startDate = DateTime.Now.AddYears(-1);
+                DateTime startDate = DateTime.Now.AddYears(-1);
 
-                for (var i = 0; i < count; i++)
+                for (int i = 0; i < count; i++)
                 {
-                    var customer = customers[random.Next(customers.Count)];
-                    var orderDate = startDate.AddDays(random.Next(365));
-                    var customerName = customer.Name.Split(' ');
+                    Customer customer = customers[random.Next(customers.Count)];
+                    DateTime orderDate = startDate.AddDays(random.Next(365));
+                    string[] customerName = customer.Name.Split(' ');
 
                     // Generate realistic addresses
-                    var shippingAddress = GenerateRandomAddress(random);
-                    var billingAddress = random.Next(100) < 80 ? shippingAddress : GenerateRandomAddress(random);
+                    Address shippingAddress = GenerateRandomAddress(random);
+                    Address billingAddress = random.Next(100) < 80 ? shippingAddress : GenerateRandomAddress(random);
 
-                    var order = Order.Create(
+                    Order order = Order.Create(
                         OrderId.Of(Guid.NewGuid()),
                         customer.Id,
                         OrderName.Of($"ORD-{orderDate:yyyyMMdd}-{random.Next(1000, 9999)}"),
@@ -146,40 +146,47 @@
                     );
 
                     // Add products with realistic grouping
-                    var categoryIndex = random.Next(ProductCategories.Length);
-                    var categoryProducts = products
+                    int categoryIndex = random.Next(ProductCategories.Length);
+                    List<Product> categoryProducts = products
                         .Where(p => p.Name.StartsWith(ProductCategories[categoryIndex].Products[0]))
                         .OrderBy(_ => random.Next())
                         .Take(random.Next(1, 4))
                         .ToList();
 
-                    foreach (var product in categoryProducts)
+                    foreach (Product? product in categoryProducts)
                     {
-                        var quantity = GetRealisticQuantity(product.Name);
+                        int quantity = GetRealisticQuantity(product.Name);
                         order.Add(product.Id, quantity, product.Price);
                     }
 
                     // Add random accessories if ordering main products
                     if (categoryIndex != 2) // If not already ordering accessories
                     {
-                        var accessories = products
+                        List<Product> accessories = products
                             .Where(p => p.Name.Contains("Keyboard") || p.Name.Contains("Mouse") ||
                                         p.Name.Contains("Headset"))
                             .OrderBy(_ => random.Next())
                             .Take(random.Next(0, 3))
                             .ToList();
 
-                        foreach (var accessory in accessories) order.Add(accessory.Id, 1, accessory.Price);
+                        foreach (Product? accessory in accessories)
+                        {
+                            order.Add(accessory.Id, 1, accessory.Price);
+                        }
                     }
 
                     orders.Add(order);
                 }
 
-                using var transaction = await context.Database.BeginTransactionAsync();
+                using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
                 try
                 {
                     await context.Orders.AddRangeAsync(orders);
-                    foreach (var order in orders) await context.OrderItems.AddRangeAsync(order.OrderItems);
+                    foreach (Order order in orders)
+                    {
+                        await context.OrderItems.AddRangeAsync(order.OrderItems);
+                    }
+
                     await context.SaveChangesAsync();
                     await transaction.CommitAsync();
                 }
@@ -200,16 +207,16 @@
 
         private static Address GenerateRandomAddress(Random random)
         {
-            var firstName = FirstNames[random.Next(FirstNames.Length)];
-            var lastName = LastNames[random.Next(LastNames.Length)];
-            var streetNumber = random.Next(1, 9999);
-            var streetTypes = new[] { "St", "Ave", "Blvd", "Rd", "Lane", "Drive" };
-            var street =
+            string firstName = FirstNames[random.Next(FirstNames.Length)];
+            string lastName = LastNames[random.Next(LastNames.Length)];
+            int streetNumber = random.Next(1, 9999);
+            string[] streetTypes = new[] { "St", "Ave", "Blvd", "Rd", "Lane", "Drive" };
+            string street =
                 $"{streetNumber} {LastNames[random.Next(LastNames.Length)]} {streetTypes[random.Next(streetTypes.Length)]}";
-            var city = Cities[random.Next(Cities.Length)];
-            var country = Countries[random.Next(Countries.Length)];
-            var zipCode = random.Next(10000, 99999).ToString();
-            var email =
+            string city = Cities[random.Next(Cities.Length)];
+            string country = Countries[random.Next(Countries.Length)];
+            string zipCode = random.Next(10000, 99999).ToString();
+            string email =
                 $"{firstName.ToLower()}.{lastName.ToLower()}{random.Next(100, 999)}@{GetRandomEmailDomain(random)}";
 
             return Address.Of(firstName, lastName, email, street, city, country, zipCode);
@@ -217,14 +224,14 @@
 
         private static Payment GenerateRandomPayment(Random random)
         {
-            var cardTypes = new[] { "4", "5", "3", "6" }; // Representing different card types
-            var cardNumber = cardTypes[random.Next(cardTypes.Length)] +
+            string[] cardTypes = new[] { "4", "5", "3", "6" }; // Representing different card types
+            string cardNumber = cardTypes[random.Next(cardTypes.Length)] +
                              new string(Enumerable.Range(0, 15).Select(_ => random.Next(10).ToString()[0]).ToArray());
-            var name = $"{FirstNames[random.Next(FirstNames.Length)]} {LastNames[random.Next(LastNames.Length)]}";
-            var year = DateTime.Now.Year + random.Next(1, 5);
-            var month = random.Next(1, 13);
-            var expiryDate = $"{month:D2}/{year % 100:D2}";
-            var cvv = random.Next(100, 1000).ToString();
+            string name = $"{FirstNames[random.Next(FirstNames.Length)]} {LastNames[random.Next(LastNames.Length)]}";
+            int year = DateTime.Now.Year + random.Next(1, 5);
+            int month = random.Next(1, 13);
+            string expiryDate = $"{month:D2}/{year % 100:D2}";
+            string cvv = random.Next(100, 1000).ToString();
 
             return Payment.Of(cardNumber, name, expiryDate, cvv, random.Next(1, 5));
         }
@@ -233,10 +240,12 @@
         {
             // Most people buy 1 laptop/phone, but might buy multiple accessories
             if (productName.Contains("Laptop") || productName.Contains("Phone"))
+            {
                 return 1;
+            }
 
             // Accessories might be bought in larger quantities
-            var random = new Random();
+            Random random = new Random();
             return random.Next(1, 4);
         }
     }

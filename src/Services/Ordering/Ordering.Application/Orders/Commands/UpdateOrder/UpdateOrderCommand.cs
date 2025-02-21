@@ -6,7 +6,7 @@ using FluentValidation;
 
 namespace Ordering.Application.Orders.Commands.UpdateOrder
 {
-    public record UpdateOrderCommand(OrderDto orderDto) : ICommand<UpdateOrderResult>;
+    public record UpdateOrderCommand(OrderDto OrderDto) : ICommand<UpdateOrderResult>;
 
     public record UpdateOrderResult(bool IsSuccess);
 
@@ -14,13 +14,13 @@ namespace Ordering.Application.Orders.Commands.UpdateOrder
     {
         public UpdateOrderCommandValidator()
         {
-            _ = RuleFor(x => x.orderDto.OrderName)
+            _ = RuleFor(x => x.OrderDto.OrderName)
                 .NotEmpty().WithMessage("OrderName is required");
 
-            _ = RuleFor(x => x.orderDto.CustomerId)
+            _ = RuleFor(x => x.OrderDto.CustomerId)
                 .NotEmpty().NotNull().WithMessage("CustomerId is required");
 
-            _ = RuleFor(x => x.orderDto.OrderItems)
+            _ = RuleFor(x => x.OrderDto.OrderItems)
                 .NotEmpty().NotNull().WithMessage("OrderItems is required");
         }
     }

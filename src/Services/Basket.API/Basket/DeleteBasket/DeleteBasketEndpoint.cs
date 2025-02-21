@@ -12,8 +12,8 @@
 
             static async Task<IResult> Handle(string userName, ISender sender)
             {
-                var result = await sender.Send(new DeleteBasketCommand(userName));
-                var response = result.Adapt<DeleteBasketResponse>();
+                DeleteBasketResult result = await sender.Send(new DeleteBasketCommand(userName));
+                DeleteBasketResponse response = result.Adapt<DeleteBasketResponse>();
                 return Results.Ok(response);
             }
         }
