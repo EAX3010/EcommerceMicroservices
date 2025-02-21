@@ -10,9 +10,9 @@
                 .AsNoTracking()
                 .Where(o => o.OrderName.Value.Contains(request.Name))
                 .OrderBy(o => o.OrderName).ToListAsync(cancellationToken);
-            List<OrderDto> orderDtos = new();
-            foreach (var order in orders) orderDtos.Add(order.ToDto());
 
+            List<OrderDto> orderDtos = new();
+            orderDtos.AddRange(orders.Select(p => p.ToDto()));
             return new GetOrdersByNameResult(orderDtos);
         }
     }
