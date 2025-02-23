@@ -9,4 +9,5 @@ global using Ordering.Domain.Events;
 global using Ordering.Domain.Models;
 global using Ordering.Domain.ValueObjects;
 global using Shared.CQRS;
+global using Shared.Pagination;
 global using System.Reflection;
