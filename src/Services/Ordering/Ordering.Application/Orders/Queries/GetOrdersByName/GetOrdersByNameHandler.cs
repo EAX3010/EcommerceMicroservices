@@ -11,7 +11,7 @@
                 .Where(o => o.OrderName.Value.Contains(request.Name))
                 .OrderBy(o => o.OrderName).ToListAsync(cancellationToken).ConfigureAwait(false);
 
-            List<OrderDto> orderDtos = [.. orders.Select(p => p.ToDto())];
+            IEnumerable<OrderDto> orderDtos = orders.Select(p => p.ToDto());
             return new GetOrdersByNameResult(orderDtos);
         }
     }

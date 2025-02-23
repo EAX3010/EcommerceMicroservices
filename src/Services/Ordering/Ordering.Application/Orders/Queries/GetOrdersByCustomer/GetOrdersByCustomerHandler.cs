@@ -11,7 +11,7 @@
                 .Where(o => o.CustomerId == CustomerId.Of(request.Customer))
                 .OrderBy(o => o.OrderName).ToListAsync(cancellationToken).ConfigureAwait(false);
 
-            List<OrderDto> orderDtos = [.. orders.Select(p => p.ToDto())];
+            IEnumerable<OrderDto> orderDtos = orders.Select(p => p.ToDto());
             return new GetOrdersByCustomerResult(orderDtos);
         }
     }
