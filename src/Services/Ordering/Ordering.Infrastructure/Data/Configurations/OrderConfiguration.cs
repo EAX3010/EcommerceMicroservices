@@ -11,111 +11,111 @@ namespace Ordering.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            builder.HasKey(o => o.Id);
+            _ = builder.HasKey(o => o.Id);
 
-            builder.Property(o => o.Id).HasConversion(
+            _ = builder.Property(o => o.Id).HasConversion(
                 Id => Id.Value,
                 Id => OrderId.Of(Id));
 
-            builder.HasOne<Customer>()
+            _ = builder.HasOne<Customer>()
                 .WithMany()
                 .HasForeignKey(o => o.CustomerId)
                 .IsRequired();
 
-            builder.HasMany(o => o.OrderItems)
+            _ = builder.HasMany(o => o.OrderItems)
                 .WithOne()
                 .HasForeignKey(oi => oi.OrderId);
 
-            builder.ComplexProperty(
+            _ = builder.ComplexProperty(
                 o => o.OrderName, nameBuilder =>
                 {
-                    nameBuilder.Property(n => n.Value)
+                    _ = nameBuilder.Property(n => n.Value)
                         .HasColumnName(nameof(Order.OrderName))
                         .HasMaxLength(100)
                         .IsRequired();
                 });
-            builder.ComplexProperty(
+            _ = builder.ComplexProperty(
                 o => o.ShippingAddress, addressBuilder =>
                 {
-                    addressBuilder.Property(a => a.FirstName)
+                    _ = addressBuilder.Property(a => a.FirstName)
                         .HasMaxLength(50)
                         .IsRequired();
 
-                    addressBuilder.Property(a => a.LastName)
+                    _ = addressBuilder.Property(a => a.LastName)
                         .HasMaxLength(50)
                         .IsRequired();
 
-                    addressBuilder.Property(a => a.EmailAddress)
+                    _ = addressBuilder.Property(a => a.EmailAddress)
                         .HasMaxLength(50);
 
-                    addressBuilder.Property(a => a.AddressLine)
+                    _ = addressBuilder.Property(a => a.AddressLine)
                         .HasMaxLength(180)
                         .IsRequired();
 
-                    addressBuilder.Property(a => a.Country)
+                    _ = addressBuilder.Property(a => a.Country)
                         .HasMaxLength(50);
 
-                    addressBuilder.Property(a => a.State)
+                    _ = addressBuilder.Property(a => a.State)
                         .HasMaxLength(50);
 
-                    addressBuilder.Property(a => a.ZipCode)
+                    _ = addressBuilder.Property(a => a.ZipCode)
                         .HasMaxLength(5)
                         .IsRequired();
                 });
-            builder.ComplexProperty(
+            _ = builder.ComplexProperty(
                 o => o.BillingAddress, addressBuilder =>
                 {
-                    addressBuilder.Property(a => a.FirstName)
+                    _ = addressBuilder.Property(a => a.FirstName)
                         .HasMaxLength(50)
                         .IsRequired();
 
-                    addressBuilder.Property(a => a.LastName)
+                    _ = addressBuilder.Property(a => a.LastName)
                         .HasMaxLength(50)
                         .IsRequired();
 
-                    addressBuilder.Property(a => a.EmailAddress)
+                    _ = addressBuilder.Property(a => a.EmailAddress)
                         .HasMaxLength(50);
 
-                    addressBuilder.Property(a => a.AddressLine)
+                    _ = addressBuilder.Property(a => a.AddressLine)
                         .HasMaxLength(180)
                         .IsRequired();
 
-                    addressBuilder.Property(a => a.Country)
+                    _ = addressBuilder.Property(a => a.Country)
                         .HasMaxLength(50);
 
-                    addressBuilder.Property(a => a.State)
+                    _ = addressBuilder.Property(a => a.State)
                         .HasMaxLength(50);
 
-                    addressBuilder.Property(a => a.ZipCode)
+                    _ = addressBuilder.Property(a => a.ZipCode)
                         .HasMaxLength(5)
                         .IsRequired();
                 });
-            builder.ComplexProperty(
+            _ = builder.ComplexProperty(
                 o => o.Payment, paymentBuilder =>
                 {
-                    paymentBuilder.Property(p => p.CardHolderName)
+                    _ = paymentBuilder.Property(p => p.CardHolderName)
                         .HasMaxLength(50);
 
-                    paymentBuilder.Property(p => p.CardNumber)
+                    _ = paymentBuilder.Property(p => p.CardNumber)
                         .HasMaxLength(24)
                         .IsRequired();
 
-                    paymentBuilder.Property(p => p.CardExpiration)
+                    _ = paymentBuilder.Property(p => p.CardExpiration)
                         .HasMaxLength(10);
 
-                    paymentBuilder.Property(p => p.CardSecurityNumber)
+                    _ = paymentBuilder.Property(p => p.CardSecurityNumber)
                         .HasMaxLength(3);
 
-                    paymentBuilder.Property(p => p.PaymentMethod);
+                    _ = paymentBuilder.Property(p => p.PaymentMethod);
                 });
 
-            builder.Property(o => o.Status)
+            _ = builder.Property(o => o.Status)
                 .HasDefaultValue(OrderStatus.Draft)
                 .HasConversion(
                     s => s.ToString(),
                     dbStatus => (OrderStatus)Enum.Parse(typeof(OrderStatus), dbStatus));
 
-            builder.Property(o => o.TotalPrice);
+            _ = builder.Property(o => o.TotalPrice);
         }
     }
 }

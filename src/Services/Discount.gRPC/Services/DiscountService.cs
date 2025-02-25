@@ -49,8 +49,8 @@ namespace Discount.gRPC.Services
                 throw new RpcException(new Status(StatusCode.AlreadyExists, "Coupon is Already Exists"));
             }
 
-            dbContext.Coupons.Add(Coupon);
-            await dbContext.SaveChangesAsync();
+            _ = dbContext.Coupons.Add(Coupon);
+            _ = await dbContext.SaveChangesAsync();
 
             logger.LogInformation("Created discount for product: {ProductName} with Id: {Id}", Coupon.ProductName,
                 Coupon.Id);

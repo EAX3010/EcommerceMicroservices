@@ -10,19 +10,19 @@ namespace Ordering.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
-            builder.HasKey(oi => oi.Id);
+            _ = builder.HasKey(oi => oi.Id);
 
-            builder.Property(oi => oi.Id).HasConversion(
+            _ = builder.Property(oi => oi.Id).HasConversion(
                 Id => Id.Value,
                 Id => OrderItemId.Of(Id));
 
-            builder.HasOne<Product>()
+            _ = builder.HasOne<Product>()
                 .WithMany()
                 .HasForeignKey(oi => oi.ProductId);
 
-            builder.Property(oi => oi.Quantity).IsRequired();
+            _ = builder.Property(oi => oi.Quantity).IsRequired();
 
-            builder.Property(oi => oi.Price).IsRequired();
+            _ = builder.Property(oi => oi.Price).IsRequired();
         }
     }
 }

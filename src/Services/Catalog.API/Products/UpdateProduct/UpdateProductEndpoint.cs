@@ -15,7 +15,7 @@
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPut("/products", Handle).Produces<UpdateProductResponse>()
+            _ = app.MapPut("/products", Handle).Produces<UpdateProductResponse>()
                 .ProducesProblem(StatusCodes.Status400BadRequest)
                 .WithName("UpdateProduct");
 

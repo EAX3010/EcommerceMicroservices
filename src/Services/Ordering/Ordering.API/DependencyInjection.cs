@@ -6,13 +6,13 @@ namespace Ordering.API
     {
         public static IServiceCollection AddApiServices(this IServiceCollection services)
         {
-            services.AddCarter();
+            _ = services.AddCarter();
             return services;
         }
 
         public static WebApplication UseApiServices(this WebApplication app)
         {
-            app.MapCarter();
+            _ = app.MapCarter();
             return app;
         }
     }

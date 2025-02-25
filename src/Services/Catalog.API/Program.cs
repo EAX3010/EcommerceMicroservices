@@ -12,9 +12,9 @@ System.Reflection.Assembly assembly = typeof(Program).Assembly;
 
 builder.Services.AddMediatR(config =>
 {
-    config.RegisterServicesFromAssemblies(assembly);
-    config.AddOpenBehavior(typeof(ValidationBehavior<,>));
-    config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+    _ = config.RegisterServicesFromAssemblies(assembly);
+    _ = config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+    _ = config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
 builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddCarter();
@@ -22,7 +22,7 @@ builder.Services.AddMarten(opt => { opt.Connection(builder.Configuration.GetConn
     .UseLightweightSessions();
 if (builder.Environment.IsDevelopment())
 {
-    builder.Services.InitializeMartenWith<CatalogInitialData>();
+    _ = builder.Services.InitializeMartenWith<CatalogInitialData>();
 }
 
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();

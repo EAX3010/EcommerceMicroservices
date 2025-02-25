@@ -72,7 +72,7 @@
                 }
 
                 await context.Customers.AddRangeAsync(customers);
-                await context.SaveChangesAsync();
+                _ = await context.SaveChangesAsync();
             }
         }
 
@@ -104,7 +104,7 @@
                 }
 
                 await context.Products.AddRangeAsync(products);
-                await context.SaveChangesAsync();
+                _ = await context.SaveChangesAsync();
             }
         }
 
@@ -187,7 +187,7 @@
                         await context.OrderItems.AddRangeAsync(order.OrderItems);
                     }
 
-                    await context.SaveChangesAsync();
+                    _ = await context.SaveChangesAsync();
                     await transaction.CommitAsync();
                 }
                 catch (Exception ex)

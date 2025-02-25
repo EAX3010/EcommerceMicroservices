@@ -6,7 +6,7 @@
         {
             using IServiceScope scope = app.ApplicationServices.CreateScope();
             using MyDBContext dbContext = scope.ServiceProvider.GetRequiredService<MyDBContext>();
-            dbContext.Database.MigrateAsync();
+            _ = dbContext.Database.MigrateAsync();
             return app;
         }
     }

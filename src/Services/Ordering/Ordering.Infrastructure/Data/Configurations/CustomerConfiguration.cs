@@ -10,14 +10,14 @@ namespace Ordering.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).HasConversion(Id => Id.Value, // Writing to the database
+            _ = builder.HasKey(x => x.Id);
+            _ = builder.Property(x => x.Id).HasConversion(Id => Id.Value, // Writing to the database
                 Id => CustomerId.Of(Id)); // Reading from the database
 
-            builder.Property(x => x.Name).IsRequired().HasMaxLength(100).IsRequired();
+            _ = builder.Property(x => x.Name).IsRequired().HasMaxLength(100).IsRequired();
 
-            builder.Property(c => c.Email).HasMaxLength(255);
-            builder.HasIndex(c => c.Email).IsUnique();
+            _ = builder.Property(c => c.Email).HasMaxLength(255);
+            _ = builder.HasIndex(c => c.Email).IsUnique();
         }
     }
 }

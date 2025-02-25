@@ -6,7 +6,7 @@
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapGet("/products/{id}", Handle).Produces<GetProductByIdResponse>()
+            _ = app.MapGet("/products/{id}", Handle).Produces<GetProductByIdResponse>()
                 .ProducesProblem(StatusCodes.Status400BadRequest)
                 .WithName("GetProductById");
 

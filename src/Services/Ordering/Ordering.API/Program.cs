@@ -5,14 +5,14 @@ namespace Ordering.API
         public static void Main(string[] args)
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-            builder.Services
+            _ = builder.Services
                 .AddApplicationServices()
                 .AddInfrastructureServices(builder.Configuration)
                 .AddApiServices();
 
 
             WebApplication app = builder.Build();
-            app.UseApiServices();
+            _ = app.UseApiServices();
             if (app.Environment.IsDevelopment())
             {
                 using (IServiceScope scope = app.Services.CreateScope())

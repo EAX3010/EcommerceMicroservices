@@ -6,7 +6,7 @@
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapDelete("/products/{id}", Handle).Produces<DeleteProductByIdResponse>()
+            _ = app.MapDelete("/products/{id}", Handle).Produces<DeleteProductByIdResponse>()
                 .Produces(StatusCodes.Status404NotFound)
                 .WithName("DeleteProductById");
 

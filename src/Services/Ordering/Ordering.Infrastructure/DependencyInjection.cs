@@ -13,15 +13,15 @@ namespace Ordering.Infrastructure
             IConfiguration configuration)
         {
             string? connectionString = configuration.GetConnectionString("Database");
-            services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
-            services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
-            services.AddDbContext<ApplicationDbContext>((sp, options) =>
+            _ = services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+            _ = services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+            _ = services.AddDbContext<ApplicationDbContext>((sp, options) =>
             {
-                options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-                options.UseSqlServer(connectionString);
+                _ = options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+                _ = options.UseSqlServer(connectionString);
             });
 
-            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+            _ = services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
             return services;
         }
     }

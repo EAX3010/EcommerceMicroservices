@@ -56,7 +56,7 @@
             OrderItem? orderItem = _orderItems.FirstOrDefault(x => x.ProductId == productId);
             if (orderItem is not null)
             {
-                _orderItems.Remove(orderItem);
+                _ = _orderItems.Remove(orderItem);
             }
         }
     }

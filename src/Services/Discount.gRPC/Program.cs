@@ -4,7 +4,7 @@ builder.Services.AddGrpc();
 builder.Services.AddGrpcReflection();
 builder.Services.AddDbContext<MyDBContext>(p =>
 {
-    p.UseSqlite(builder.Configuration.GetConnectionString("Database"));
+    _ = p.UseSqlite(builder.Configuration.GetConnectionString("Database"));
 });
 
 WebApplication app = builder.Build();
@@ -12,7 +12,7 @@ app.UseMigration();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapGrpcReflectionService();
+    _ = app.MapGrpcReflectionService();
 }
 
 app.MapGrpcService<DiscountService>();

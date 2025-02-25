@@ -54,7 +54,7 @@ namespace Ordering.Infrastructure.Data.Interceptors
             foreach (IAggregate? aggregate in aggregates)
             {
                 List<IDomainEvent> events = aggregate.DomainEvents.ToList();
-                aggregate.ClearDomainEvents();
+                _ = aggregate.ClearDomainEvents();
 
                 foreach (IDomainEvent? domainEvent in events)
                 {
@@ -86,7 +86,7 @@ namespace Ordering.Infrastructure.Data.Interceptors
             foreach (IAggregate? aggregate in aggregates)
             {
                 List<IDomainEvent> events = aggregate.DomainEvents.ToList();
-                aggregate.ClearDomainEvents();
+                _ = aggregate.ClearDomainEvents();
 
                 foreach (IDomainEvent? domainEvent in events)
                 {

@@ -10,17 +10,17 @@ namespace Ordering.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Product> builder)
         {
-            builder.HasKey(p => p.Id);
+            _ = builder.HasKey(p => p.Id);
 
-            builder.Property(p => p.Id).HasConversion(
+            _ = builder.Property(p => p.Id).HasConversion(
                 Id => Id.Value,
                 Id => ProductId.Of(Id));
 
-            builder.Property(p => p.Name)
+            _ = builder.Property(p => p.Name)
                 .HasMaxLength(100)
                 .IsRequired();
 
-            builder.Property(p => p.Price)
+            _ = builder.Property(p => p.Price)
                 .IsRequired();
         }
     }
