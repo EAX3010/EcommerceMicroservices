@@ -1,4 +1,5 @@
-﻿global using MediatR;
+﻿global using FluentValidation;
+global using MediatR;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
@@ -8,6 +9,7 @@ global using Ordering.Application.Mappers;
 global using Ordering.Domain.Events;
 global using Ordering.Domain.Models;
 global using Ordering.Domain.ValueObjects;
+global using Shared.Behavior;
 global using Shared.CQRS;
 global using Shared.Pagination;
 global using System.Reflection;

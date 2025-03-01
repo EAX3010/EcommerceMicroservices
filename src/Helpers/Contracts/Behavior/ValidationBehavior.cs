@@ -14,20 +14,20 @@ namespace Shared.Behavior
         : IPipelineBehavior<TRequest, TResponse>
         where TRequest : ICommand<TResponse>
     {
-        public async Task<TResponse> Handle(
-            TRequest request,
-            RequestHandlerDelegate<TResponse> next,
-            CancellationToken cancellationToken)
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             if (!validators.Any())
             {
                 return await next();
             }
 
-            ValidationContext<TRequest> context = new(request);
+            Vali dationContext<TRequest> context = new(request);
 
             ValidationResult[] validationResults = await Task.WhenAll(
-                validators.Select(validator => { return validator.ValidateAsync(context, cancellationToken); }));
+                validators.Select(validator =>
+                {
+                    return validator.ValidateAsync(context, cancellationToken);
+                }));
 
             List<ValidationFailure> failures = [..validationResults
                 .Where(result => { return !result.IsValid; })

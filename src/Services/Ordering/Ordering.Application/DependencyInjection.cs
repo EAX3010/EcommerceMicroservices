@@ -1,10 +1,4 @@
-﻿#region
-
-using Shared.Behavior;
-
-#endregion
-
-namespace Ordering.Application
+﻿namespace Ordering.Application
 {
     public static class DependencyInjection
     {
@@ -13,11 +7,12 @@ namespace Ordering.Application
             Assembly assembly = Assembly.GetExecutingAssembly();
             _ = services.AddMediatR(config =>
             {
-                _ = config.RegisterServicesFromAssembly(assembly);
-                _ = config.AddOpenBehavior(typeof(ValidationBehavior<,>));
-                _ = config.AddOpenBehavior(typeof(LoggingBehavior<,>));
-            });
+            _ = config.RegisterServicesFromAssembly(assembly);
+            _ = config.AddOpenBehavior(typeof(Validat           ionBehavior<,>));
+            _ = config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+        });
+            _ = services.AddValidatorsFromAssembly(assembly);
             return services;
         }
-    }
+}
 }
