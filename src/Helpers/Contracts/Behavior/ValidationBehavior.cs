@@ -21,7 +21,7 @@ namespace Shared.Behavior
                 return await next();
             }
 
-            Vali dationContext<TRequest> context = new(request);
+            ValidationContext<TRequest> context = new(request);
 
             ValidationResult[] validationResults = await Task.WhenAll(
                 validators.Select(validator =>

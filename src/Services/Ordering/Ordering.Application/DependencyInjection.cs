@@ -7,12 +7,12 @@
             Assembly assembly = Assembly.GetExecutingAssembly();
             _ = services.AddMediatR(config =>
             {
-            _ = config.RegisterServicesFromAssembly(assembly);
-            _ = config.AddOpenBehavior(typeof(Validat           ionBehavior<,>));
-            _ = config.AddOpenBehavior(typeof(LoggingBehavior<,>));
-        });
+                _ = config.RegisterServicesFromAssembly(assembly);
+                _ = config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+                _ = config.AddOpenBehavior(typeof(LoggingBehavior<,>));
+            });
             _ = services.AddValidatorsFromAssembly(assembly);
             return services;
         }
-}
+    }
 }
