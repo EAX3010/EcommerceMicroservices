@@ -30,9 +30,9 @@ namespace Ordering.Infrastructure.Data.Extentions
 
         private static async Task SeedAsync(ApplicationDbContext context)
         {
-            await DatabaseSeed.GenerateCustomers(context, 300);
-            await DatabaseSeed.GenerateProducts(context, 1000);
-            await DatabaseSeed.GenerateOrders(context, 1200);
+            await DatabaseSeed.GenerateCustomers(context, 10);
+            await DatabaseSeed.GenerateProducts(context, 10);
+            await DatabaseSeed.GenerateOrders(context, 10);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Ordering.API
             {
                 using (IServiceScope scope = app.Services.CreateScope())
                 {
-                    using Task _ = scope.InitializeDatabase();
+                    _ = scope.InitializeDatabase();
                 }
             }
 

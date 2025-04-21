@@ -7,7 +7,7 @@
         {
             int pageSize = request.Page.PageSize;
             int pageIndex = request.Page.PageIndex;
-            long totalItems = await dbContext.Orders.LongCountAsync(cancellationToken);
+            int totalItems = await dbContext.Orders.ToList().Count;
             List<Order> orders = await dbContext.Orders.Include(x => x.OrderItems).AsNoTracking()
                 .OrderBy(o => o.OrderName)
                 .Skip(pageSize * pageIndex)
