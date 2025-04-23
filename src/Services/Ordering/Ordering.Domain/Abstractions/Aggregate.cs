@@ -7,7 +7,7 @@ using Ordering.Domain.Interfaces;
 namespace Ordering.Domain.Abstractions
 {
 #pragma warning disable CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
-    public class Aggregate<Tid> : Entity<Tid>, IAggregate<Tid> where Tid : notnull
+    public class Aggregate<Tid> : Entity<Tid>, IAggregate where Tid : notnull
     {
         private readonly List<IDomainEvent> _domainEvents = new();
 
