@@ -7,12 +7,13 @@
         {
             int pageSize = request.Page.PageSize;
             int pageIndex = request.Page.PageIndex;
-            int totalItems = await dbContext.Orders.ToList().Count;
+            int totalItems = await dbContext.Orders.CountAsync();
+
             List<Order> orders = await dbContext.Orders.Include(x => x.OrderItems).AsNoTracking()
-                .OrderBy(o => o.OrderName)
+                .OrderBy(o => o.OrderName.Value)
                 .Skip(pageSize * pageIndex)
                 .Take(pageSize)
-                .ToListAsync(cancellationToken).ConfigureAwait(false);
+                .ToListAsync(cancellationToken);
 
             return new GetOrderResult(new
                 PaginationResult<OrderDto>(pageIndex,

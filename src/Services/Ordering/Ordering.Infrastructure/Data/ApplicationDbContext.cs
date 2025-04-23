@@ -22,5 +22,6 @@ namespace Ordering.Infrastructure.Data
             _ = builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(builder);
         }
+
     }
 }

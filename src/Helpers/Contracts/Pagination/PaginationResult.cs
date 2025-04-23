@@ -10,9 +10,9 @@
             TotalCount = totalCount;
             Items = items;
         }
-        public int PageIndex { get; }
-        public int PageSize { get; }
-        public long TotalCount { get; }
-        public IEnumerable<IEntity> Items { get; }
+        public int PageIndex { get; set; }
+        public int PageSize { get; set; }
+        public long TotalCount { get; set; }
+        public IEnumerable<IEntity> Items { get; set; }
     }
 }

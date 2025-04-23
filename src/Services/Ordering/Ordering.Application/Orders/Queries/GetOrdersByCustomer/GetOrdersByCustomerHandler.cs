@@ -9,7 +9,7 @@
             List<Order> orders = await dbContext.Orders.Include(o => o.OrderItems)
                 .AsNoTracking()
                 .Where(o => o.CustomerId == CustomerId.Of(request.Customer))
-                .OrderBy(o => o.OrderName).ToListAsync(cancellationToken).ConfigureAwait(false);
+                .OrderBy(o => o.OrderName.Value).ToListAsync(cancellationToken).ConfigureAwait(false);
 
             IEnumerable<OrderDto> orderDtos = orders.Select(p => p.ToDto());
             return new GetOrdersByCustomerResult(orderDtos);

@@ -2,7 +2,7 @@ namespace Ordering.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
             _ = builder.Services
@@ -17,7 +17,7 @@ namespace Ordering.API
             {
                 using (IServiceScope scope = app.Services.CreateScope())
                 {
-                    _ = scope.InitializeDatabase();
+                    await scope.InitializeDatabase();
                 }
             }
 

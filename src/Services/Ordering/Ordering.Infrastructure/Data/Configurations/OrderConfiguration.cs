@@ -115,7 +115,7 @@ namespace Ordering.Infrastructure.Data.Configurations
                     s => s.ToString(),
                     dbStatus => (OrderStatus)Enum.Parse(typeof(OrderStatus), dbStatus));
 
-            _ = builder.Property(o => o.TotalPrice);
+            _ = builder.Ignore(o => o.TotalPrice);
         }
     }
 }

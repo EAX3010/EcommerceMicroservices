@@ -1,7 +1,5 @@
 ﻿#region
 
-using Ordering.Domain.Exceptions;
-
 #endregion
 
 namespace Ordering.Domain.ValueObjects
@@ -19,7 +17,7 @@ namespace Ordering.Domain.ValueObjects
         {
             if (value == Guid.Empty)
             {
-                throw new DomainException("Order ID cannot be empty.");
+                return new OrderId(Guid.NewGuid());
             }
 
             return new OrderId(value);

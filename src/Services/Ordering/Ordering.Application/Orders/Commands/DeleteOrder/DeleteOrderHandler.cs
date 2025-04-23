@@ -12,7 +12,7 @@ namespace Ordering.Application.Orders.Commands.DeleteOrder
         public async Task<DeleteOrderResult> Handle(DeleteOrderCommand command, CancellationToken cancellationToken)
         {
             Guid orderId = command.OrderId;
-            Order? dbOrder = await dbContext.Orders.FindAsync(orderId, cancellationToken)
+            Order? dbOrder = await dbContext.Orders.FindAsync(OrderId.Of(orderId), cancellationToken)
                 ?? throw new OrderNotFoundException(orderId);
             _ = dbContext.Orders.Remove(dbOrder);
             _ = await dbContext.SaveChangesAsync(cancellationToken);

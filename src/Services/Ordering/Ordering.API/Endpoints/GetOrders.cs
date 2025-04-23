@@ -4,7 +4,7 @@ using Shared.Pagination;
 
 namespace Ordering.API.Endpoints
 {
-    public record GetOrderResponse(PaginationResult<OrderDto> result);
+    public record GetOrderResponse(PaginationResult<OrderDto>? Data);
     public class GetOrders : ICarterModule
     {
         public void AddRoutes(IEndpointRouteBuilder app)
@@ -17,6 +17,7 @@ namespace Ordering.API.Endpoints
             static async Task<IResult> Handle([AsParameters] PaginationRequest request, ISender sender)
             {
                 GetOrderResult result = await sender.Send(new GetOrdersQuery(request));
+
                 GetOrderResponse response = result.Adapt<GetOrderResponse>();
                 return Results.Ok(response);
             }

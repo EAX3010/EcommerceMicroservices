@@ -70,132 +70,155 @@
                         email
                     ));
                 }
-
-                await context.Customers.AddRangeAsync(customers);
-                _ = await context.SaveChangesAsync();
+                try
+                {
+                    await context.Customers.AddRangeAsync(customers);
+                    await context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error generating customers: {ex.Message}");
+                    throw;
+                }
             }
         }
 
         public static async Task GenerateProducts(ApplicationDbContext context, int count)
         {
-            if (!context.Products.Any())
+            try
             {
-                Random random = new Random();
-                List<Product> products = new List<Product>();
-
-                foreach ((string Category, string[] Products, decimal[] PriceRanges) category in ProductCategories)
+                if (!context.Products.Any())
                 {
-                    int categoryCount = count / ProductCategories.Length;
+                    Random random = new Random();
+                    List<Product> products = new List<Product>();
 
-                    for (int i = 0; i < categoryCount; i++)
+                    foreach ((string Category, string[] Products, decimal[] PriceRanges) category in ProductCategories)
                     {
-                        string baseProduct = category.Products[random.Next(category.Products.Length)];
-                        decimal basePrice = category.PriceRanges[random.Next(category.PriceRanges.Length)];
+                        int categoryCount = count / ProductCategories.Length;
 
-                        // Add slight price variation
-                        decimal priceVariation = (decimal)(random.NextDouble() * 0.1 - 0.05); // ±5%
-                        decimal finalPrice = Math.Round(basePrice * (1 + priceVariation), 2);
+                        for (int i = 0; i < categoryCount; i++)
+                        {
+                            string baseProduct = category.Products[random.Next(category.Products.Length)];
+                            decimal basePrice = category.PriceRanges[random.Next(category.PriceRanges.Length)];
 
-                        int year = random.Next(2023, 2026);
-                        string productName = $"{baseProduct} {year}";
+                            // Add slight price variation
+                            decimal priceVariation = (decimal)(random.NextDouble() * 0.1 - 0.05); // ±5%
+                            decimal finalPrice = Math.Round(basePrice * (1 + priceVariation), 2);
 
-                        products.Add(Product.Create(productName, finalPrice));
+                            int year = random.Next(2023, 2026);
+                            string productName = $"{baseProduct} {year}";
+
+                            products.Add(Product.Create(productName, finalPrice));
+                        }
                     }
-                }
 
-                await context.Products.AddRangeAsync(products);
-                _ = await context.SaveChangesAsync();
+                    await context.Products.AddRangeAsync(products);
+                    await context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error generating products: {ex.Message}");
+                throw;
             }
         }
 
         public static async Task GenerateOrders(ApplicationDbContext context, int count)
         {
-            if (!context.Orders.Any())
+            try
             {
-                if (!context.Customers.Any() || !context.Products.Any())
+                if (!context.Orders.Any())
                 {
-                    Console.WriteLine("No customers or products available to generate orders.");
-                    return;
-                }
-
-                List<Customer> customers = await context.Customers.ToListAsync();
-                List<Product> products = await context.Products.ToListAsync();
-                Random random = new Random();
-                List<Order> orders = new List<Order>();
-
-                // Generate orders distributed over the last 12 months
-                DateTime startDate = DateTime.Now.AddYears(-1);
-
-                for (int i = 0; i < count; i++)
-                {
-                    Customer customer = customers[random.Next(customers.Count)];
-                    DateTime orderDate = startDate.AddDays(random.Next(365));
-                    string[] customerName = customer.Name.Split(' ');
-
-                    // Generate realistic addresses
-                    Address shippingAddress = GenerateRandomAddress(random);
-                    Address billingAddress = random.Next(100) < 80 ? shippingAddress : GenerateRandomAddress(random);
-
-                    Order order = Order.Create(
-                        OrderId.Of(Guid.NewGuid()),
-                        customer.Id,
-                        OrderName.Of($"ORD-{orderDate:yyyyMMdd}-{random.Next(1000, 9999)}"),
-                        shippingAddress,
-                        billingAddress,
-                        GenerateRandomPayment(random)
-                    );
-
-                    // Add products with realistic grouping
-                    int categoryIndex = random.Next(ProductCategories.Length);
-                    List<Product> categoryProducts = products
-                        .Where(p => p.Name.StartsWith(ProductCategories[categoryIndex].Products[0]))
-                        .OrderBy(_ => random.Next())
-                        .Take(random.Next(1, 4))
-                        .ToList();
-
-                    foreach (Product? product in categoryProducts)
+                    if (!context.Customers.Any() || !context.Products.Any())
                     {
-                        int quantity = GetRealisticQuantity(product.Name);
-                        order.Add(product.Id, quantity, product.Price);
+                        Console.WriteLine("No customers or products available to generate orders.");
+                        return;
                     }
 
-                    // Add random accessories if ordering main products
-                    if (categoryIndex != 2) // If not already ordering accessories
+                    List<Customer> customers = await context.Customers.ToListAsync();
+                    List<Product> products = await context.Products.ToListAsync();
+                    Random random = new Random();
+                    List<Order> orders = new List<Order>();
+
+                    // Generate orders distributed over the last 12 months
+                    DateTime startDate = DateTime.Now.AddYears(-1);
+
+                    for (int i = 0; i < count; i++)
                     {
-                        List<Product> accessories = products
-                            .Where(p => p.Name.Contains("Keyboard") || p.Name.Contains("Mouse") ||
-                                        p.Name.Contains("Headset"))
+                        Customer customer = customers[random.Next(customers.Count)];
+                        DateTime orderDate = startDate.AddDays(random.Next(365));
+                        string[] customerName = customer.Name.Split(' ');
+
+                        // Generate realistic addresses
+                        Address shippingAddress = GenerateRandomAddress(random);
+                        Address billingAddress = random.Next(100) < 80 ? shippingAddress : GenerateRandomAddress(random);
+
+                        Order order = Order.Create(
+                            OrderId.Of(Guid.NewGuid()),
+                            customer.Id,
+                            OrderName.Of($"ORD-{orderDate:yyyyMMdd}-{random.Next(1000, 9999)}"),
+                            shippingAddress,
+                            billingAddress,
+                            GenerateRandomPayment(random)
+                        );
+
+                        // Add products with realistic grouping
+                        int categoryIndex = random.Next(ProductCategories.Length);
+                        List<Product> categoryProducts = products
+                            .Where(p => p.Name.StartsWith(ProductCategories[categoryIndex].Products[0]))
                             .OrderBy(_ => random.Next())
-                            .Take(random.Next(0, 3))
+                            .Take(random.Next(1, 4))
                             .ToList();
 
-                        foreach (Product? accessory in accessories)
+                        foreach (Product? product in categoryProducts)
                         {
-                            order.Add(accessory.Id, 1, accessory.Price);
+                            int quantity = GetRealisticQuantity(product.Name);
+                            order.Add(product.Id, quantity, product.Price);
                         }
+
+                        // Add random accessories if ordering main products
+                        if (categoryIndex != 2) // If not already ordering accessories
+                        {
+                            List<Product> accessories = products
+                                .Where(p => p.Name.Contains("Keyboard") || p.Name.Contains("Mouse") ||
+                                            p.Name.Contains("Headset"))
+                                .OrderBy(_ => random.Next())
+                                .Take(random.Next(0, 3))
+                                .ToList();
+
+                            foreach (Product? accessory in accessories)
+                            {
+                                order.Add(accessory.Id, 1, accessory.Price);
+                            }
+                        }
+
+                        orders.Add(order);
                     }
 
-                    orders.Add(order);
-                }
-
-                using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
-                try
-                {
-                    await context.Orders.AddRangeAsync(orders);
-                    foreach (Order order in orders)
+                    using Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await context.Database.BeginTransactionAsync();
+                    try
                     {
-                        await context.OrderItems.AddRangeAsync(order.OrderItems);
-                    }
+                        await context.Orders.AddRangeAsync(orders);
+                        foreach (Order order in orders)
+                        {
+                            await context.OrderItems.AddRangeAsync(order.OrderItems);
+                        }
 
-                    _ = await context.SaveChangesAsync();
-                    await transaction.CommitAsync();
+                        await context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        await transaction.RollbackAsync();
+                        Console.WriteLine($"Error generating orders: {ex.Message}");
+                        throw;
+                    }
                 }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    Console.WriteLine($"Error generating orders: {ex.Message}");
-                    throw;
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error generating orders: {ex.Message}");
+                throw;
             }
         }
 

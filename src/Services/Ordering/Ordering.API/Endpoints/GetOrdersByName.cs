@@ -8,7 +8,7 @@ namespace Ordering.API.Endpoints
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            _ = app.MapGet("/orders{orderName}", Handle)
+            _ = app.MapGet("/orders/{orderName}", Handle)
                 .Produces<GetOrdersByNameResponse>(StatusCodes.Status200OK)
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .ProducesProblem(StatusCodes.Status400BadRequest)

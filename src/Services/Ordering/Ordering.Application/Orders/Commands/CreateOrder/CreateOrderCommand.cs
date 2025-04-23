@@ -1,7 +1,5 @@
 ﻿#region
 
-using FluentValidation;
-
 #endregion
 
 namespace Ordering.Application.Orders.Commands.CreateOrder

@@ -21,7 +21,7 @@ namespace Ordering.Infrastructure
                 _ = options.UseSqlServer(connectionString);
             });
 
-            _ = services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
+            _ = services.AddTransient<IApplicationDbContext, ApplicationDbContext>();
             return services;
         }
     }

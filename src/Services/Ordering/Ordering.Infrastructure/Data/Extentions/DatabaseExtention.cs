@@ -18,8 +18,10 @@ namespace Ordering.Infrastructure.Data.Extentions
                 ApplicationDbContext context = services.GetRequiredService<ApplicationDbContext>();
                 if (context.Database.IsSqlServer())
                 {
-                    context.Database.MigrateAsync().GetAwaiter().GetResult();
-                    await SeedAsync(context);
+                    await context.Database.MigrateAsync();
+                    await DatabaseSeed.GenerateCustomers(context, 10);
+                    await DatabaseSeed.GenerateProducts(context, 10);
+                    await DatabaseSeed.GenerateOrders(context, 10);
                 }
             }
             catch (Exception ex)
@@ -28,11 +30,5 @@ namespace Ordering.Infrastructure.Data.Extentions
             }
         }
 
-        private static async Task SeedAsync(ApplicationDbContext context)
-        {
-            await DatabaseSeed.GenerateCustomers(context, 10);
-            await DatabaseSeed.GenerateProducts(context, 10);
-            await DatabaseSeed.GenerateOrders(context, 10);
-        }
     }
 }

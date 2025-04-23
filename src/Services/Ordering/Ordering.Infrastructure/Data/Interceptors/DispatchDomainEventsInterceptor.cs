@@ -29,8 +29,8 @@ namespace Ordering.Infrastructure.Data.Interceptors
             InterceptionResult<int> result,
             CancellationToken cancellationToken = default)
         {
-            await DispatchDomainEventsAsync(eventData.Context, cancellationToken).ConfigureAwait(false);
-            return await base.SavingChangesAsync(eventData, result, cancellationToken).ConfigureAwait(false);
+            await DispatchDomainEventsAsync(eventData.Context, cancellationToken);
+            return await base.SavingChangesAsync(eventData, result, cancellationToken);
         }
 
         private void DispatchDomainEvents(DbContext? context)

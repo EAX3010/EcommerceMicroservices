@@ -4,6 +4,12 @@
     {
         public static OrderDto ToDto(this Order order)
         {
+            List<OrderItemDto> orderItems = [.. order.OrderItems.Select(item => new OrderItemDto(
+                    item.Id.Value,
+                    item.ProductId.Value,
+                    item.Quantity,
+                    item.Price
+                ))];
             return new OrderDto(
                 order.Id.Value,
                 order.CustomerId.Value,
@@ -12,12 +18,7 @@
                 order.BillingAddress.ToDto(),
                 order.Payment.ToDto(),
                 order.Status,
-                [.. order.OrderItems.Select(item => new OrderItemDto(
-                    item.Id.Value,
-                    item.ProductId.Value,
-                    item.Quantity,
-                    item.Price
-                ))]
+                orderItems
             );
         }
 
