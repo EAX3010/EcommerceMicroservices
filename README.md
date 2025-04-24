@@ -189,8 +189,3 @@ Each service includes:
 
 This project is licensed under the MIT License.
 
----
-
-## 📞 Contact
-
-Project Link: [https://github.com/EAX3010/EcommerceMicroservices](https://github.com/EAX3010/EcommerceMicroservices)
