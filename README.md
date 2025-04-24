@@ -47,12 +47,6 @@
 - **DI:** Scrutor + .NET native DI
 - **Tools:** Docker, Docker Compose, Azure Container Targets
 
----
-
-## 🧱 Project Layout
-src/ ├── Services/ │ ├── Basket.API │ ├── Catalog.API │ ├── Ordering/ │ │ ├── Ordering.API │ │ ├── Ordering.Application │ │ ├── Ordering.Domain │ │ └── Ordering.Infrastructure │ └── Discount.gRPC │ └── Helpers/ └── Contracts/ ├── CQRS Interfaces (ICommand, IQuery, Handlers) ├── Behaviors (Logging, Validation) ├── Exceptions (BadRequest, NotFound, etc.) └── Pagination Utilities
-
-
 
 ---
 
