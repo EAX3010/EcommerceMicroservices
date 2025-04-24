@@ -12,7 +12,8 @@
 
 > ⚠️ This project is under active development. Feedback and contributions are welcome!
 
----
+Dapper Version (dapper migration) – work in progress, replacing EF Core with Dapper
+
 
 ## 📋 Table of Contents
 - [Overview](#-overview)
