@@ -18,7 +18,6 @@
 - [Overview](#-overview)
 - [Features](#-features)
 - [Architecture](#-architecture)
-- [Tech Stack](#-tech-stack)
 - [Microservices](#-microservices)
 - [Getting Started](#-getting-started)
 - [Docker Deployment](#-docker-deployment)
@@ -68,20 +67,6 @@ The application follows domain-driven design principles and microservices archit
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
----
-
-## 🛠️ Tech Stack
-
-- **Backend:** .NET 9, ASP.NET Core Minimal APIs
-- **Database:** PostgreSQL, SQL Server, Entity Framework Core
-- **Caching:** Redis StackExchange, Hybrid Caching (`Microsoft.Extensions.Caching.Hybrid`, `Microsoft.Extensions.Caching.StackExchangeRedis`)
-- **Service Communication:** gRPC
-- **API Composition:** Carter 
-- **Health Checks:** AspNetCore.HealthChecks
-- **DI:** Scrutor 
-- **gRPC:** Grpc
-- **Tools:** Docker, Docker Compose
 
 ---
 
