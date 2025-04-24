@@ -181,17 +181,6 @@ docker-compose up -d
 - **Discount gRPC** has no dependencies
 - **Ordering API** depends on: ordering.db
 
-### Database Configuration
-- **PostgreSQL** containers:
-  - User: postgres
-  - Password: postgres
-  - Databases: CatalogDb, BasketDb
-- **SQL Server** container:
-  - User: sa
-  - Password: 65536653dD
-  - TrustServerCertificate: True
-  - Encrypt: False
-
 ### Volume Persistence
 - catalog_volume: PostgreSQL data for Catalog service
 - basket_volume: PostgreSQL data for Basket service
