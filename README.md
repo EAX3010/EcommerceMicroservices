@@ -77,11 +77,11 @@ The application follows domain-driven design principles and microservices archit
 - **Database:** PostgreSQL, SQL Server, Entity Framework Core
 - **Caching:** Redis StackExchange, Hybrid Caching (`Microsoft.Extensions.Caching.Hybrid`, `Microsoft.Extensions.Caching.StackExchangeRedis`)
 - **Service Communication:** gRPC
-- **API Composition:** Carter (9.0.0)
-- **Health Checks:** AspNetCore.HealthChecks.NpgSql, AspNetCore.HealthChecks.Redis, AspNetCore.HealthChecks.UI.Client
-- **DI:** Scrutor (5.0.2) + .NET native DI
-- **Cloud:** Microsoft.VisualStudio.Azure.Containers.Tools.Targets (1.21.0)
-- **gRPC:** Grpc.AspNetCore (2.67.0), Grpc.AspNetCore.Server.Reflection (2.67.0)
+- **API Composition:** Carter 
+- **Health Checks:** AspNetCore.HealthChecks
+- **DI:** Scrutor 
+- **Cloud:** 
+- **gRPC:** Grpc
 - **Tools:** Docker, Docker Compose
 
 ---
@@ -102,11 +102,12 @@ The application follows domain-driven design principles and microservices archit
 - Redis StackExchange integration
 - Health checks for Redis and NpgSql
 - Carter for API composition
+- gRPC client for Discount service communication
 
 ### Discount Service
 - Promotional discounts and Coupon management
 - gRPC implementation with service reflection
-- SQL Server database with Entity Framework Core
+- SQLite database 
 - Database migrations and seeding
 - Proto file-based service definition
 - Models with Coupon entity
@@ -159,20 +160,49 @@ dotnet run
 
 ## 🐳 Docker Deployment
 
-To run the entire application using Docker:
+The entire application can be deployed using Docker Compose:
 
 ```bash
 docker-compose up -d
 ```
 
-This will start all services and their dependencies defined in the docker-compose.yml file.
+### Container Configuration
+
+| Service | Container | Database | Cache | Ports (External:Internal) |
+|---------|-----------|----------|-------|--------------------------|
+| Catalog API | catalog.api | PostgreSQL (catalog.db) | - | 6000:8080, 6060:8081 |
+| Basket API | basket.api | PostgreSQL (basket.db) | Redis (hybridcache) | 6001:8080, 6061:8081 |
+| Discount gRPC | discount.grpc | SQLite (DiscountDb) | - | 6002:8080, 6062:8081 |
+| Ordering API | ordering.api | SQL Server (ordering.db) | - | 6003:8080, 6063:8081 |
+
+### Service Dependencies
+- **Basket API** depends on: basket.db, hybridcache, discount.grpc
+- **Catalog API** depends on: catalog.db
+- **Discount gRPC** has no dependencies
+- **Ordering API** depends on: ordering.db
+
+### Database Configuration
+- **PostgreSQL** containers:
+  - User: postgres
+  - Password: postgres
+  - Databases: CatalogDb, BasketDb
+- **SQL Server** container:
+  - User: sa
+  - Password: 65536653dD
+  - TrustServerCertificate: True
+  - Encrypt: False
+
+### Volume Persistence
+- catalog_volume: PostgreSQL data for Catalog service
+- basket_volume: PostgreSQL data for Basket service
+- ordering_volume: SQL Server data for Ordering service
 
 ### Service Endpoints (when running with docker-compose)
 
-- Catalog API: `http://localhost:8000`
-- Basket API: `http://localhost:8001`
-- Discount gRPC: `http://localhost:8002`
-- Ordering API: `http://localhost:8003`
+- Catalog API: `http://localhost:6000` (HTTP), `https://localhost:6060` (HTTPS)
+- Basket API: `http://localhost:6001` (HTTP), `https://localhost:6061` (HTTPS)
+- Discount gRPC: `http://localhost:6002` (HTTP), `https://localhost:6062` (HTTPS)
+- Ordering API: `http://localhost:6003` (HTTP), `https://localhost:6063` (HTTPS)
 
 Each service includes:
 - Health checks integration (AspNetCore.HealthChecks)
