@@ -80,7 +80,6 @@ The application follows domain-driven design principles and microservices archit
 - **API Composition:** Carter 
 - **Health Checks:** AspNetCore.HealthChecks
 - **DI:** Scrutor 
-- **Cloud:** 
 - **gRPC:** Grpc
 - **Tools:** Docker, Docker Compose
 
