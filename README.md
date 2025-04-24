@@ -12,7 +12,7 @@
 
 > ⚠️ This project is under active development. Feedback and contributions are welcome!
 
-Dapper Version (dapper migration) – work in progress, replacing EF Core with Dapper
+Dapper Version [dapper migration](https://github.com/EAX3010/EcommerceMicroservices/tree/dapper-migration) – work in progress, replacing EF Core with Dapper
 
 
 ## 📋 Table of Contents
