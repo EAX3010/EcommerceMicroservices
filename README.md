@@ -34,7 +34,7 @@
 
 ## 🛠️ Tech Stack
 
-- **Backend:** .NET 9 (Preview), ASP.NET Core Minimal APIs
+- **Backend:** .NET 9 , ASP.NET Core Minimal APIs
 - **Database:** PostgreSQL, SQL Server, SQLite, Marten (Event Store / Document DB)
 - **Caching:** Redis, In-Memory, Hybrid Caching (`Microsoft.Extensions.Caching.Hybrid`)
 - **Message Bus:** RabbitMQ
