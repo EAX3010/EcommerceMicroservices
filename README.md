@@ -143,6 +143,7 @@ docker-compose up -d
 
 Each service includes:
 - Health checks integration (AspNetCore.HealthChecks)
+- Global Exception Handler
 - Containerization with Docker
 - Azure Container Tools support
 - Configuration via appsettings.json
