@@ -5,7 +5,11 @@
         public async Task<ShoppingCart> GetBasket(string userName, CancellationToken cancellationToken = default)
         {
             return await cache.GetOrCreateAsync<ShoppingCart>($"{userName}",
-                async cancel => { return await basketRepository.GetBasket(userName, cancel); },
+                async cancel =>
+                {
+                    var result = await basketRepository.GetBasket(userName, cancel);
+                    return result;
+                },
                 cancellationToken: cancellationToken);
         }
 
