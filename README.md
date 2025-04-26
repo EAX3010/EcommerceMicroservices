@@ -30,7 +30,7 @@ A modern e-commerce platform built using a microservices architecture with .NET 
 
 ---
 
-## ✨ Features
+## Features
 
 - CQRS architecture with MediatR and pipeline behaviors
 - Clean Architecture + Domain-Driven Design
@@ -48,7 +48,7 @@ A modern e-commerce platform built using a microservices architecture with .NET 
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 The application follows domain-driven design principles and microservices architecture:
 
@@ -70,7 +70,7 @@ The application follows domain-driven design principles and microservices archit
 
 ---
 
-## 🚀 Microservices
+## Microservices
 
 ### Catalog Service
 - Product catalog management
@@ -106,7 +106,7 @@ The application follows domain-driven design principles and microservices archit
 
 ---
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
 The entire application can be deployed using Docker Compose:
 
@@ -143,13 +143,14 @@ docker-compose up -d
 
 Each service includes:
 - Health checks integration (AspNetCore.HealthChecks)
+- Global Exception Handler
 - Containerization with Docker
 - Azure Container Tools support
 - Configuration via appsettings.json
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
 
