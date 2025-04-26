@@ -8,7 +8,7 @@ namespace Ordering.API
             _ = builder.Services
                 .AddApplicationServices()
                 .AddInfrastructureServices(builder.Configuration)
-                .AddApiServices();
+                .AddApiServices(builder.Configuration);
 
 
             WebApplication app = builder.Build();
