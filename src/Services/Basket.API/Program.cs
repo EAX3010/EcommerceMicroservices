@@ -2,6 +2,7 @@
 
 using Discount.gRPC;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Shared.Messaging.MassTransit;
 
 #endregion
 
@@ -18,7 +19,7 @@ builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddMarten(opt => { opt.Connection(builder.Configuration.GetConnectionString("Database")!); })
     .UseLightweightSessions();
 
-#pragma warning disable EXTEXP0018
+builder.Services.AddMessageBroker(builder.Configuration);
 builder.Services.AddHybridCache(op =>
 {
     op.DefaultEntryOptions = new HybridCacheEntryOptions
@@ -31,7 +32,6 @@ builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = builder.Configuration.GetConnectionString("RedisConnectionString");
 });
-#pragma warning restore EXTEXP0018
 
 builder.Services.AddScoped<IBasketRepository, BasketRepository>(); // Register concrete repository
 builder.Services.Decorate<IBasketRepository, CachedBasketRepository>(); // Register decorator as implementation
