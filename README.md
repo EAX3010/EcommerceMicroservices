@@ -77,31 +77,25 @@ The application follows domain-driven design principles and microservices archit
 - Product categories and inventory
 - Product search and filtering
 - PostgreSQL database
-- Entity Framework Core
+- Entity Framework 
 
 ### Basket Service - Vertical Slices
-- Shopping cart management (GetBasket, StoreBasket, DeleteBasket)
-- User session handling
-- Hybrid caching with custom JsonHybridCacheSerializer
-- Redis StackExchange integration
-- Health checks for Redis and NpgSql
-- Carter for API composition
+- Shopping cart (GetBasket, StoreBasket, DeleteBasket)
+- Hybrid caching (Preview)
+- Redis  
 - gRPC client for Discount service communication
 
 ### Discount Service - Vertical Slices
 - Promotional discounts and Coupon management
 - gRPC implementation with service reflection
-- SQLite database 
-- Database migrations and seeding
+- SQLite  
 - Proto file-based service definition
-- Models with Coupon entity
 
 ### Ordering Service - Clean Architecture 
 - Order processing with CRUD operations
 - Endpoint (CreateOrder, DeleteOrder, GetOrders, GetOrdersByCustomer, GetOrdersByName, UpdateOrder)
 - Clean architecture with separate Application, Domain, and Infrastructure layers
-- Carter for minimal API routing
-- Entity Framework Core with SQL Server
+- Entity Framework with SQL Server
 
 
 ---
@@ -142,7 +136,8 @@ docker-compose up -d
 - Ordering API: `http://localhost:6003` (HTTP), `https://localhost:6063` (HTTPS)
 
 Each service includes:
-- Health checks integration (AspNetCore.HealthChecks)
+- Carter for minimal API routing 
+- Health checks 
 - Global Exception Handler
 - Containerization with Docker
 - Azure Container Tools support
