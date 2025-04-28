@@ -72,14 +72,14 @@ The application follows domain-driven design principles and microservices archit
 
 ## Microservices
 
-### Catalog Service
+### Catalog Service - Vertical Slices
 - Product catalog management
 - Product categories and inventory
 - Product search and filtering
 - PostgreSQL database
 - Entity Framework Core
 
-### Basket Service
+### Basket Service - Vertical Slices
 - Shopping cart management (GetBasket, StoreBasket, DeleteBasket)
 - User session handling
 - Hybrid caching with custom JsonHybridCacheSerializer
@@ -88,7 +88,7 @@ The application follows domain-driven design principles and microservices archit
 - Carter for API composition
 - gRPC client for Discount service communication
 
-### Discount Service
+### Discount Service - Vertical Slices
 - Promotional discounts and Coupon management
 - gRPC implementation with service reflection
 - SQLite database 
@@ -96,13 +96,13 @@ The application follows domain-driven design principles and microservices archit
 - Proto file-based service definition
 - Models with Coupon entity
 
-### Ordering Service
+### Ordering Service - Clean Architecture 
 - Order processing with CRUD operations
-- Multiple endpoint handlers (CreateOrder, DeleteOrder, GetOrders, GetOrdersByCustomer, GetOrdersByName, UpdateOrder)
+- Endpoint (CreateOrder, DeleteOrder, GetOrders, GetOrdersByCustomer, GetOrdersByName, UpdateOrder)
 - Clean architecture with separate Application, Domain, and Infrastructure layers
 - Carter for minimal API routing
 - Entity Framework Core with SQL Server
-- Dependency injection with proper service registration
+
 
 ---
 
