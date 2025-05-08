@@ -2,9 +2,9 @@
 {
     public record EventBase
     {
-        public Guid Id { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public string EventType => GetType().AssemblyQualifiedName;
+        Guid EventId => Guid.NewGuid();
+        DateTime OccurredOn => DateTime.UtcNow;
+        string EventType => GetType().AssemblyQualifiedName!;
 
     }
 }

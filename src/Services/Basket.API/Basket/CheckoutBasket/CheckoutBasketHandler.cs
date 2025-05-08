@@ -1,14 +1,35 @@
 ﻿using Basket.API.Dtos;
+using MassTransit;
+using Shared.Messaging.Events;
 
 namespace Basket.API.Basket.CheckoutBasket
 {
     public record BasketCheckoutCommand(BasketCheckoutDto CheckoutDto) : ICommand<BasketCheckoutResult>;
-    public record BasketCheckoutResult(bool IsSuccess);
-    public class CheckoutBasketCommandHandler : ICommandHandler<BasketCheckoutCommand, BasketCheckoutResult>
+    public record BasketCheckoutResult(bool IsSuccess)
     {
-        public Task<BasketCheckoutResult> Handle(BasketCheckoutCommand request, CancellationToken cancellationToken)
+
+    };
+    public class CheckoutBasketCommandValidator : AbstractValidator<BasketCheckoutCommand>
+    {
+        public CheckoutBasketCommandValidator()
         {
-            throw new NotImplementedException();
+            _ = RuleFor(x => x.CheckoutDto).NotNull().WithMessage("CheckoutDto cannot be null");
+            _ = RuleFor(x => x.CheckoutDto.UserName).NotEmpty().WithMessage("UserName cannot be empty");
+        }
+    }
+    public class CheckoutBasketCommandHandler(IBasketRepository repository, IPublishEndpoint publishEndpoint) : ICommandHandler<BasketCheckoutCommand, BasketCheckoutResult>
+    {
+        public async Task<BasketCheckoutResult> Handle(BasketCheckoutCommand command, CancellationToken cancellationToken)
+        {
+            var basekt = repository.GetBasket(command.CheckoutDto.UserName, cancellationToken);
+            if (basekt == null)
+            {
+                return new BasketCheckoutResult(false);
+            }
+            BasketCheckoutEvent eventMessage = command.CheckoutDto.Adapt<BasketCheckoutEvent>();
+            await publishEndpoint.Publish(eventMessage, cancellationToken);
+            _ = await repository.DeleteBasket(command.CheckoutDto.UserName, cancellationToken);
+            return new BasketCheckoutResult(true);
         }
     }
 }

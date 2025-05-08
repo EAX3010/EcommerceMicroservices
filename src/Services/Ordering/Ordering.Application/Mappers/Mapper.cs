@@ -1,4 +1,7 @@
-﻿namespace Ordering.Application.Mappers
+﻿using Ordering.Application.Orders.Commands.CreateOrder;
+using Shared.Messaging.Events;
+
+namespace Ordering.Application.Mappers
 {
     public static class Mapper
     {
@@ -84,6 +87,51 @@
                 dto.CardExpiration,
                 dto.CardSecurityNumber,
                 1);
+        }
+        public static CreateOrderCommand ToCreateOrderCommand(this BasketCheckoutEvent basketCheckoutEvent)
+        {
+            AddressDto addressDto = new(basketCheckoutEvent.FirstName,
+                basketCheckoutEvent.LastName,
+                basketCheckoutEvent.EmailAddress,
+                basketCheckoutEvent.AddressLine,
+                basketCheckoutEvent.State,
+                basketCheckoutEvent.Country,
+                basketCheckoutEvent.ZipCode);
+
+            PaymentDto paymentDto = new(basketCheckoutEvent.CardNumber,
+                basketCheckoutEvent.CardName,
+                basketCheckoutEvent.Expiration,
+                basketCheckoutEvent.CVV,
+                basketCheckoutEvent.PaymentMethod);
+
+            Guid orderId = Guid.NewGuid();
+
+            OrderDto orderDto = new(
+                Id: orderId,
+                CustomerId: basketCheckoutEvent.CustomerId,
+                OrderName: basketCheckoutEvent.UserName,
+                ShippingAddress: addressDto,
+                BillingAddress: addressDto,
+                Payment: paymentDto,
+                Status: Ordering.Domain.Enums.OrderStatus.Pending,
+                OrderItems:
+                [
+                   new OrderItemDto(
+                        Id: orderId,
+                        ProductId: Guid.NewGuid(),
+                        Quantity: 1,
+                        Price: basketCheckoutEvent.TotalPrice
+                    ),
+                    new OrderItemDto(
+                        Id: orderId,
+                        ProductId: Guid.NewGuid(),
+                        Quantity: 1,
+                        Price: basketCheckoutEvent.TotalPrice
+                    )
+                ]);
+
+            return new CreateOrderCommand(orderDto);
+
         }
     }
 }

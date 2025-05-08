@@ -90,8 +90,8 @@ namespace Ordering.Infrastructure.Data.Configurations
                         .HasMaxLength(5)
                         .IsRequired();
                 });
-            _ = builder.ComplexProperty(
-                o => o.Payment, paymentBuilder =>
+
+            _ = builder.ComplexProperty(o => o.Payment, paymentBuilder =>
                 {
                     _ = paymentBuilder.Property(p => p.CardHolderName)
                         .HasMaxLength(50);
@@ -111,9 +111,7 @@ namespace Ordering.Infrastructure.Data.Configurations
 
             _ = builder.Property(o => o.Status)
                 .HasDefaultValue(OrderStatus.Draft)
-                .HasConversion(
-                    s => s.ToString(),
-                    dbStatus => (OrderStatus)Enum.Parse(typeof(OrderStatus), dbStatus));
+                .HasConversion(s => s.ToString(), dbStatus => (OrderStatus)Enum.Parse(typeof(OrderStatus), dbStatus));
 
             _ = builder.Ignore(o => o.TotalPrice);
         }

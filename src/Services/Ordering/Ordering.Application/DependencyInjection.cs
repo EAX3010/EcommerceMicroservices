@@ -1,8 +1,11 @@
-﻿namespace Ordering.Application
+﻿using Microsoft.Extensions.Configuration;
+using Shared.Messaging.MassTransit;
+
+namespace Ordering.Application
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             _ = services.AddMediatR(config =>
@@ -12,6 +15,7 @@
                 _ = config.AddOpenBehavior(typeof(LoggingBehavior<,>));
             });
             _ = services.AddValidatorsFromAssembly(assembly);
+            _ = services.AddMessageBroker(configuration, assembly);
             return services;
         }
     }
