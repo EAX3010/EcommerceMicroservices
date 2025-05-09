@@ -118,15 +118,15 @@ namespace Ordering.Application.Mappers
                 [
                    new OrderItemDto(
                         Id: orderId,
-                        ProductId: Guid.NewGuid(),
+                        ProductId: new Guid("528EAF31-3343-4875-A7EA-2CAE85084590"),
                         Quantity: 1,
-                        Price: basketCheckoutEvent.TotalPrice
+                        Price: 1151
                     ),
                     new OrderItemDto(
                         Id: orderId,
-                        ProductId: Guid.NewGuid(),
+                        ProductId: new Guid("9FF66B07-A7B1-4E66-A736-56310C63E663"),
                         Quantity: 1,
-                        Price: basketCheckoutEvent.TotalPrice
+                        Price: 1930
                     )
                 ]);
 

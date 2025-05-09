@@ -10,8 +10,7 @@ namespace Basket.API.Basket.CheckoutBasket
         {
             _ = app.MapPost("/checkout", async (BasketCheckoutRequest request, ISender sender) =>
             {
-                var command = sender.Adapt<BasketCheckoutCommand>();
-                var result = await sender.Send(command);
+                var result = await sender.Send(new BasketCheckoutCommand(request.CheckoutDto));
                 var response = result.Adapt<BasketCheckoutResponse>();
                 return Results.Ok(response);
 

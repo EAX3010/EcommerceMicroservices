@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.FeatureManagement;
 using Shared.Messaging.MassTransit;
 
 namespace Ordering.Application
@@ -15,6 +16,7 @@ namespace Ordering.Application
                 _ = config.AddOpenBehavior(typeof(LoggingBehavior<,>));
             });
             _ = services.AddValidatorsFromAssembly(assembly);
+            _ = services.AddFeatureManagement();
             _ = services.AddMessageBroker(configuration, assembly);
             return services;
         }

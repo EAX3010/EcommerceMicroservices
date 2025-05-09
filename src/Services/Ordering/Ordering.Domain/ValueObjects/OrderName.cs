@@ -8,7 +8,7 @@ namespace Ordering.Domain.ValueObjects
 {
     public readonly record struct OrderName
     {
-        private const int DefaultLength = 8;
+        private const int DefaultLength = 3;
 
         private OrderName(string value)
         {

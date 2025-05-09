@@ -36,7 +36,18 @@ services:
       - ACCEPT_EULA=Y
     volumes:
       - ordering_volume:/var/opt/mssql
-  
+  messagebroker:
+    container_name: messagebroker
+    hostname: ecommerce-mq
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin123
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+    volumes:
+      - "rabbitmq:/var/lib/rabbitmq:rw"
   catalog.api:
     container_name: catalog.api
     environment:
@@ -62,6 +73,10 @@ services:
       - ConnectionStrings__Database=Server=basket.db;Port=5432;Database=BasketDb;User Id=postgres;Password=postgres;Include Error Detail=true
       - ConnectionStrings__RedisConnectionString=hybridcache:6379
       - GrpcConfigs__DiscountUrl=https://discount.grpc:8081
+      - MessageBroker__Host=amqp://ecommerce-mq:5672
+      - MessageBroker__UserName=admin
+      - MessageBroker__Password=admin123
+      - FeatureManagement__OrderFullfilment=true
     depends_on:
       - basket.db
       - hybridcache
@@ -96,6 +111,10 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
       - ConnectionStrings__Database=Server=ordering.db,1433;Database=OrderDb;User Id=sa;Password=65536653dD;Encrypt=False;TrustServerCertificate=True
+      - MessageBroker__Host=amqp://ecommerce-mq:5672
+      - MessageBroker__UserName=admin
+      - MessageBroker__Password=admin123
+      - FeatureManagement__OrderFullfilment=false
     ports:
       - "6003:8080"
       - "6063:8081"

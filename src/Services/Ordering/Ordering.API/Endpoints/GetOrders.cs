@@ -18,7 +18,7 @@ namespace Ordering.API.Endpoints
             {
                 GetOrderResult result = await sender.Send(new GetOrdersQuery(request));
 
-                GetOrderResponse response = result.Adapt<GetOrderResponse>();
+                GetOrderResponse response = new GetOrderResponse(result.Data)!;
                 return Results.Ok(response);
             }
 

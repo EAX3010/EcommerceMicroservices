@@ -14,6 +14,7 @@
         <PackageReference Include="Mapster" Version="7.4.2-pre02" />
         <PackageReference Include="Marten" Version="8.0.0-alpha-6-" />
         <PackageReference Include="MediatR" Version="12.5.0" />
+        <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="4.0.0" />
         <PackageReference Include="System.Text.Json" Version="9.0.4" />
     </ItemGroup>
 

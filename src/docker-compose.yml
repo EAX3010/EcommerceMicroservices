@@ -7,7 +7,8 @@ services:
     image: mcr.microsoft.com/mssql/server
   hybridcache:
     image: redis
-
+  messagebroker:
+    image: rabbitmq:management
   catalog.api:
     image: ${DOCKER_REGISTRY-}catalogapi
     build:
@@ -36,6 +37,7 @@ volumes:
   catalog_volume:
   basket_volume:
   ordering_volume:
+  rabbitmq:
 
 
 
