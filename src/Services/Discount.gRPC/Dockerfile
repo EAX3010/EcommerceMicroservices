@@ -13,7 +13,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Services/Discount.gRPC/Discount.gRPC.csproj", "Services/Discount.gRPC/"]
-COPY ["Helpers/Contracts/Shared.csproj", "Helpers/Contracts/"]
+COPY ["Helpers/Shared/Shared.csproj", "Helpers/Shared/"]
 RUN dotnet restore "./Services/Discount.gRPC/Discount.gRPC.csproj"
 COPY . .
 WORKDIR "/src/Services/Discount.gRPC"

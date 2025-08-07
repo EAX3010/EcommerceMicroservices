@@ -1,8 +1,4 @@
-﻿using Carter;
-using Mapster;
-using MediatR;
-using Ordering.Application.Dtos;
-using Ordering.Application.Orders.Commands.CreateOrder;
+﻿using Ordering.Application.Orders.Commands.CreateOrder;
 
 namespace Ordering.API.Endpoints
 {
@@ -20,8 +16,11 @@ namespace Ordering.API.Endpoints
             static async Task<IResult> Handle(CreateOrderRequest request, ISender sender)
             {
                 CreateOrderCommand command = request.Adapt<CreateOrderCommand>();
+
                 CreateOrderResult result = await sender.Send(command);
+
                 CreateOrderResponse response = result.Adapt<CreateOrderResponse>();
+
                 return Results.Created($"/orders/{response.OrderId}", response);
             }
         }
