@@ -23,6 +23,7 @@ I wanted each service to be focused, maintainable, and actually follow clean arc
 - Docker ready setup
 
 **Current state:**
+
 ✅ Core business logic done  
 ✅ Full inter-service communication  
 ✅ CRUD + basket + discounts + orders
