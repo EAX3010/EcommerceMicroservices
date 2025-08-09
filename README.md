@@ -1,4 +1,3 @@
-# I just built an e-commerce backend from scratch — and it works.
 
 Been working on this in my free time because, honestly, I was curious if I could actually pull off a full microservices setup with clean architecture without falling into the usual traps.
 
