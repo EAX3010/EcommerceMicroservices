@@ -36,16 +36,3 @@ I wanted each service to be focused, maintainable, and actually follow clean arc
 - Monitoring  
 - Kubernetes deployment
 
-<<<<<<< HEAD
-=======
-**What I learned:**
-Distributed systems are weird. Data consistency across services is a pain. Debugging async calls at 2 AM is not fun. But figuring it out yourself beats copy-pasting tutorials.
-
-Now I actually understand why people complain about microservices.
-
-Looking for backend roles where I can use this stuff for real problems instead of just weekend projects.
-
-Code: https://github.com/EAX3010/EcommerceMicroservices
-
-#backend #microservices #dotnet #weekendproject
->>>>>>> b9af5f9079261a6e587e6b384000f5f0b3cf7236
